@@ -7,13 +7,13 @@ import { setupCommand } from '../lib/copyDocs';
 const program = new Command();
 
 program
-  .name('guild')
-  .description('AI Guild CLI - Bootstrap your project with AI development workflows')
+  .name('codery')
+  .description('Codery CLI - Bootstrap your project with AI development workflows')
   .version('0.1.0');
 
 program
   .command('setup')
-  .description('Copy Guild documentation into your project')
+  .description('Copy Codery documentation into your project')
   .option('--dry-run', 'Show what would be copied without actually copying')
   .action(async options => {
     try {

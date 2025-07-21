@@ -1,8 +1,8 @@
-# Guild CLI — Specification Document
+# Codery CLI — Specification Document
 
 ## 1 Purpose
 
-Provide a command‑line interface (CLI) that developers can install globally via `npm install -g @hdts/guild`. The CLI's MVP command, `guild setup`, boot‑straps a local project so an AI agent ("Guild") can load its context from the prepared documentation. The tool copies a curated set of **guild‑docs** resources into predictable locations inside the consumer's repository and performs minimal configuration.
+Provide a command‑line interface (CLI) that developers can install globally via `npm install -g @hdts/codery`. The CLI's MVP command, `codery setup`, boot‑straps a local project so an AI agent ("Codery") can load its context from the prepared documentation. The tool copies a curated set of **codery‑docs** resources into predictable locations inside the consumer's repository and performs minimal configuration.
 
 ## 2 Scope
 
@@ -13,8 +13,8 @@ Provide a command‑line interface (CLI) that developers can install globally vi
 
 | Stakeholder                | Interest                                                         |
 | -------------------------- | ---------------------------------------------------------------- |
-| Internal Guild maintainers | Build & publish the `guild` package, tag versions, maintain docs |
-| Consumer developers        | Install and run `guild setup` to enable AI workflow              |
+| Internal Codery maintainers | Build & publish the `codery` package, tag versions, maintain docs |
+| Consumer developers        | Install and run `codery setup` to enable AI workflow              |
 | OSS community              | Review source, raise issues, contribute fixes                    |
 
 ## 4 Definitions
@@ -28,7 +28,7 @@ Provide a command‑line interface (CLI) that developers can install globally vi
 ## 5 Assumptions
 
 1. Consumers run Node ≥ 18 LTS.
-2. Package is public on npm under the name **@hdts/guild**.
+2. Package is public on npm under the name **@hdts/codery**.
 3. Installation is expected to be global; using `npx` is acceptable but not required.
 4. Consumers are comfortable with overwritten files after confirmation.
 
@@ -36,28 +36,28 @@ Provide a command‑line interface (CLI) that developers can install globally vi
 
 ### 6.1 Installation
 
-* The package is installable via `npm install -g @hdts/guild`.
-* A symlinked executable **guild** is registered in the user's `$PATH`.
+* The package is installable via `npm install -g @hdts/codery`.
+* A symlinked executable **codery** is registered in the user's `$PATH`.
 
-### 6.2 Command: `guild setup`
+### 6.2 Command: `codery setup`
 
 | ID  | Requirement                                                                                                                  |
 | --- | ---------------------------------------------------------------------------------------------------------------------------- |
-| F‑1 | The CLI copies the **guild‑docs/.guild/** folder and all its contents into `<current-directory>/.guild/`                     |
-| F‑2 | The CLI copies **guild‑docs/Setup/NewCLAUDE.md** to `<current-directory>/CLAUDE.md`                                         |
-| F‑3 | The CLI copies **guild‑docs/Setup/.guild-config.example** to `<current-directory>/.guild-config`                            |
+| F‑1 | The CLI copies the **codery‑docs/.codery/** folder and all its contents into `<current-directory>/.codery/`                     |
+| F‑2 | The CLI copies **codery‑docs/Setup/NewCLAUDE.md** to `<current-directory>/CLAUDE.md`                                         |
+| F‑3 | The CLI copies **codery‑docs/Setup/.codery-config.example** to `<current-directory>/.codery-config`                            |
 | F‑4 | Existing files prompt user with a list of files to be overwritten and ask for single yes/no confirmation                    |
 | F‑5 | The CLI returns exit code 0 on success, non‑zero on failure                                                                  |
-| F‑6 | `guild setup --dry-run` prints the planned file operations without writing                                                   |
-| F‑7 | `guild --help` and `guild setup --help` output usage information                                                             |
+| F‑6 | `codery setup --dry-run` prints the planned file operations without writing                                                   |
+| F‑7 | `codery --help` and `codery setup --help` output usage information                                                             |
 
 ### 6.3 Internal File Mapping (MVP)
 
 | Source in package                      | Destination in consumer repo |
 | -------------------------------------- | ---------------------------- |
-| `guild-docs/.guild/**/*`               | `.guild/**/*`                |
-| `guild-docs/Setup/NewCLAUDE.md`        | `./CLAUDE.md`                |
-| `guild-docs/Setup/.guild-config.example` | `./.guild-config`            |
+| `codery-docs/.codery/**/*`               | `.codery/**/*`                |
+| `codery-docs/Setup/NewCLAUDE.md`        | `./CLAUDE.md`                |
+| `codery-docs/Setup/.codery-config.example` | `./.codery-config`            |
 
 > *Note*: If the source file tree changes, update this table.
 
@@ -78,7 +78,7 @@ When existing files are detected, the CLI:
 
 * **Compatibility** – Tested on macOS, Linux, Windows 10+ environments with Node 18 and 20.
 * **Security** – Package contains only static markdown / shell files; no code executed post‑install besides the CLI.
-* **Performance** – `guild setup` completes in under 1 second on typical SSD.
+* **Performance** – `codery setup` completes in under 1 second on typical SSD.
 * **Telemetry** – None.
 
 ## 8 Package Layout (published tarball)
@@ -86,15 +86,15 @@ When existing files are detected, the CLI:
 ```
 package root
 ├── bin
-│   └── guild          # shebang JS file
+│   └── codery          # shebang JS file
 ├── lib
 │   └── copyDocs.js    # internal helper(s)
-├── guild-docs/**      # vendored markdown tree
+├── codery-docs/**      # vendored markdown tree
 ├── package.json
 └── README.md
 ```
 
-* **bin/guild** uses [Commander.js](https://github.com/tj/commander.js) for argument parsing.
+* **bin/codery** uses [Commander.js](https://github.com/tj/commander.js) for argument parsing.
 
 ## 9 Publishing & Versioning Workflow
 
@@ -128,10 +128,10 @@ package root
 
 ## 11 Roadmap / Future Extensions
 
-1. `guild update` command that performs a three‑way merge instead of raw overwrite.
+1. `codery update` command that performs a three‑way merge instead of raw overwrite.
 2. Flags to install subsets of docs (`--lifecycles`, `--startup`).
 3. Template variables inside docs to inject project‑specific metadata.
-4. Support for local install (`npx @hdts/guild setup`).
+4. Support for local install (`npx @hdts/codery setup`).
 5. Telemetry opt‑in to collect anonymous usage stats.
 
 ---

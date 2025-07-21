@@ -1,4 +1,4 @@
-# AI GUILD — Success Criteria
+# CODERY — Success Criteria
 
 1. **Do not over-engineer coding solutions.**  
    Keep implementations directed by the requirements. The requirement must define the architecture of the solution. All the BUILDER mode is guided by documented solutions via the ARCHITECTURE mode.

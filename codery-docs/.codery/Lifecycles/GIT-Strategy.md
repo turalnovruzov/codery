@@ -1,18 +1,18 @@
 # Git Promotion and CI/CD Strategy for JIRA Management
 
 ## 🌐 Environment Promotion Flow
-- is defined in the .guild-config :
+- is defined in the .codery-config :
 - <local> GIT Lifecycle
 - <origin> GIT Lifecycle
-- follow the .guild.config GIT_General_Stategy phase.  The over rides this sections
+- follow the .codery-config GIT_General_Stategy phase.  The over rides this sections
 
 
 ---
 
 ## 🔧 Assumptions
 
-1. **User Responsibility:** Developers are responsible for placing correct versions into the DEVELOPMENT branch (as defined in .guild-config) before beginning Jira work.
-2. **Explicit Promotion:** Versions do **not** auto-promote. Promotions to TESTING or PRODUCTION branches require explicit Guild approval and execution.
+1. **User Responsibility:** Developers are responsible for placing correct versions into the DEVELOPMENT branch (as defined in .codery-config) before beginning Jira work.
+2. **Explicit Promotion:** Versions do **not** auto-promote. Promotions to TESTING or PRODUCTION branches require explicit Codery approval and execution.
 4. **JIRA :** Jira is the ticket scope tracking system. This is the starting point for any branch work.
 
 ---
@@ -28,7 +28,7 @@ Each Branch is tied to some JIRA Ticket or Group of tickets (eg story or epic et
 
 | Step | Description |
 |------|-------------|
-| 1. | Confirm current branch is the DEVELOPMENT branch (as defined in .guild-config). Abort if not. |
+| 1. | Confirm current branch is the DEVELOPMENT branch (as defined in .codery-config). Abort if not. |
 | 2. | If working on an existing JIRA ticket, checkout the corresponding branch. |
 | 3. | For new work, create a new branch based on JIRA ticket number. |
 | 4. | Initial commit includes the creation or update of JIRA tracking markdown. |
@@ -39,7 +39,7 @@ Each Branch is tied to some JIRA Ticket or Group of tickets (eg story or epic et
 | 9. | Request final review and approval. |
 | 10. | Upon approval, merge into the DEVELOPMENT branch. |
 | 11. | Delete the working branch after successful merge. |
-| 12. | AI Guild logs the merge event under `~/Proctions/DEVELOPMENT/merge-<timestamp>.md` with all JIRA ticket references. |
+| 12. | AI Codery logs the merge event under `~/Proctions/DEVELOPMENT/merge-<timestamp>.md` with all JIRA ticket references. |
 
 ---
 
@@ -116,19 +116,19 @@ Delete Branch
 ✅ Always pass lint, build, and local dev run before merge  
 ✅ Always maintain SNR documentation in markdown  
 
-🔐 Guild Rules Implied and Enforced:
+🔐 Codery Rules Implied and Enforced:
 
 [DEV Work: Local Branches from DEVELOPMENT]
        ↓
-[Merge into Local DEVELOPMENT]  ← Guild merges
+[Merge into Local DEVELOPMENT]  ← Codery merges
        ↓
 [Push Local DEVELOPMENT to origin/DEVELOPMENT]
        ↓
-[Guild merges DEVELOPMENT → origin/TESTING] (remote only)
+[Codery merges DEVELOPMENT → origin/TESTING] (remote only)
        ↓
-[Guild merges TESTING → origin/PRODUCTION] (remote only)
+[Codery merges TESTING → origin/PRODUCTION] (remote only)
        ↓
-[Guild logs summary in ~/Proctions/ENV/;merge-*.md]
+[Codery logs summary in ~/Proctions/ENV/;merge-*.md]
 
 ---
 ## General GIT rules
@@ -136,8 +136,8 @@ Delete Branch
 - We do NOT have local TESTING and PRODUCTION. Our only full env are Local DEVELOPMENT (and update branches), and origin DEVELOPMENT, TESTING, PRODUCTION.
 - Promotion is always a GitHub push to remote origin/TESTING or origin/PRODUCTION, using explicit, documented merge.
 - Merge events are the only mechanism by which code moves forward.
-- Guild logs the merge summary in ~/Proctions/ENV/, not in the remote repo itself — ensuring this is tracked separately from code.
-- Guild works in local DEVELOPMENT branch only OR the JIRA ticket branch. 
+- Codery logs the merge summary in ~/Proctions/ENV/, not in the remote repo itself — ensuring this is tracked separately from code.
+- Codery works in local DEVELOPMENT branch only OR the JIRA ticket branch. 
 - No local work is done in TESTING or PRODUCTION branches.
 
 

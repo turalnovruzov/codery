@@ -1,20 +1,20 @@
 # the COMMAND STARTUP will exiecute on these steps
 
-# AI GUILD — System Overview
+# CODERY — System Overview
 
-The **AI GUILD** is a structured, role-driven development system that integrates AI agents and human contributors to deliver high-quality software efficiently. It is organized around three core concepts:
+The **CODERY** is a structured, role-driven development system that integrates AI agents and human contributors to deliver high-quality software efficiently. It is organized around three core concepts:
 
 ## Commands
 
 ## Roles
-Roles define the AI-Guilds (and indeed your) personas. Roles ahve resposnbilites and certian things 
+Roles define the Coderys (and indeed your) personas. Roles ahve resposnbilites and certian things 
 
 ## Lifecycles
 
 ## Applcations
  
-## Guild Summary
--- The AI GUILD and (therefore YOU) system enforces clarity, accountability, and best practices through Playbooks, structured Roles, modular Applications, documented lifecycels.and robust Tracking. This enables scalable, maintainable, and collaborative software development—whether by humans, AI, or both.  You are to follow the guidles of the guild and know the full contents of the configured guild at all time. 
+## Codery Summary
+-- The CODERY and (therefore YOU) system enforces clarity, accountability, and best practices through Playbooks, structured Roles, modular Applications, documented lifecycels.and robust Tracking. This enables scalable, maintainable, and collaborative software development—whether by humans, AI, or both.  You are to follow the guidles of the guild and know the full contents of the configured guild at all time. 
 
 # Starting up
 -- with the startup commend 
@@ -24,22 +24,22 @@ Roles define the AI-Guilds (and indeed your) personas. Roles ahve resposnbilites
 -- keep the user informred of the todos 
 
 ## Step 1  you are to tell the user what version of the GUUILD we are loading
--- the contents of 'public/AI-Guild/version.md' tell use ther version
+-- the contents of 'public/Codery/version.md' tell use ther version
 
-## Step 2 : read the Guild Config
--- read /.guild-config
+## Step 2 : read the Codery Config
+-- read /.codery-config
 -- STOP if you cannot see them.
--- Explain what .<>-config files are use public/AI-Guild/Setup for the exmaple config files.
+-- Explain what .<>-config files are use public/Codery/Setup for the exmaple config files.
 
 ## Step 3 : search for the Reconcatnetion Triggers
--- 3a. You can Skip step 3b if you do not see the file : "./.TriggerFullGuild".  Do not search for any other file.
--- 3b. if you see "./.TriggerConcatenated" then read and comply with the instructions on "public/AI-Guild/Startup/ReconcatGuild.md"
+-- 3a. You can Skip step 3b if you do not see the file : "./.TriggerFullCodery".  Do not search for any other file.
+-- 3b. if you see "./.TriggerConcatenated" then read and comply with the instructions on "public/Codery/Startup/ReconcatCodery.md"
 -- 3c. You can Skip step 3c if you do not see the file : "./.TriggerFullApplicaitons".  Do not search for any other file.
--- 3b. if you see "./.TriggerConcatenated" then read and comply with the instructions on "public/AI-Guild/Startup/ReconcatApplications.md"
+-- 3b. if you see "./.TriggerConcatenated" then read and comply with the instructions on "public/Codery/Startup/ReconcatApplications.md"
 
 ## Step 4 : Read the Concatenated Startup files
--- Read comply with "public/AI-Guild/Startup/FullPlaybooksGuild.md"
--- Read and comply with "public/AI-Guild/Startup/FullPlaybooksApplicatons.md"
+-- Read comply with "public/Codery/Startup/FullPlaybooksCodery.md"
+-- Read and comply with "public/Codery/Startup/FullPlaybooksApplicatons.md"
 
 
 ## Step 5 : Configure JIRA CLI.
@@ -57,7 +57,7 @@ Roles define the AI-Guilds (and indeed your) personas. Roles ahve resposnbilites
 - Tell user simply: "Your REPO is up to date" or "Updates available from repository"
 
 ## Step 7. Notifiations
-- Inform user: "AI-Guild v[VERSION] ready.
+- Inform user: "Codery v[VERSION] ready.
 - Inform user: the Appliction playbooks read
 - If there are no playbooks, the train the user what they could do.
 - List commands,

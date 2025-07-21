@@ -1,4 +1,4 @@
-## Directives or COMMANDS that you should know and abide by :
+## Directives or COMMANDS that you should know and abide by
 
 - **Startup, START**  
   Begin or initialize the current session or process.
@@ -10,7 +10,7 @@
   Read the specified file or resource.
 
 - **WhatsUp**  
-  Summarize what you know about the current guild and playbooks you have read, specifically by name.  
+  Summarize what you know about the current codery system and playbooks you have read, specifically by name.  
   _You must NOT execute any BASH or shell commands for this directive._
 
 - **Open (I/F/E)**  
@@ -23,14 +23,15 @@
   Request KANBAN mode to read the IFE # and summarize what we are doing.
 
 - **Roles**
-  Lists all the roles in the guild. 
+  Lists all the roles in the codery system.
 
 - **SNR** (Summarize, NextSteps, RequestRole)  
   Provide a summary, outline next steps, and request the next role.
- standard SNR protocol is :                            
-                                                   
- - 🔷 **S—Summarize**: Recap the explanation provided and any clarifications made              
- - 🟡 **N—Next Steps**: Suggest how to proceed based on improved understanding                  - 🟩 **R—Request Role**: Suggest an appropriate next role based on the clarified direction
+ standard SNR protocol is :
+
+- 🔷 **S—Summarize**: Recap the explanation provided and any clarifications made
+- 🟡 **N—Next Steps**: Suggest how to proceed based on improved understanding
+- 🟩 **R—Request Role**: Suggest an appropriate next role based on the clarified direction
 
 - **SWITCH &lt;role&gt;**  
   Switch to the specified role and abide by its guidelines, then continue.
@@ -50,5 +51,5 @@
 - **Directives &lt;text&gt;** or - **Commands &lt;text&gt;**
   List all the directives (this list) to the user with a mini descr. Compressed list but all directives
 
-- **Self-Report** or **Self-Diagnose** 
-This trigger s the 🔬 Self-Introspective Analysis Mod— *Session Review & Learning* mode.  
+- **Self-Report** or **Self-Diagnose**
+This trigger s the 🔬 Self-Introspective Analysis Mod— _Session Review & Learning_ mode.  

@@ -25,18 +25,18 @@ const packageRoot = path.resolve(__dirname, '../..');
 // Define source and destination mappings
 const fileMappings: FileMapping[] = [
   {
-    source: path.join(packageRoot, 'guild-docs/.guild'),
-    destination: '.guild',
+    source: path.join(packageRoot, 'codery-docs/.codery'),
+    destination: '.codery',
     isDirectory: true,
   },
   {
-    source: path.join(packageRoot, 'guild-docs/Setup/NewCLAUDE.md'),
+    source: path.join(packageRoot, 'codery-docs/Setup/NewCLAUDE.md'),
     destination: 'CLAUDE.md',
     isDirectory: false,
   },
   {
-    source: path.join(packageRoot, 'guild-docs/Setup/.guild-config.example'),
-    destination: '.guild-config',
+    source: path.join(packageRoot, 'codery-docs/Setup/.codery-config.example'),
+    destination: '.codery-config',
     isDirectory: false,
   },
 ];
@@ -124,7 +124,7 @@ function getFilesToCopy(): FileToCopy[] {
 
 // Main setup command
 export async function setupCommand(options: SetupOptions): Promise<void> {
-  console.log(chalk.blue('🏰 Guild Setup'));
+  console.log(chalk.blue('🏰 Codery Setup'));
   console.log();
 
   // Get all files that would be copied
@@ -193,15 +193,15 @@ export async function setupCommand(options: SetupOptions): Promise<void> {
   });
 
   console.log();
-  console.log(chalk.green('✨ Guild setup complete!'));
+  console.log(chalk.green('✨ Codery setup complete!'));
   console.log();
   console.log('Your project now has:');
-  console.log('  - .guild/         Guild documentation and workflows');
+  console.log('  - .codery/        Codery documentation and workflows');
   console.log('  - CLAUDE.md       Instructions for AI assistants');
-  console.log('  - .guild-config   Guild configuration file');
+  console.log('  - .codery-config  Codery configuration file');
   console.log();
   console.log('Next steps:');
-  console.log('  1. Review and customize .guild-config');
+  console.log('  1. Review and customize .codery-config');
   console.log('  2. Read CLAUDE.md to understand the AI workflow');
-  console.log('  3. Start using AI assistants with your Guild-enabled project!');
+  console.log('  3. Start using AI assistants with your Codery-enabled project!');
 }

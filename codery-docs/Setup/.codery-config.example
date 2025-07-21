@@ -1,5 +1,5 @@
-# Guild Configuration File Example
-# Copy this to .guild-config in your project root and update with your values
+# Codery Configuration File Example
+# Copy this to .codery-config in your project root and update with your values
 
 # Startup Config Prompts : uTNC, uGS, uGR, uGC, uJC, uJA
 
@@ -7,22 +7,22 @@
 createNewConcatenatedTriggerFile  = "./.TriggerConcatenated"
 
 # ----- STARTUP
-useGuildStartup = "YES"
-useGuildCustomStartup = "NO"
+useCoderyStartup = "YES"
+useCoderyCustomStartup = "NO"
 
 # ----- LIFECYCLE
-useGuildLifeCycle = "YES"
-useCustomGuildLifeCycles = "NO"
+useCoderyLifeCycle = "YES"
+useCustomCoderyLifeCycles = "NO"
 
 # ----- ROLES
-useGuildRoles = "YES"
+useCoderyRoles = "YES"
 useCustomRoles  = "NO"
-GuildRolesPath
-CustomGuildRolesPath
+CoderyRolesPath
+CustomCoderyRolesPath
 
 # ----- COMMANDS
-useGuildCommands = "YES"
-useCustomGuildCommands  = "NO"
+useCoderyCommands = "YES"
+useCustomCoderyCommands  = "NO"
 
 # ----- JIRA
 
