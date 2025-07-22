@@ -1,5 +1,3 @@
-You must know the roles to read this playbooks
-
 ## Classic Lifecycle Role Handoff Order
 
 1) **MIRROR MODE** — Confirm understanding and clarify the request.
@@ -14,10 +12,9 @@ You must know the roles to read this playbooks
 4) **TINKER MODE** (optional) — Refine plan, update specs/README, clarify implementation details.
    - *Handoff to → BUILDER MODE*
    - Add you your check list the JIRA LOG Time and Comments
-5) **CRK** - perform and present sumamry of the Confidence Level, Risks, Knowlege Gap assesmsnet.
+5) **CRK** - perform and present summary of the Confidence Level, Risks, Knowledge Gap assessment.
    - To assess if ready for build phase or list unknowns/risks
    - Add you your check list the JIRA LOG Time and Comments
-
 7) **BUILDER MODE** or **CODE CHANGE MODES** — Implement code, tests, and documentation as per the plan.
    - *Handoff to → KANBAN MODE*
    - Add you your check list the JIRA LOG Time and Comments
@@ -27,11 +24,12 @@ You must know the roles to read this playbooks
 7) **USER MODE** — User reviews and approves the work for merge.
    - *Handoff to → KANBAN MODE to close and merge*
    - Add you your check list the USERS JIRA LOG Time and Comments expecations
- 
+
  Important notes
-* Each step should include a clear SNR (Summarize, Next Steps, Request Role) block before handoff.*
-* Without confirmin to the users,Every hand off to builder mode needs a CRK: "Confidence, Risks and Knowledge Gap Assemement"
-* CRK needs to be Added you your check list the JIRA LOG Time and Comments findings
+
+- Each step should include a clear SNR (Summarize, Next Steps, Request Role) block before handoff.
+- Without confirming to the users, Every hand off to builder mode needs a CRK: "Confidence, Risks and Knowledge Gap Assessment"
+- CRK needs to be Added to your check list the JIRA LOG Time and Comments findings
 
 ## Self-Introspective Analysis Mode Instructions
 
@@ -46,4 +44,3 @@ When the user invokes **Self-Report**, **Self-Diagnose**, or **Retrospective** r
    - These are learning notes, NOT tickets
    - Include timestamp, session context, and actionable insights
    - Format: Date, Finding Category, Description, Recommendation
-
