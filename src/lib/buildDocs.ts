@@ -2,10 +2,12 @@ import * as fs from 'fs';
 import * as path from 'path';
 import chalk from 'chalk';
 import inquirer from 'inquirer';
+import { CoderyConfig } from '../types/config';
 
 interface BuildOptions {
   output?: string;
   dryRun?: boolean;
+  skipConfig?: boolean;
 }
 
 interface MarkdownFile {
@@ -21,9 +23,10 @@ const packageRoot = path.resolve(__dirname, '../..');
 const fileOrder = [
   'Roles.md',
   'Git_Workflow.md',
+  'JIRA_Workflow.md',
   'Commands.md',
   'LifeCycles.md',
-  'SuccessCriteria.md'
+  'SuccessCriteria.md',
 ];
 
 // Read all markdown files from the .codery directory
@@ -36,13 +39,12 @@ function readMarkdownFiles(): MarkdownFile[] {
   }
 
   // Get all .md files
-  const allFiles = fs.readdirSync(coderyDir)
-    .filter(file => file.endsWith('.md'));
+  const allFiles = fs.readdirSync(coderyDir).filter(file => file.endsWith('.md'));
 
   // Sort files according to predefined order, with unlisted files at the end
   const sortedFiles = [
     ...fileOrder.filter(file => allFiles.includes(file)),
-    ...allFiles.filter(file => !fileOrder.includes(file))
+    ...allFiles.filter(file => !fileOrder.includes(file)),
   ];
 
   // Read each file
@@ -52,7 +54,7 @@ function readMarkdownFiles(): MarkdownFile[] {
     files.push({
       name: filename,
       path: filePath,
-      content: content.trim()
+      content: content.trim(),
     });
   });
 
@@ -62,11 +64,13 @@ function readMarkdownFiles(): MarkdownFile[] {
 // Merge markdown files into a single document
 function mergeMarkdownFiles(files: MarkdownFile[]): string {
   const sections: string[] = [];
-  
+
   // Add header
   sections.push('# CLAUDE.md');
   sections.push('');
-  sections.push('This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.');
+  sections.push(
+    'This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.'
+  );
   sections.push('');
   sections.push('---');
   sections.push('');
@@ -75,13 +79,13 @@ function mergeMarkdownFiles(files: MarkdownFile[]): string {
   files.forEach((file, index) => {
     // Extract title from filename (remove .md extension)
     const sectionTitle = file.name.replace('.md', '').replace(/_/g, ' ');
-    
+
     // Add section
     sections.push(`## ${sectionTitle}`);
     sections.push('');
     sections.push(file.content);
     sections.push('');
-    
+
     // Add separator between sections (except for the last one)
     if (index < files.length - 1) {
       sections.push('---');
@@ -92,15 +96,72 @@ function mergeMarkdownFiles(files: MarkdownFile[]): string {
   return sections.join('\n');
 }
 
+// Load configuration from .codery/config.json
+function loadConfig(): CoderyConfig | null {
+  const configPath = path.join(process.cwd(), '.codery', 'config.json');
+
+  if (!fs.existsSync(configPath)) {
+    return null;
+  }
+
+  try {
+    const configContent = fs.readFileSync(configPath, 'utf-8');
+    return JSON.parse(configContent) as CoderyConfig;
+  } catch (error) {
+    console.warn(chalk.yellow('Warning: Failed to parse .codery/config.json'));
+    return null;
+  }
+}
+
+// Perform template variable substitution
+function substituteTemplates(
+  content: string,
+  config: CoderyConfig
+): { content: string; unsubstituted: string[] } {
+  const unsubstituted: string[] = [];
+  const templateRegex = /\{\{(\w+(?:\.\w+)*)\}\}/g;
+
+  const substitutedContent = content.replace(templateRegex, (match, variable) => {
+    // Handle nested properties like customValues.teamName
+    const value = variable.split('.').reduce((obj: any, key: string) => {
+      return obj?.[key];
+    }, config);
+
+    if (value !== undefined && value !== null) {
+      return String(value);
+    } else {
+      if (!unsubstituted.includes(variable)) {
+        unsubstituted.push(variable);
+      }
+      return match; // Keep original if not found
+    }
+  });
+
+  return { content: substitutedContent, unsubstituted };
+}
+
 // Main build command
 export async function buildCommand(options: BuildOptions): Promise<void> {
   console.log(chalk.blue('🏰 Codery Build'));
   console.log();
 
   try {
+    // Load configuration if not skipping
+    let config: CoderyConfig | null = null;
+    let allUnsubstituted: string[] = [];
+
+    if (!options.skipConfig) {
+      config = loadConfig();
+      if (!config) {
+        console.log(chalk.yellow('⚠️  No configuration found. Run "codery init" to create one.'));
+        console.log(chalk.dim('   Building without template substitution...'));
+        console.log();
+      }
+    }
+
     // Read all markdown files
     const markdownFiles = readMarkdownFiles();
-    
+
     if (markdownFiles.length === 0) {
       console.log(chalk.yellow('No markdown files found in codery-docs/.codery'));
       return;
@@ -111,6 +172,23 @@ export async function buildCommand(options: BuildOptions): Promise<void> {
       console.log(`  - ${file.name}`);
     });
     console.log();
+
+    // Apply template substitution if config is available
+    if (config && !options.skipConfig) {
+      console.log('Applying template substitution...');
+      markdownFiles.forEach(file => {
+        const result = substituteTemplates(file.content, config);
+        file.content = result.content;
+        allUnsubstituted.push(...result.unsubstituted);
+      });
+
+      if (allUnsubstituted.length > 0) {
+        console.log(
+          chalk.yellow(`⚠️  Unsubstituted variables: ${[...new Set(allUnsubstituted)].join(', ')}`)
+        );
+      }
+      console.log();
+    }
 
     // Merge files
     const mergedContent = mergeMarkdownFiles(markdownFiles);

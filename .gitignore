@@ -8,3 +8,6 @@ CLAUDE.md
 # Node.js
 node_modules/
 dist/
+
+# Codery configuration
+.codery/config.json
