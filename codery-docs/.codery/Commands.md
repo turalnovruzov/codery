@@ -1,55 +1,75 @@
-## Directives or COMMANDS that you should know and abide by
+# Codery Commands Reference
 
-- **Startup, START**  
+## Overview
+
+This document lists all available commands and directives that can be used within the Codery system. Commands trigger specific behaviors, role switches, and workflows.
+
+## Core Commands
+
+### System Initialization
+
+- **START** / **STARTUP**  
   Begin or initialize the current session or process.
 
-- **LIST &lt;&gt;**  
-  List items, files, or entities as specified.
-
-- **READ &lt;&gt;**  
-  Read the specified file or resource.
+### Information Commands
 
 - **WhatsUp**  
   Summarize what you know about the current codery system and playbooks you have read, specifically by name.  
-  _You must NOT execute any BASH or shell commands for this directive._
-
-- **Open (I/F/E)**  
-  Open a new Issue, Feature, or Epic.
-
-- **Close (I/F/E)**  
-  Close an existing Issue, Feature, or Epic.
+  _Note: You must NOT execute any BASH or shell commands for this directive._
 
 - **Status**  
-  Request KANBAN mode to read the IFE # and summarize what we are doing.
+  Request KANBAN mode to read the Jira ticket and summarize what we are doing.
 
-- **Roles**
+- **Roles**  
   Lists all the roles in the codery system.
 
-- **SNR** (Summarize, NextSteps, RequestRole)  
-  Provide a summary, outline next steps, and request the next role.
- standard SNR protocol is :
+### Role Management
 
-- 🔷 **S—Summarize**: Recap the explanation provided and any clarifications made
-- 🟡 **N—Next Steps**: Suggest how to proceed based on improved understanding
-- 🟩 **R—Request Role**: Suggest an appropriate next role based on the clarified direction
-
-- **SWITCH &lt;role&gt;**  
+- **SWITCH `<role>`**  
   Switch to the specified role and abide by its guidelines, then continue.
 
-- **Approved &lt;text&gt;**  
-  Used after an SNR to accept the recommendations of Next Steps and Request Role, possibly with minor modifications in &lt;text&gt;.
+### Documentation & Communication
 
-- **Denied or Not Approve**  
+- **SNR** (Summarize, Next Steps, Request Role)  
+  Provide a summary, outline next steps, and request the next role.
+  
+  Standard SNR protocol:
+  - 🔷 **S—Summarize**: Recap the explanation provided and any clarifications made
+  - 🟡 **N—Next Steps**: Suggest how to proceed based on improved understanding  
+  - 🟩 **R—Request Role**: Suggest an appropriate next role based on the clarified direction
+
+### Approval Workflow
+
+- **Approved `<text>`**  
+  Used after an SNR to accept the recommendations of Next Steps and Request Role, possibly with minor modifications in `<text>`.
+
+- **Denied** / **Not Approved**  
   If not approved, return to KanBan or Mirror mode to reassess.
 
-- **WHY &lt;text&gt;**  
+### Analysis & Debugging
+
+- **WHY `<text>`**  
   Request an explanation of the reasoning or thought process behind a choice, action, or recommendation. Triggers Explainer Mode.
 
-- **CLEANUP &lt;text&gt;**
-  This is requesting a ESLINT CLEANUP process. Mostly this is a request to fix linting error in the code we just modified. So, if the list of errors is small then go ahead a fix them. Keep in mind it is ok to leave at the branch level LINT errors that are outside you code changes.   If the directive is "CLEANUP ALL" then you must go through all the eslint errors and fix them
+- **CLEANUP `<text>`**  
+  Request an ESLint cleanup process. This is typically used to fix linting errors in recently modified code.
+  - If the list of errors is small, fix them immediately
+  - Branch-level lint errors outside your code changes can be left
+  - If the directive is **"CLEANUP ALL"**, fix all ESLint errors in the project
 
-- **Directives &lt;text&gt;** or - **Commands &lt;text&gt;**
-  List all the directives (this list) to the user with a mini descr. Compressed list but all directives
+### Meta Commands
 
-- **Self-Report** or **Self-Diagnose**
-This trigger s the 🔬 Self-Introspective Analysis Mod— _Session Review & Learning_ mode.  
+- **Directives** / **Commands**  
+  List all the directives (this list) to the user with a mini description. Provides a compressed list of all available directives.
+
+- **Self-Report** / **Self-Diagnose**  
+  Triggers the 🔬 Self-Introspective Analysis Mode for session review and learning.
+
+## Usage Notes
+
+1. Commands are case-insensitive but conventionally written in uppercase
+2. Parameters in angle brackets `<>` are required
+3. Parameters in parentheses `()` indicate options (e.g., I for Issue, F for Feature, E for Epic)
+4. Some commands trigger immediate mode switches
+5. All commands should be documented in JIRA when applicable
+6. 
