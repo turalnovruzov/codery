@@ -1,4 +1,4 @@
-# Git Flow Strategy for Codery
+# Git Flow Workflow for Codery
 
 ## Overview
 
@@ -134,4 +134,4 @@ main     ←── release (PR) ──→ develop
                       feature branches (PR)
 ```
 
-This strategy ensures clean version history, supports parallel development, enables code review through pull requests, and provides quick production fixes when needed.
+This workflow ensures clean version history, supports parallel development, enables code review through pull requests, and provides quick production fixes when needed.
