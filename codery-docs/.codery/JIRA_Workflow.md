@@ -7,6 +7,7 @@ Codery integrates with JIRA through the Atlassian MCP (Model Context Protocol) t
 ## Configuration
 
 Your JIRA integration requires:
+
 - **Cloud ID**: `{{cloudId}}` (Your Atlassian URL)
 - **Project Key**: `{{projectKey}}`
 
@@ -23,6 +24,7 @@ JIRA follows standard Agile methodology with these work item types:
 ## Atlassian MCP Integration
 
 Codery uses the Atlassian MCP tools to interact with JIRA. All operations require:
+
 - **Cloud ID**: `{{cloudId}}`
 - **Project Key**: `{{projectKey}}`
 
@@ -52,11 +54,13 @@ All Codery roles MUST log time in JIRA using the MCP tools. Time logging happens
 JIRA comments must document substance, not just activity:
 
 ### Good Examples
+
 - "Found root cause: Database connection pool exhausted under load"
 - "Design decision: Chose Redis for session storage due to TTL requirements"
 - "Implementation complete: Added JWT auth with 15-minute expiry"
 
 ### Poor Examples
+
 - "Worked on ticket"
 - "Made progress"
 - "Updated code"

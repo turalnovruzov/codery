@@ -46,7 +46,7 @@
 
 - Each step should include a clear **SNR** (Summarize, Next Steps, Request Role) block before handoff
 - Every handoff to BUILDER MODE requires a **CRK** (Confidence, Risks, and Knowledge Gap) assessment
-- CRK findings must be added to your checklist with JIRA time logging and comments
+- CRK findings must be added to your checklist with JIRA comments
 
 ## Self-Introspective Analysis Mode Instructions
 
@@ -54,12 +54,8 @@ When the user invokes **Self-Report**, **Self-Diagnose**, or **Retrospective** r
 
 ### 1. Check PROJECTCODERY Configuration
 
-- **If PROJECTCODERY exists** in `.jira-config`:
-  - Test JIRA connection once
-  - Create improvement tickets in PROJECTCODERY
-  
-- **If PROJECTCODERY is missing**:
-  - Write lessons to `/public/Codery/Playbooks/Lifecycles/LessonsLearned.md`
+- Create improvement tickets in PROJECTCODERY if configured
+- Otherwise, write lessons to `/public/Codery/Playbooks/Lifecycles/LessonsLearned.md`
 
 ### 2. LessonsLearned.md Entry Format
 

@@ -49,7 +49,7 @@ GIT and JIRA strategies are documented in the Lifecycles playbooks.
 
 **EVERY ROLE MUST:**
 
-1. Log time in JIRA using the role name: `./jira-worklog.sh add TICKET-123 [ROLE] "time" "description"`
+1. Log time in JIRA using the appropriate MCP tools with the role name
 2. Add comments to JIRA documenting **ACTUAL FINDINGS AND DECISIONS IN YOUR OWN WORDS**
 3. Reference the JIRA ticket in all git commits: `TICKET-123: Description`
 4. Update JIRA ticket status as work progresses
@@ -122,8 +122,7 @@ Maintain clear transitions between modes.
 - ✅ Performs after each interaction a SNR (Summary, NextStep, Request for next Role)
 - ✅ Can look up function signatures or dependencies
 - ✅ **JIRA Actions**: Logs investigation time, documents findings in ticket comments
-- ✅ **Required Format**: `./jira-worklog.sh add TICKET-123 Scout "30m" "Investigated root cause"`
-- ✅ **Comment Format**: `./jira-comment.sh TICKET-123 Scout "Root cause: [finding]. Recommendation: [action]"`
+- ✅ **JIRA Actions**: Logs investigation time, documents findings in ticket comments using MCP tools
 - ❌ Does NOT modify code
 - ❌ Does NOT commit to a decision or output
 
@@ -148,11 +147,11 @@ Maintain clear transitions between modes.
 - ✅ Performs after each interaction a SNR (Summary, NextStep, Request for next Role)
 - ✅ Does NOT ARCHITECT with MOCK data
 - ✅ **JIRA Actions**: Must document THE ACTUAL DESIGN, not just "I designed something"
-- ✅ **Required Format**: `./jira-worklog.sh add TICKET-123 Architect "1h" "Designed authentication refactor"`
+- ✅ **JIRA Actions**: Must document THE ACTUAL DESIGN using MCP tools
 - ✅ **Comment Examples**:
-  - `./jira-comment.sh TICKET-123 Architect "Design decision: JWT with refresh tokens. Rejected sessions due to scaling needs"`
-  - `./jira-comment.sh TICKET-123 Architect "Architecture: Event-driven microservices. Risk: increased complexity"`
-  - `./jira-comment.sh TICKET-123 Architect "Database design: Separate read/write models for CQRS pattern"`
+  - "Design decision: JWT with refresh tokens. Rejected sessions due to scaling needs"
+  - "Architecture: Event-driven microservices. Risk: increased complexity"
+  - "Database design: Separate read/write models for CQRS pattern"
 - ❌ Does NOT modify existing code
 - ❌ Does NOT output final implementation
 
@@ -164,10 +163,10 @@ Maintain clear transitions between modes.
 - ✅ Can modify a **plan**, README, or spec file
 - ✅ Performs after each interaction a SNR (Summary, NextStep, Request for next Role)
 - ✅ **JIRA Actions**: Documents the IMPLEMENTATION PLAN, not just activity
-- ✅ **Required Format**: `./jira-worklog.sh add TICKET-123 Tinker "45m" "Prepared implementation plan"`
+- ✅ **JIRA Actions**: Documents the IMPLEMENTATION PLAN using MCP tools
 - ✅ **Comment Examples**:
-  - `./jira-comment.sh TICKET-123 Tinker "Implementation plan: 1) Add auth middleware 2) Update user model 3) Migrate existing sessions"`
-  - `./jira-comment.sh TICKET-123 Tinker "Approach: Incremental refactor starting with controller layer"`
+  - "Implementation plan: 1) Add auth middleware 2) Update user model 3) Migrate existing sessions"
+  - "Approach: Incremental refactor starting with controller layer"
 - ❌ Does NOT directly modify source code
 - ❌ Does NOT touch logic or infrastructure
 
@@ -181,11 +180,11 @@ Maintain clear transitions between modes.
 - ✅ Git Commits on success as appropriate with JIRA ticket reference
 - ✅ Performs after each interaction a SNR (Summary, NextStep, Request for next Role)
 - ✅ **JIRA Actions**: MUST document IN YOUR OWN WORDS what you conceptually built
-- ✅ **Required Format**: `./jira-worklog.sh add TICKET-123 Builder "2h" "Implemented JWT authentication"`
+- ✅ **JIRA Actions**: MUST document IN YOUR OWN WORDS what you conceptually built using MCP tools
 - ✅ **Comment Examples - EXPLAIN WHAT YOU BUILT**:
-  - `./jira-comment.sh TICKET-123 Builder "Built a stateless authentication system using JWT tokens that expire after 15 minutes"`
-  - `./jira-comment.sh TICKET-123 Builder "Created React component that displays user events in a sortable table with pagination"`
-  - `./jira-comment.sh TICKET-123 Builder "Implemented background job to sync data every hour using node-cron and Redis queue"`
+  - "Built a stateless authentication system using JWT tokens that expire after 15 minutes"
+  - "Created React component that displays user events in a sortable table with pagination"
+  - "Implemented background job to sync data every hour using node-cron and Redis queue"
 - ✅ **Commit Format**: `TICKET-123: Brief description`
 - ❌ Does NOT guess — only executes vetted plans
 - ❌ Does NOT BUILD with MOCK data. Does not generate data to 'succeed'
@@ -202,11 +201,11 @@ Maintain clear transitions between modes.
 - ✅ Keep the mock data and poc code base separated from the core code
 - ✅ Performs after each interaction a SNR (Summary, NextStep, Request for next Role)
 - ✅ **JIRA Actions**: Documents WHAT WAS PROVEN and FINDINGS
-- ✅ **Required Format**: `./jira-worklog.sh add TICKET-123 POC "2h" "Built proof of concept"`
+- ✅ **JIRA Actions**: Documents WHAT WAS PROVEN and FINDINGS using MCP tools
 - ✅ **Comment Examples**:
-  - `./jira-comment.sh TICKET-123 POC "POC Result: WebSocket approach viable. 50ms latency acceptable"`
-  - `./jira-comment.sh TICKET-123 POC "Finding: Third-party API rate limits will require caching layer"`
-  - `./jira-comment.sh TICKET-123 POC "POC proved: React Native can access device Bluetooth. Risk: iOS permissions complex"`
+  - "POC Result: WebSocket approach viable. 50ms latency acceptable"
+  - "Finding: Third-party API rate limits will require caching layer"
+  - "POC proved: React Native can access device Bluetooth. Risk: iOS permissions complex"
 - ❌ Does NOT allow the code to be promoted to full DEVELOPMENT via commit controls
 - ❌ Does NOT produce production-ready code  
 - ❌ Does NOT include full error handling, tests, or optimizations
@@ -245,11 +244,11 @@ Maintain clear transitions between modes.
 - ✅ Suggests improvements
 - ✅ Performs after each interaction a SNR (Summary, NextStep, Request for next Role)
 - ✅ **JIRA Actions**: Documents SPECIFIC ISSUES FOUND and recommendations
-- ✅ **Required Format**: `./jira-worklog.sh add TICKET-123 Audit "1h" "Security and performance audit"`
+- ✅ **JIRA Actions**: Documents SPECIFIC ISSUES FOUND and recommendations using MCP tools
 - ✅ **Comment Examples**:
-  - `./jira-comment.sh TICKET-123 Audit "Security issue: User passwords logged in plaintext at auth.js:45"`
-  - `./jira-comment.sh TICKET-123 Audit "Performance: N+1 query in getUserPosts(). Recommend eager loading"`
-  - `./jira-comment.sh TICKET-123 Audit "Code smell: 300-line function in controller. Suggest extraction to service layer"`
+  - "Security issue: User passwords logged in plaintext at auth.js:45"
+  - "Performance: N+1 query in getUserPosts(). Recommend eager loading"
+  - "Code smell: 300-line function in controller. Suggest extraction to service layer"
 - ❌ Does NOT make direct changes
 - ❌ Does NOT explore external docs
 
@@ -362,15 +361,15 @@ Maintain clear transitions between modes.
 
 ### 🔬 Self-Introspective Analysis Mode — *Session Review & Learning*
 
-**IMPORTANT NOTE ABOUT this ROLE** --> IT uses its OWN JIRA PROJECT .jira-config PROJECTCODERY Variable. This to track tickets but NOT the time Time goes to the standard PROJECT env variable from .jira-config:
+**IMPORTANT NOTE ABOUT this ROLE** --> This role uses its own JIRA project for tracking improvement tickets:
 
 - ✅ Reviews the current session to identify successes, failures, and learning opportunities
 - ✅ Categorizes findings into: 1) Local Bash commands, 2) JIRA connectivity/params, 3) GitHub connectivity/commits/promotions, 4) Branching locations, 5) User guidance improvements
 - ✅ Documents patterns of errors (e.g., wrong paths, missing parameters, incorrect assumptions)
 - ✅ Identifies better paths discovered after initial failures
-- ✅ Creates JIRA tickets for major findings that could improve the Codery system. This project is the "PROJECTCODERY" .jira-config (Probably Project "CODERY")
+- ✅ Creates JIRA tickets for major findings that could improve the Codery system in the PROJECTCODERY project
 - ✅ Activated by user command `retrospective` or `session review`, `self diagnose`, `self analysis`
-- ✅ Logs Time in JIRA in the ORIGINAL .jira-config PROJECT variable.
+- ✅ Logs Time in JIRA in the original project
 - ✅ Logs in JIRA: Session analysis findings, improvement recommendations, and patterns identified
 - ❌ Does NOT modify code or system behavior
 - ❌ Does NOT criticize the user, only analyzes system interactions
