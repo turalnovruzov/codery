@@ -8,29 +8,29 @@ Codery follows the Git Flow workflow model with JIRA integration. This document 
 
 ### Main Branches
 
-- **main** (production): Stores official release history, tagged with version numbers
-- **develop**: Integration branch for features, always reflects latest delivered development changes
+- **{{mainBranch}}** (production): Stores official release history, tagged with version numbers
+- **{{developBranch}}**: Integration branch for features, always reflects latest delivered development changes
 
 ### Supporting Branches
 
 #### Feature Branches
 
-- **Created from**: `develop`
-- **Merge back into**: `develop` via pull request
+- **Created from**: `{{developBranch}}`
+- **Merge back into**: `{{developBranch}}` via pull request
 - **Naming**: `feature/JIRA-XXX-description`
 - **Purpose**: New feature development
 
 #### Release Branches
 
-- **Created from**: `develop`
-- **Merge into**: `main` AND `develop` via pull requests
+- **Created from**: `{{developBranch}}`
+- **Merge into**: `{{mainBranch}}` AND `{{developBranch}}` via pull requests
 - **Naming**: `release/X.Y.Z`
 - **Purpose**: Prepare new production release, minor bug fixes, version bumping
 
 #### Hotfix Branches
 
-- **Created from**: `main`
-- **Merge into**: `main` AND `develop` via pull requests
+- **Created from**: `{{mainBranch}}`
+- **Merge into**: `{{mainBranch}}` AND `{{developBranch}}` via pull requests
 - **Naming**: `hotfix/JIRA-XXX-description`
 - **Purpose**: Emergency production fixes
 
@@ -39,55 +39,55 @@ Codery follows the Git Flow workflow model with JIRA integration. This document 
 ### Feature Development
 
 ```bash
-git checkout develop
-git pull origin develop
+git checkout {{developBranch}}
+git pull origin {{developBranch}}
 git checkout -b feature/JIRA-123-new-feature
 # ... work on feature ...
 git add .
 git commit -m "JIRA-123: Feature description"
 git push origin feature/JIRA-123-new-feature
-# Create pull request from feature/JIRA-123-new-feature → develop
+# Create pull request from feature/JIRA-123-new-feature → {{developBranch}}
 # After PR is merged, delete local branch
-git checkout develop
-git pull origin develop
+git checkout {{developBranch}}
+git pull origin {{developBranch}}
 git branch -d feature/JIRA-123-new-feature
 ```
 
 ### Release Creation
 
 ```bash
-git checkout develop
-git pull origin develop
+git checkout {{developBranch}}
+git pull origin {{developBranch}}
 git checkout -b release/1.2.0
 # ... final testing, version bump ...
 git add .
 git commit -m "JIRA-XXX: Prepare release 1.2.0"
 git push origin release/1.2.0
-# Create pull request from release/1.2.0 → main
-# After PR is merged to main, tag the release
-# Create pull request from release/1.2.0 → develop
+# Create pull request from release/1.2.0 → {{mainBranch}}
+# After PR is merged to {{mainBranch}}, tag the release
+# Create pull request from release/1.2.0 → {{developBranch}}
 # After both PRs are merged, delete local branch
-git checkout develop
-git pull origin develop
+git checkout {{developBranch}}
+git pull origin {{developBranch}}
 git branch -d release/1.2.0
 ```
 
 ### Hotfix Deployment
 
 ```bash
-git checkout main
-git pull origin main
+git checkout {{mainBranch}}
+git pull origin {{mainBranch}}
 git checkout -b hotfix/JIRA-456-critical-fix
 # ... fix issue ...
 git add .
 git commit -m "JIRA-456: Fix critical issue"
 git push origin hotfix/JIRA-456-critical-fix
-# Create pull request from hotfix/JIRA-456-critical-fix → main
-# After PR is merged to main, tag the hotfix
-# Create pull request from hotfix/JIRA-456-critical-fix → develop
+# Create pull request from hotfix/JIRA-456-critical-fix → {{mainBranch}}
+# After PR is merged to {{mainBranch}}, tag the hotfix
+# Create pull request from hotfix/JIRA-456-critical-fix → {{developBranch}}
 # After both PRs are merged, delete local branch
-git checkout develop
-git pull origin develop
+git checkout {{developBranch}}
+git pull origin {{developBranch}}
 git branch -d hotfix/JIRA-456-critical-fix
 ```
 
@@ -109,10 +109,10 @@ git branch -d hotfix/JIRA-456-critical-fix
 
 ## Key Rules
 
-1. **Never commit directly to main or develop** - always use pull requests
+1. **Never commit directly to {{mainBranch}} or {{developBranch}}** - always use pull requests
 2. **No local merges** - all merges happen through pull requests on remote
 3. **Delete branches after PR merge** to keep repository clean
-4. **Tag releases on main** after release PR is merged
+4. **Tag releases on {{mainBranch}}** after release PR is merged
 5. **Hotfixes increment patch version** (e.g., 1.2.0 → 1.2.1)
 6. **Always pull before branching** to ensure you have latest code
 
@@ -127,7 +127,7 @@ After each work session, document progress:
 ## Quick Reference
 
 ```text
-main     ←── release (PR) ──→ develop
+{{mainBranch}}     ←── release (PR) ──→ {{developBranch}}
   ↑                              ↑
   └──── hotfix (PR) ────────────┘
                                  ↑

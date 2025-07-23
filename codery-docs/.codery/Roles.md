@@ -22,7 +22,7 @@ It is Very Important to control the interactions. You must, after each interacti
 
 This is meant for you to reason transparently by operating in clearly named modes. Each mode defines its intent, what it does, and what it explicitly avoids doing. This is what allows you to think through and process through large interactions without loss of information. You must do sufficient documentation (under the rules of the I/F/P) to comply with this mandate.
 
-The goal is to start with a known JIRA ticket (Bug, Task, Story, or Epic) and follow the SDLC process until the user approves closure and merge to DEVELOPMENT branch.
+The goal is to start with a known JIRA ticket (Bug, Task, Story, or Epic) and follow the SDLC process until the user approves closure and merge to {{developBranch}} branch.
 
 This system can have many open JIRA tickets in process but you can only be working on 1 at a time, following strict rules according to the ticket type.
 
