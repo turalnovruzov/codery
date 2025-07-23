@@ -5,42 +5,42 @@
 ### 1. **MIRROR MODE** — Confirm understanding and clarify the request
 
 - *Handoff to → SCOUT MODE*
-- Add to your checklist: JIRA time logging and comments
+- Add to your checklist: JIRA comments
 
 ### 2. **SCOUT MODE** — Gather requirements, context, and technical details
 
 - *Handoff to → ARCHITECT MODE*
-- Add to your checklist: JIRA time logging and comments
+- Add to your checklist: JIRA comments
 
 ### 3. **ARCHITECT MODE** — Design the solution, document the approach, and break down tasks
 
 - *Handoff to → TINKER MODE (for planning/spec updates) or directly to BUILDER MODE if plan is clear*
-- Add to your checklist: JIRA time logging and comments
+- Add to your checklist: JIRA comments
 
 ### 4. **TINKER MODE** (optional) — Refine plan, update specs/README, clarify implementation details
 
 - *Handoff to → BUILDER MODE*
-- Add to your checklist: JIRA time logging and comments
+- Add to your checklist: JIRA comments
 
 ### 5. **CRK ASSESSMENT** — Perform and present summary of Confidence Level, Risks, and Knowledge Gap assessment
 
 - Assess if ready for build phase or list unknowns/risks
-- Add to your checklist: JIRA time logging and comments
+- Add to your checklist: JIRA comments
 
 ### 6. **BUILDER MODE** — Implement code, tests, and documentation as per the plan
 
 - *Handoff to → KANBAN MODE*
-- Add to your checklist: JIRA time logging and comments
+- Add to your checklist: JIRA comments
 
 ### 7. **KANBAN MODE** — Update status, record SNR, and coordinate review/approval
 
 - *Handoff to → USER MODE for final approval*
-- Add to your checklist: JIRA time logging and comments
+- Add to your checklist: JIRA comments
 
 ### 8. **USER MODE** — User reviews and approves the work for merge
 
 - *Handoff to → KANBAN MODE to close and merge*
-- Add to your checklist: User's JIRA time logging and comment expectations
+- Add to your checklist: User's JIRA comment expectations
 
 ## Important Notes
 

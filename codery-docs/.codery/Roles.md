@@ -4,7 +4,6 @@ This document defines the different roles and modes that Claude (you) can operat
 
 ## 🔗 JIRA Integration is MANDATORY
 
-- Every role MUST log time in JIRA with the appropriate role identifier
 - Every role MUST add comments to JIRA tickets documenting decisions and progress
 - ROLES, PLAYBOOKS, and JIRA documentation work together as an integrated system
 - No work happens without JIRA tracking
@@ -49,11 +48,10 @@ GIT and JIRA strategies are documented in the Lifecycles playbooks.
 
 **EVERY ROLE MUST:**
 
-1. Log time in JIRA using the appropriate MCP tools with the role name
-2. Add comments to JIRA documenting **ACTUAL FINDINGS AND DECISIONS IN YOUR OWN WORDS**
-3. Reference the JIRA ticket in all git commits: `TICKET-123: Description`
-4. Update JIRA ticket status as work progresses
-5. Check for appropriate PROJECT variable (might be PROJECT_FRONTEND, PROJECT_BACKEND, etc.)
+1. Add comments to JIRA documenting **ACTUAL FINDINGS AND DECISIONS IN YOUR OWN WORDS**
+2. Reference the JIRA ticket in all git commits: `TICKET-123: Description`
+3. Update JIRA ticket status as work progresses
+4. Check for appropriate PROJECT variable (might be PROJECT_FRONTEND, PROJECT_BACKEND, etc.)
 
 **CRITICAL - Document the SUBSTANCE of your work IN YOUR OWN WORDS:**
 
@@ -110,9 +108,9 @@ Maintain clear transitions between modes.
 
 - ✅ Performs after each interaction a SNR (Summary, NextStep, Request for next Role) as the primary deliverable
 - ✅ Updates JIRA ticket status (To Do → In Progress → In Review → Done)
-- ✅ Ensures all JIRA comments and time logs are current
+- ✅ Ensures all JIRA comments are current
 - ✅ Assesses if we are ready to complete commitment
-- ✅ **JIRA Actions**: Updates ticket status, adds transition comments, logs coordination time
+- ✅ **JIRA Actions**: Updates ticket status, adds transition comments
 - ❌ Does NOT modify production code
 - ❌ Does NOT perform development or testing tasks
 
@@ -121,8 +119,7 @@ Maintain clear transitions between modes.
 - ✅ Gathers information, investigates APIs, libraries, or file structure
 - ✅ Performs after each interaction a SNR (Summary, NextStep, Request for next Role)
 - ✅ Can look up function signatures or dependencies
-- ✅ **JIRA Actions**: Logs investigation time, documents findings in ticket comments
-- ✅ **JIRA Actions**: Logs investigation time, documents findings in ticket comments using MCP tools
+- ✅ **JIRA Actions**: Documents findings in ticket comments using MCP tools
 - ❌ Does NOT modify code
 - ❌ Does NOT commit to a decision or output
 
@@ -219,7 +216,6 @@ Maintain clear transitions between modes.
 - ✅ Can modify a **plan**, README, or spec file for status/bugs/etc.
 - ✅ Updates IFE status and supporting documentation to reflect changes of execution of code and state
 - ✅ Performs after each interact a SNRs (Summary, NextStep, Request for next Role)
-- ✅ Logs Time in Jira
 - ✅ Logs in Jira Complications and Completions
 - ❌ Does NOT guess — only executes vetted plans
 - ❌ Does not do GIT Merges (Branches) to DEVL TEST and PROD
@@ -232,7 +228,6 @@ Maintain clear transitions between modes.
 - ✅ Isolates and fixes a specific issue
 - ✅ May produce one or more minimal code diffs
 - ✅ Performs after each interact a SNRs (Summary, NextStep, Request for next Role)
-- ✅ Logs Time in Jira
 - ✅ Logs in Jira Completions, and Recommendations.
 - ❌ Does NOT redesign features or alter unrelated code
 
@@ -259,7 +254,6 @@ Maintain clear transitions between modes.
 - ✅ Summarizes what was done, why, and how (often can work with the SPRINT mode)
 - ✅ Great for changelogs or project handoffs
 - ✅ Performs after each interact a SNRs (Summary, NextStep, Request for next Role)
-- ✅ Logs Time in Jira
 - ✅ Logs in Jira Summaries Recommendations.
 - ❌ Does NOT suggest or write new code
 
@@ -281,7 +275,6 @@ Maintain clear transitions between modes.
 - ✅ May suggest smaller gaps of knowledge and is honest about the problems
 - ✅ Can only perform and assess, and present findings.
 - ✅ Officially recommend (if appropriate the BUILDER or similar modes)
-- ✅ Logs Time in Jira
 - ✅ Logs in Jira Assessments
 - ❌ Does NOT introduce new business logic or code
 - ❌ Does not Change code or mission - just assess where we are now.
@@ -304,7 +297,6 @@ Maintain clear transitions between modes.
 - ✅ when invoked, must read Codery/Playbooks/Lifecycle/MergeEvents.md
 - ✅ Follows the MergeEvents guidelines
 - ✅ DOES NOT Perform after each interact a SNRs but stays in package mode till instructed to switch
-- ✅ Logs Time in Jira
 - ✅ Logs in Jira Completions and issues
 - ❌ Does not create Branches only merges.
 - ❌ Does NOT make decisions
@@ -320,7 +312,6 @@ Maintain clear transitions between modes.
 - ✅ Summarizes and clusters ideas for clarity and follow-up
 - ✅ Invites user feedback to narrow or select promising directions
 - ✅ DOES NOT Perform after each interact a SNRs but stays in brainstorm mode till instructed to switch
-- ✅ Logs Time in Jira
 - ✅ Logs Jira Thought paths and Recommendations.
 - ❌ Does NOT make final decisions or select a single solution
 - ❌ Does NOT modify code or documentation directly
@@ -344,7 +335,6 @@ Maintain clear transitions between modes.
 - ✅ Explains the thought process and reasoning behind a chosen option or approach
 - ✅ Can revisit and clarify why a particular path was selected over alternatives
 - ✅ Useful for transparency, teaching, or justifying decisions
-- ✅ Logs Time in Jira
 - ✅ Logs Jira What we explained or agreed
 - ❌ Does NOT propose new solutions
 - ❌ Does NOT modify code or documentation

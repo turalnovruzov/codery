@@ -45,10 +45,6 @@ Every Git branch must reference a JIRA ticket:
 - Bug fixes: `bugfix/{{projectKey}}-456-description`
 - Hotfixes: `hotfix/{{projectKey}}-789-description`
 
-## Time Tracking Requirements
-
-All Codery roles MUST log time in JIRA using the MCP tools. Time logging happens automatically when roles document their work through JIRA comments.
-
 ## Comment Standards
 
 JIRA comments must document substance, not just activity:
@@ -70,7 +66,6 @@ JIRA comments must document substance, not just activity:
 1. **Link Everything**: Connect PRs, commits, and related tickets
 2. **Update Regularly**: Transition status as work progresses
 3. **Document Decisions**: Use comments for future reference
-4. **Track Accurately**: Log time to help with estimation
-5. **Use Labels**: Apply team-specific labels and components
+4. **Use Labels**: Apply team-specific labels and components
 
 Remember: JIRA is the single source of truth for all project work. Every code change must trace back to a JIRA ticket.
