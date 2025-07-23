@@ -2,22 +2,23 @@
 
 import { Command } from 'commander';
 import chalk from 'chalk';
-import { setupCommand } from '../lib/copyDocs';
+import { buildCommand } from '../lib/buildDocs';
 
 const program = new Command();
 
 program
   .name('codery')
-  .description('Codery CLI - Bootstrap your project with AI development workflows')
+  .description('Codery CLI - Build AI development workflows for your project')
   .version('0.1.0');
 
 program
-  .command('setup')
-  .description('Copy Codery documentation into your project')
-  .option('--dry-run', 'Show what would be copied without actually copying')
+  .command('build')
+  .description('Build a CLAUDE.md file from Codery documentation')
+  .option('--output <path>', 'Output path for CLAUDE.md file (default: ./CLAUDE.md)')
+  .option('--dry-run', 'Show what would be built without creating the file')
   .action(async options => {
     try {
-      await setupCommand(options);
+      await buildCommand(options);
     } catch (error: any) {
       console.error(chalk.red('Error:'), error.message);
       process.exit(1);
