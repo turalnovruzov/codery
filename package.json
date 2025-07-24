@@ -1,10 +1,10 @@
 {
-  "name": "@hdts/guild",
+  "name": "@hdts/codery",
   "version": "0.1.1",
-  "description": "AI Guild is a comprehensive development methodology and workflow system designed to enable AI agents (like Claude) to work effectively with human developers on software projects. It provides structured playbooks, role definitions, and lifecycle management that AI agents can read and follow to deliver high-quality software.",
+  "description": "Codery is a comprehensive development methodology and workflow system designed to enable AI agents (like Claude) to work effectively with human developers on software projects. It provides structured playbooks, role definitions, and lifecycle management that AI agents can read and follow to deliver high-quality software.",
   "main": "dist/lib/copyDocs.js",
   "bin": {
-    "guild": "dist/bin/guild.js"
+    "codery": "dist/bin/codery.js"
   },
   "scripts": {
     "build": "tsc",
@@ -13,15 +13,16 @@
     "format:check": "prettier --check \"src/**/*.{ts,js,json}\"",
     "test": "jest",
     "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "prepublishOnly": "npm run typecheck && npm run build"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ybotman/ai-guild.git"
+    "url": "git+https://github.com/turalnovruzov/codery.git"
   },
   "keywords": [
     "ai",
-    "guild",
+    "codery",
     "development",
     "workflow",
     "claude",
@@ -30,15 +31,15 @@
   "author": "Toby Balsley <toby.balsley@gmail.com> (https://www.hdtsllc.com/)",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/ybotman/ai-guild/issues"
+    "url": "https://github.com/turalnovruzov/codery/issues"
   },
-  "homepage": "https://github.com/ybotman/ai-guild#readme",
+  "homepage": "https://github.com/turalnovruzov/codery#readme",
   "engines": {
     "node": ">=18.0.0"
   },
   "files": [
     "dist/",
-    "guild-docs/",
+    "codery-docs/",
     "README.md"
   ],
   "dependencies": {
@@ -47,9 +48,13 @@
     "inquirer": "^8.2.6"
   },
   "devDependencies": {
+    "@eslint/js": "^9.31.0",
     "@types/inquirer": "^9.0.8",
     "@types/node": "^24.0.14",
+    "@typescript-eslint/eslint-plugin": "^8.38.0",
+    "@typescript-eslint/parser": "^8.38.0",
     "eslint": "^9.31.0",
+    "globals": "^16.3.0",
     "jest": "^30.0.4",
     "prettier": "^3.6.2",
     "typescript": "^5.8.3"

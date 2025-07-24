@@ -1,9 +1,13 @@
 # MacOS
 .DS_Store
 
-# Claude AI Guild
+# Claude
 CLAUDE.md
+.claude
 
 # Node.js
 node_modules/
 dist/
+
+# Codery configuration
+.codery/config.json

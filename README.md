@@ -1,45 +1,71 @@
-# Guild CLI
+# Codery CLI
 
-AI Guild is a comprehensive development methodology and workflow system designed to enable AI agents (like Claude) to work effectively with human developers on software projects.
+Codery is a comprehensive development methodology and workflow system designed to enable AI agents (like Claude) to work effectively with human developers on software projects.
 
 ## Installation
 
 ```bash
-npm install -g @hdts/guild
+npm install -g @hdts/codery
 ```
+
+## Documentation
+
+📚 **[View Full Documentation](./docs/README.md)**
+
+- [Getting Started Guide](./docs/getting-started.md)
+- [Command Reference](./docs/commands.md)
+- [Configuration Guide](./docs/configuration.md)
+- [Template System](./docs/templates.md)
 
 ## Quick Start
 
 After installation, navigate to your project directory and run:
 
 ```bash
-guild setup
+codery init
 ```
 
-This will install the Guild documentation and configuration files into your project:
+This creates a configuration file at `.codery/config.json`. Then build your documentation:
 
-- `.guild/` - Guild documentation and workflows
-- `CLAUDE.md` - Instructions for AI assistants
-- `.guild-config` - Guild configuration file
+```bash
+codery build
+```
+
+This generates `CLAUDE.md` - a comprehensive guide for AI assistants
 
 ## Commands
 
-### `guild setup`
+### `codery init`
 
-Copies the Guild documentation and configuration files into your current project directory.
+Initialize Codery configuration in your project.
 
 Options:
-- `--dry-run` - Shows what would be copied without actually copying any files
-- `--help` - Display help information
+- `--force` - Overwrite existing configuration
 
-Example with dry-run:
+Example:
 ```bash
-guild setup --dry-run
+codery init --force
 ```
 
-## What is Guild?
+### `codery build`
 
-Guild provides:
+Build CLAUDE.md from documentation templates.
+
+Options:
+- `--output <path>` - Custom output path
+- `--dry-run` - Preview without creating files
+- `--skip-config` - Build without template substitution
+
+Example:
+```bash
+codery build --output ./docs/AI-GUIDE.md
+```
+
+See the [Command Reference](./docs/commands.md) for detailed documentation
+
+## What is Codery?
+
+Codery provides:
 
 1. **Structured Development Workflows** - Well-defined processes for AI-human collaboration
 2. **Role Definitions** - 16 operational modes for different development tasks
@@ -47,40 +73,41 @@ Guild provides:
 4. **Git Strategy** - Structured branching and merge procedures
 5. **Quality Assurance** - Built-in checks and documentation requirements
 
-## Project Structure After Setup
+## Project Structure
+
+After initialization and build:
 
 ```
 your-project/
-├── .guild/
-│   ├── Lifecycles/
-│   │   ├── GIT-Strategy.md
-│   │   ├── LifeCycles.md
-│   │   └── MergeEvents.md
-│   └── Startup/
-│       ├── Details/
-│       │   ├── Commands.md
-│       │   ├── JiraCommands.md
-│       │   ├── ReconcatApplications.md
-│       │   ├── ReconcatGuild.md
-│       │   ├── Roles.md
-│       │   └── SuccessCriteria.md
-│       └── FullPlaybooksGuild.md
-├── CLAUDE.md
-└── .guild-config
+├── .codery/
+│   └── config.json      # Your project configuration
+├── CLAUDE.md           # Generated AI assistant guide
+└── docs/               # User documentation (if using this package)
+    ├── README.md
+    ├── getting-started.md
+    ├── commands.md
+    ├── configuration.md
+    └── templates.md
 ```
 
 ## Working with AI Assistants
 
-Once Guild is set up in your project:
+Once Codery is set up in your project:
 
-1. AI assistants like Claude can read the Guild documentation to understand your workflows
-2. Use the commands documented in `.guild/Startup/Details/Commands.md`
-3. Follow the role definitions in `.guild/Startup/Details/Roles.md`
-4. Implement the lifecycle processes in `.guild/Lifecycles/`
+1. AI assistants can read CLAUDE.md to understand your workflows
+2. They'll follow structured development processes with defined roles
+3. All work is tracked through JIRA integration
+4. Git workflows are customized to your branch names
 
 ## Configuration
 
-Edit `.guild-config` to customize Guild settings for your project. This file contains project-specific configuration that AI assistants will use to understand your development environment.
+Edit `.codery/config.json` to customize:
+- Atlassian Cloud ID
+- JIRA project key
+- Branch names
+- More options coming soon
+
+See the [Configuration Guide](./docs/configuration.md) for details
 
 ## Requirements
 
@@ -89,10 +116,10 @@ Edit `.guild-config` to customize Guild settings for your project. This file con
 
 ## Contributing
 
-Guild is an open-source project. Contributions are welcome!
+Codery is an open-source project. Contributions are welcome!
 
-- Repository: https://github.com/ybotman/ai-guild
-- Issues: https://github.com/ybotman/ai-guild/issues
+- Repository: https://github.com/turalnovruzov/codery
+- Issues: https://github.com/turalnovruzov/codery/issues
 
 ## License
 
@@ -101,9 +128,10 @@ ISC License
 ## Support
 
 For questions and support:
-- GitHub Issues: https://github.com/ybotman/ai-guild/issues
-- Documentation: Read the files in `.guild/` after setup
+- 📚 [Documentation](./docs/README.md)
+- 🐛 [GitHub Issues](https://github.com/turalnovruzov/codery/issues)
+- 📦 [NPM Package](https://www.npmjs.com/package/@hdts/codery)
 
 ---
 
-Guild - Bringing structure and best practices to AI-assisted development.
+Codery - Bringing structure and best practices to AI-assisted development.

@@ -6,7 +6,7 @@ tsconfig.json
 .gitignore
 .git/
 CLAUDE.md
-GUILD_MVP_SPECS.md
+CODERY_MVP_SPECS.md
 
 # Test files
 test/
@@ -27,5 +27,5 @@ jest.config.*
 node_modules/
 
 # Misc
-.guild/
-.guild-config
+.codery/
+.codery-config
