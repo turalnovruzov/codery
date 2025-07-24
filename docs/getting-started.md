@@ -28,25 +28,39 @@ Navigate to your project and run:
 codery init
 ```
 
-This creates `.codery/config.json` with template configuration.
+This will prompt you to:
+- Select your Git workflow (Git Flow or Trunk-Based)
+- Enter your Atlassian URL
+- Configure your project key and branch names
 
-### 2. Configure Your Project
+The command creates `.codery/config.json` with your chosen configuration.
 
-Edit `.codery/config.json`:
+### 2. Review Your Configuration
 
+The init command creates `.codery/config.json` based on your selections:
+
+**For Git Flow:**
 ```json
 {
   "cloudId": "https://your-domain.atlassian.net",
   "projectKey": "YOUR_PROJECT",
   "developBranch": "develop",
-  "mainBranch": "main"
+  "mainBranch": "main",
+  "gitWorkflowType": "gitflow"
 }
 ```
 
-Replace the values with your actual:
-- Atlassian instance URL
-- JIRA project key
-- Branch names (if different from defaults)
+**For Trunk-Based Development:**
+```json
+{
+  "cloudId": "https://your-domain.atlassian.net",
+  "projectKey": "YOUR_PROJECT",
+  "mainBranch": "main",
+  "gitWorkflowType": "trunk-based"
+}
+```
+
+You can edit this file if needed to adjust any values.
 
 ### 3. Build Documentation
 

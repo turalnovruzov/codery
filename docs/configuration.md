@@ -44,6 +44,15 @@ Codery stores configuration in `.codery/config.json`.
 - **Used in**: Creates `.codery/application-docs.md` for AI assistants to read
 - **Note**: Paths are relative to your project root
 
+### gitWorkflowType
+- **Type**: String
+- **Optional**: Yes (default: `"gitflow"`)
+- **Description**: Selects which Git workflow documentation to include
+- **Options**: `"gitflow"` or `"trunk-based"`
+- **Example**: `"trunk-based"`
+- **Used in**: Determines which workflow file is included in CLAUDE.md
+- **Note**: When using trunk-based, `developBranch` is not needed
+
 ## Example Configurations
 
 ### Basic Configuration
@@ -88,6 +97,32 @@ Codery stores configuration in `.codery/config.json`.
     "docs/architecture/overview.md",
     "docs/deployment-guide.md",
     "README.md"
+  ]
+}
+```
+
+### Trunk-Based Development
+```json
+{
+  "cloudId": "https://modern.atlassian.net",
+  "projectKey": "WEB",
+  "mainBranch": "main",
+  "gitWorkflowType": "trunk-based"
+}
+```
+
+### Full Configuration Example
+```json
+{
+  "cloudId": "https://enterprise.atlassian.net",
+  "projectKey": "ENT",
+  "developBranch": "develop",
+  "mainBranch": "main",
+  "gitWorkflowType": "gitflow",
+  "applicationDocs": [
+    "README.md",
+    "docs/api-guide.md",
+    "docs/architecture.md"
   ]
 }
 ```

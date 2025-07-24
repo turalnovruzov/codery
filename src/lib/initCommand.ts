@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import chalk from 'chalk';
 import inquirer from 'inquirer';
-import { defaultConfig } from '../types/config';
+import { defaultConfig, CoderyConfig } from '../types/config';
 
 interface InitOptions {
   force?: boolean;
@@ -42,10 +42,78 @@ export async function initCommand(options: InitOptions): Promise<void> {
       console.log(chalk.green('✓'), 'Created .codery directory');
     }
 
-    // Write default config
-    const configContent = JSON.stringify(defaultConfig, null, 2);
+    // Prompt for configuration values
+    console.log('Let\'s configure your project:');
+    console.log();
+
+    const answers = await inquirer.prompt([
+      {
+        type: 'list',
+        name: 'gitWorkflowType',
+        message: 'Select your Git workflow type:',
+        choices: [
+          { name: 'Git Flow (feature branches, develop/main)', value: 'gitflow' },
+          { name: 'Trunk-Based (direct commits to main)', value: 'trunk-based' }
+        ],
+        default: 'gitflow'
+      },
+      {
+        type: 'input',
+        name: 'cloudId',
+        message: 'Enter your Atlassian instance URL:',
+        default: defaultConfig.cloudId,
+        validate: (input: string) => {
+          if (input.startsWith('https://') && input.includes('.atlassian.net')) {
+            return true;
+          }
+          return 'Please enter a valid Atlassian URL (e.g., https://mycompany.atlassian.net)';
+        }
+      },
+      {
+        type: 'input',
+        name: 'projectKey',
+        message: 'Enter your JIRA project key:',
+        default: defaultConfig.projectKey,
+        validate: (input: string) => {
+          if (input.match(/^[A-Z][A-Z0-9]*$/)) {
+            return true;
+          }
+          return 'Project key must be uppercase letters and numbers (e.g., PROJ, MVP, ACME)';
+        }
+      },
+      {
+        type: 'input',
+        name: 'mainBranch',
+        message: 'Enter your main/production branch name:',
+        default: defaultConfig.mainBranch || 'main'
+      },
+      {
+        type: 'input',
+        name: 'developBranch',
+        message: 'Enter your development branch name:',
+        default: defaultConfig.developBranch || 'develop',
+        when: (currentAnswers) => currentAnswers.gitWorkflowType === 'gitflow'
+      }
+    ]);
+
+    // Build config object
+    const config: CoderyConfig = {
+      cloudId: answers.cloudId,
+      projectKey: answers.projectKey,
+      mainBranch: answers.mainBranch,
+      gitWorkflowType: answers.gitWorkflowType
+    };
+
+    // Only add developBranch for gitflow
+    if (answers.gitWorkflowType === 'gitflow') {
+      config.developBranch = answers.developBranch;
+    }
+
+    // Write config
+    const configContent = JSON.stringify(config, null, 2);
     fs.writeFileSync(configPath, configContent, 'utf-8');
-    console.log(chalk.green('✓'), 'Created config.json with template values');
+    console.log();
+    console.log(chalk.green('✓'), 'Created config.json with your project settings');
 
     // Add to .gitignore if it exists
     const gitignorePath = path.join(process.cwd(), '.gitignore');
@@ -62,11 +130,17 @@ export async function initCommand(options: InitOptions): Promise<void> {
     console.log();
     console.log(chalk.green('✨ Codery initialization complete!'));
     console.log();
-    console.log('Next steps:');
-    console.log('  1. Edit .codery/config.json with your project values:');
-    console.log(chalk.cyan('     - cloudId: Your Atlassian URL (e.g., https://mycompany.atlassian.net)'));
-    console.log(chalk.cyan('     - projectKey: Your JIRA project key (e.g., PROJ)'));
+    console.log('Configuration summary:');
+    console.log(`  - Git Workflow: ${chalk.cyan(config.gitWorkflowType === 'gitflow' ? 'Git Flow' : 'Trunk-Based Development')}`);
+    console.log(`  - Atlassian URL: ${chalk.cyan(config.cloudId)}`);
+    console.log(`  - Project Key: ${chalk.cyan(config.projectKey)}`);
+    console.log(`  - Main Branch: ${chalk.cyan(config.mainBranch)}`);
+    if (config.developBranch) {
+      console.log(`  - Develop Branch: ${chalk.cyan(config.developBranch)}`);
+    }
     console.log();
+    console.log('Next steps:');
+    console.log('  1. Review .codery/config.json and adjust if needed');
     console.log('  2. Run', chalk.yellow('codery build'), 'to generate your customized CLAUDE.md');
     console.log();
     console.log(chalk.dim('Note: The Atlassian MCP will automatically convert your URL to the correct Cloud ID.'));

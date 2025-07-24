@@ -4,6 +4,7 @@ export interface CoderyConfig {
   developBranch?: string;
   mainBranch?: string;
   applicationDocs?: string[];
+  gitWorkflowType?: 'gitflow' | 'trunk-based';
 }
 
 export const defaultConfig: CoderyConfig = {

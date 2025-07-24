@@ -22,15 +22,25 @@ const packageRoot = path.resolve(__dirname, '../..');
 // Define the order of files to merge (customize as needed)
 const fileOrder = [
   'Roles.md',
-  'Git_Workflow.md',
+  '', // Placeholder for workflow file
   'JIRA_Workflow.md',
   'Commands.md',
   'LifeCycles.md',
   'SuccessCriteria.md',
 ];
 
+// Get the appropriate workflow file based on config
+function getWorkflowFile(config: CoderyConfig | null): string {
+  const workflowType = config?.gitWorkflowType || 'gitflow';
+  const workflowMap: Record<string, string> = {
+    'gitflow': 'GitWorkflows/GitFlow.md',
+    'trunk-based': 'GitWorkflows/TrunkBased.md'
+  };
+  return workflowMap[workflowType];
+}
+
 // Read all markdown files from the .codery directory
-function readMarkdownFiles(): MarkdownFile[] {
+function readMarkdownFiles(config: CoderyConfig | null): MarkdownFile[] {
   const coderyDir = path.join(packageRoot, 'codery-docs/.codery');
   const files: MarkdownFile[] = [];
 
@@ -38,24 +48,68 @@ function readMarkdownFiles(): MarkdownFile[] {
     throw new Error(`Codery documentation directory not found: ${coderyDir}`);
   }
 
-  // Get all .md files
-  const allFiles = fs.readdirSync(coderyDir).filter(file => file.endsWith('.md'));
+  // Get the workflow file
+  const workflowFile = getWorkflowFile(config);
 
-  // Sort files according to predefined order, with unlisted files at the end
-  const sortedFiles = [
-    ...fileOrder.filter(file => allFiles.includes(file)),
-    ...allFiles.filter(file => !fileOrder.includes(file)),
-  ];
+  // Update fileOrder with the selected workflow file
+  const updatedFileOrder = fileOrder.map(file => file === '' ? workflowFile : file);
+
+  // Get all .md files from root directory (excluding subdirectories)
+  const rootFiles = fs.readdirSync(coderyDir)
+    .filter(file => {
+      const filePath = path.join(coderyDir, file);
+      return fs.statSync(filePath).isFile() && file.endsWith('.md');
+    });
+
+  // Build the complete file list
+  const allFilesToRead: string[] = [];
+
+  // Add files in the specified order
+  updatedFileOrder.forEach(file => {
+    if (file.includes('/')) {
+      // It's a file in a subdirectory (like GitWorkflows/GitFlow.md)
+      allFilesToRead.push(file);
+    } else if (rootFiles.includes(file)) {
+      // It's a root file
+      allFilesToRead.push(file);
+    }
+  });
+
+  // Add any remaining root files not in the order
+  rootFiles.forEach(file => {
+    if (!updatedFileOrder.includes(file)) {
+      allFilesToRead.push(file);
+    }
+  });
 
   // Read each file
-  sortedFiles.forEach(filename => {
+  allFilesToRead.forEach(filename => {
     const filePath = path.join(coderyDir, filename);
-    const content = fs.readFileSync(filePath, 'utf-8');
-    files.push({
-      name: filename,
-      path: filePath,
-      content: content.trim(),
-    });
+    
+    // Check for backward compatibility - if GitWorkflows file doesn't exist, try old location
+    if (!fs.existsSync(filePath) && filename.includes('GitWorkflows/GitFlow.md')) {
+      const oldPath = path.join(coderyDir, 'Git_Workflow.md');
+      if (fs.existsSync(oldPath)) {
+        console.log(chalk.yellow('⚠️  Using legacy Git_Workflow.md location. Run migration to update.'));
+        const content = fs.readFileSync(oldPath, 'utf-8');
+        files.push({
+          name: 'Git_Workflow.md',
+          path: oldPath,
+          content: content.trim(),
+        });
+        return;
+      }
+    }
+
+    if (fs.existsSync(filePath)) {
+      const content = fs.readFileSync(filePath, 'utf-8');
+      const displayName = filename.includes('/') ? path.basename(filename) : filename;
+      files.push({
+        name: displayName,
+        path: filePath,
+        content: content.trim(),
+      });
+    }
   });
 
   return files;
@@ -230,7 +284,7 @@ export async function buildCommand(options: BuildOptions): Promise<void> {
     }
 
     // Read all markdown files
-    const markdownFiles = readMarkdownFiles();
+    const markdownFiles = readMarkdownFiles(config);
 
     if (markdownFiles.length === 0) {
       console.log(chalk.yellow('No markdown files found in codery-docs/.codery'));
