@@ -9,7 +9,13 @@ This document lists all available commands and directives that can be used withi
 ### System Initialization
 
 - **START** / **STARTUP**  
-  Begin or initialize the current session or process.
+  Initialize the Codery system by instructing the AI agent to:
+  1. Read or re-read the CLAUDE.md file in the project root
+  2. Fully adopt the Codery methodology and all its roles, workflows, and protocols
+  3. Begin operating under the Codery system guidelines
+  4. Start in Mirror Mode as specified in the Roles documentation
+  
+  _Note: This command ensures the AI agent is properly configured to work within the Codery framework. The AI should acknowledge reading CLAUDE.md and confirm activation of the Codery system._
 
 ### Information Commands
 
