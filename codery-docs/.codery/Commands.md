@@ -11,9 +11,10 @@ This document lists all available commands and directives that can be used withi
 - **START** / **STARTUP**  
   Initialize the Codery system by instructing the AI agent to:
   1. Read or re-read the CLAUDE.md file in the project root
-  2. Fully adopt the Codery methodology and all its roles, workflows, and protocols
-  3. Begin operating under the Codery system guidelines
-  4. Start in Mirror Mode as specified in the Roles documentation
+  2. Check for and read .codery/application-docs.md if it exists
+  3. Fully adopt the Codery methodology and all its roles, workflows, and protocols
+  4. Begin operating under the Codery system guidelines
+  5. Start in Mirror Mode as specified in the Roles documentation
   
   _Note: This command ensures the AI agent is properly configured to work within the Codery framework. The AI should acknowledge reading CLAUDE.md and confirm activation of the Codery system._
 
@@ -78,4 +79,3 @@ This document lists all available commands and directives that can be used withi
 3. Parameters in parentheses `()` indicate options (e.g., I for Issue, F for Feature, E for Epic)
 4. Some commands trigger immediate mode switches
 5. All commands should be documented in JIRA when applicable
-6. 

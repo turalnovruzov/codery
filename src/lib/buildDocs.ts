@@ -140,6 +140,76 @@ function substituteTemplates(
   return { content: substitutedContent, unsubstituted };
 }
 
+// Build application documentation from user-specified files
+async function buildApplicationDocs(config: CoderyConfig): Promise<boolean> {
+  if (!config.applicationDocs || config.applicationDocs.length === 0) {
+    return false;
+  }
+
+  const coderyDir = path.join(process.cwd(), '.codery');
+  const outputPath = path.join(coderyDir, 'application-docs.md');
+  const sections: string[] = [];
+
+  // Add header
+  sections.push('# Application Documentation');
+  sections.push('');
+  sections.push('_This file contains project-specific documentation aggregated from user-defined sources._');
+  sections.push('');
+
+  let hasValidFiles = false;
+
+  // Process each documentation file
+  for (const docPath of config.applicationDocs) {
+    try {
+      // Resolve the path relative to current working directory
+      const resolvedPath = path.resolve(process.cwd(), docPath);
+      
+      // Check if file exists
+      if (!fs.existsSync(resolvedPath)) {
+        console.log(chalk.yellow(`  ⚠️  File not found: ${docPath}`));
+        continue;
+      }
+
+      // Read the file content
+      const content = fs.readFileSync(resolvedPath, 'utf-8');
+      
+      // Get the filename for the section header
+      const filename = path.basename(resolvedPath);
+      
+      // Add section
+      sections.push('---');
+      sections.push('');
+      sections.push(`## ${docPath}`);
+      sections.push('');
+      sections.push(content.trim());
+      sections.push('');
+      
+      hasValidFiles = true;
+    } catch (error: any) {
+      console.log(chalk.yellow(`  ⚠️  Error reading ${docPath}: ${error.message}`));
+    }
+  }
+
+  if (!hasValidFiles) {
+    console.log(chalk.yellow('  No valid application documentation files found'));
+    return false;
+  }
+
+  try {
+    // Ensure .codery directory exists
+    if (!fs.existsSync(coderyDir)) {
+      fs.mkdirSync(coderyDir, { recursive: true });
+    }
+
+    // Write the merged documentation
+    fs.writeFileSync(outputPath, sections.join('\n'), 'utf-8');
+    return true;
+  } catch (error: any) {
+    console.log(chalk.red(`  ❌ Failed to write application docs: ${error.message}`));
+    return false;
+  }
+}
+
 // Main build command
 export async function buildCommand(options: BuildOptions): Promise<void> {
   console.log(chalk.blue('🏰 Codery Build'));
@@ -243,6 +313,17 @@ export async function buildCommand(options: BuildOptions): Promise<void> {
     markdownFiles.forEach(file => {
       console.log(`  - ${file.name.replace('.md', '').replace(/_/g, ' ')}`);
     });
+    
+    // Build application documentation if configured
+    if (config?.applicationDocs && config.applicationDocs.length > 0) {
+      console.log();
+      console.log('Building application documentation...');
+      const appDocsSuccess = await buildApplicationDocs(config);
+      if (appDocsSuccess) {
+        console.log(chalk.green('✓ Created .codery/application-docs.md'));
+      }
+    }
+    
     console.log();
     console.log('Next steps:');
     console.log('  1. Review the generated CLAUDE.md file');

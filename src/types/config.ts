@@ -3,6 +3,7 @@ export interface CoderyConfig {
   projectKey: string;
   developBranch?: string;
   mainBranch?: string;
+  applicationDocs?: string[];
 }
 
 export const defaultConfig: CoderyConfig = {
