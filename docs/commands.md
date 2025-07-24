@@ -69,6 +69,7 @@ codery build [options]
 3. Substitutes template variables with your values
 4. Merges all documentation into a single file
 5. Creates CLAUDE.md for AI assistants
+6. If `applicationDocs` is configured, aggregates your documentation into `.codery/application-docs.md`
 
 **Examples:**
 
@@ -110,7 +111,17 @@ Applying template substitution...
 
 Created: /path/to/project/CLAUDE.md
 Size: ~33KB
+
+Building application documentation...
+✓ Created .codery/application-docs.md
 ```
+
+**With Application Documentation:**
+If you have `applicationDocs` configured, the build process will also:
+- Read each specified documentation file
+- Merge them with section headers
+- Create `.codery/application-docs.md`
+- Show warnings for any missing files but continue
 
 ## Error Handling
 

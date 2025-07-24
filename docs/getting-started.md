@@ -71,8 +71,9 @@ After build:
 ```
 your-project/
 ├── .codery/
-│   └── config.json
-└── CLAUDE.md         # AI assistant instructions
+│   ├── config.json
+│   └── application-docs.md  # Your aggregated docs (if configured)
+└── CLAUDE.md                # AI assistant instructions
 ```
 
 ## Basic Workflow Example
@@ -96,6 +97,29 @@ your-project/
    - AI assistants can now read CLAUDE.md
    - They'll understand your workflows and configurations
    - Follow the structured development process
+
+## Including Your Documentation
+
+You can include your existing project documentation for AI assistants:
+
+1. Add `applicationDocs` to your config:
+   ```json
+   {
+     "cloudId": "https://your-domain.atlassian.net",
+     "projectKey": "YOUR_PROJECT",
+     "developBranch": "develop",
+     "mainBranch": "main",
+     "applicationDocs": [
+       "README.md",
+       "docs/api.md",
+       "docs/architecture.md"
+     ]
+   }
+   ```
+
+2. Run `codery build` - it will create `.codery/application-docs.md`
+
+3. AI assistants will read both CLAUDE.md and your application docs
 
 ## Next Steps
 

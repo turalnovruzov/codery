@@ -36,6 +36,14 @@ Codery stores configuration in `.codery/config.json`.
 - **Example**: `"main"`, `"master"`, `"production"`
 - **Used in**: Git workflow documentation
 
+### applicationDocs
+- **Type**: Array of Strings
+- **Optional**: Yes
+- **Description**: Paths to your application documentation files that will be aggregated during build
+- **Example**: `["docs/api.md", "docs/architecture.md", "README.md"]`
+- **Used in**: Creates `.codery/application-docs.md` for AI assistants to read
+- **Note**: Paths are relative to your project root
+
 ## Example Configurations
 
 ### Basic Configuration
@@ -65,6 +73,22 @@ Codery stores configuration in `.codery/config.json`.
   "projectKey": "LEG",
   "developBranch": "develop",
   "mainBranch": "master"
+}
+```
+
+### With Application Documentation
+```json
+{
+  "cloudId": "https://startup.atlassian.net",
+  "projectKey": "APP",
+  "developBranch": "develop",
+  "mainBranch": "main",
+  "applicationDocs": [
+    "docs/api-reference.md",
+    "docs/architecture/overview.md",
+    "docs/deployment-guide.md",
+    "README.md"
+  ]
 }
 ```
 
@@ -112,6 +136,34 @@ The configuration is validated when you run `codery build`:
 - Missing required fields will show warnings
 - Invalid JSON will prevent the build
 - Template variables without values remain unchanged
+
+## Application Documentation Aggregation
+
+When you specify `applicationDocs` in your configuration:
+
+1. **During Build**: Codery reads all specified documentation files
+2. **Aggregation**: Files are merged with clear section headers
+3. **Output**: Creates `.codery/application-docs.md`
+4. **AI Access**: AI assistants read this file during STARTUP
+
+### Benefits
+- Keep your existing documentation structure
+- AI assistants understand your specific application
+- No need to duplicate documentation
+- Documentation stays in version control
+
+### Example Output Structure
+```markdown
+# Application Documentation
+
+## docs/api-reference.md
+[Your API documentation content]
+
+## docs/architecture/overview.md
+[Your architecture documentation content]
+```
+
+**Note**: Template substitution is NOT applied to application documentation files - they are preserved exactly as written.
 
 ## Extending Configuration
 
