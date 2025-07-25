@@ -1,85 +1,35 @@
-import js from '@eslint/js';
-import typescript from '@typescript-eslint/eslint-plugin';
-import typescriptParser from '@typescript-eslint/parser';
-import globals from 'globals';
+const js = require('@eslint/js');
+const typescript = require('@typescript-eslint/eslint-plugin');
+const tsParser = require('@typescript-eslint/parser');
+const globals = require('globals');
 
-export default [
-  // Global ignores
-  {
-    ignores: [
-      'dist/**',
-      'node_modules/**',
-      'coverage/**',
-      '*.config.js',
-      '*.config.mjs',
-      '*.config.cjs'
-    ]
-  },
-  
-  // Base JavaScript configuration
+module.exports = [
   js.configs.recommended,
-  
-  // TypeScript files configuration
   {
-    files: ['src/**/*.ts', 'src/**/*.tsx'],
+    files: ['**/*.{js,mjs,cjs,ts}'],
     languageOptions: {
-      parser: typescriptParser,
-      parserOptions: {
-        ecmaVersion: 2020,
-        sourceType: 'module',
-        project: './tsconfig.json'
-      },
+      parser: tsParser,
+      ecmaVersion: 'latest',
+      sourceType: 'module',
       globals: {
         ...globals.node,
-        ...globals.es2020
-      }
+      },
     },
     plugins: {
-      '@typescript-eslint': typescript
+      '@typescript-eslint': typescript,
     },
     rules: {
-      // TypeScript specific rules
       ...typescript.configs.recommended.rules,
-      '@typescript-eslint/explicit-function-return-type': 'off',
-      '@typescript-eslint/explicit-module-boundary-types': 'off',
       '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/no-unused-vars': ['error', { 
         argsIgnorePattern: '^_',
-        varsIgnorePattern: '^_'
+        varsIgnorePattern: '^_',
+        caughtErrorsIgnorePattern: '^_'
       }],
-      
-      // General rules
-      'no-console': ['warn', { allow: ['warn', 'error'] }],
-      'prefer-const': 'error',
-      'no-var': 'error',
-      'eqeqeq': ['error', 'always'],
-      'curly': ['error', 'all'],
-      'brace-style': ['error', '1tbs', { allowSingleLine: true }],
-      'comma-dangle': ['error', 'never'],
-      'quotes': ['error', 'single'],
-      'semi': ['error', 'always'],
-      'indent': ['error', 2],
-      'no-multiple-empty-lines': ['error', { max: 1 }],
-      'no-trailing-spaces': 'error'
-    }
-  },
-  
-  // JavaScript files configuration (for config files, etc.)
-  {
-    files: ['**/*.js', '**/*.mjs', '**/*.cjs'],
-    languageOptions: {
-      ecmaVersion: 2020,
-      sourceType: 'module',
-      globals: {
-        ...globals.node
-      }
+      'no-console': 'off', // CLI tool needs console output
     },
-    rules: {
-      'quotes': ['error', 'single'],
-      'semi': ['error', 'always'],
-      'indent': ['error', 2],
-      'no-multiple-empty-lines': ['error', { max: 1 }],
-      'no-trailing-spaces': 'error'
-    }
-  }
+  },
+  {
+    ignores: ['dist/**', 'node_modules/**', 'coverage/**', '*.config.js'],
+  },
 ];

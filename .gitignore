@@ -11,3 +11,6 @@ dist/
 
 # Codery configuration
 .codery/config.json
+
+# ESLint cache
+.eslintcache

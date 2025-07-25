@@ -161,7 +161,7 @@ function loadConfig(): CoderyConfig | null {
   try {
     const configContent = fs.readFileSync(configPath, 'utf-8');
     return JSON.parse(configContent) as CoderyConfig;
-  } catch (error) {
+  } catch (_error) {
     console.warn(chalk.yellow('Warning: Failed to parse .codery/config.json'));
     return null;
   }
@@ -226,9 +226,6 @@ async function buildApplicationDocs(config: CoderyConfig): Promise<boolean> {
 
       // Read the file content
       const content = fs.readFileSync(resolvedPath, 'utf-8');
-      
-      // Get the filename for the section header
-      const filename = path.basename(resolvedPath);
       
       // Add section
       sections.push('---');
