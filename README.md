@@ -1,5 +1,8 @@
 # Codery CLI
 
+[![npm version](https://img.shields.io/npm/v/codery.svg)](https://www.npmjs.com/package/codery)
+[![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC)
+
 Codery is a comprehensive development methodology and workflow system designed to enable AI agents (like Claude) to work effectively with human developers on software projects.
 
 ## Installation
