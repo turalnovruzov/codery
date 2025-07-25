@@ -5,7 +5,7 @@ Codery is a comprehensive development methodology and workflow system designed t
 ## Installation
 
 ```bash
-npm install -g @hdts/codery
+npm install -g codery
 ```
 
 ## Documentation
@@ -130,7 +130,7 @@ ISC License
 For questions and support:
 - 📚 [Documentation](./docs/README.md)
 - 🐛 [GitHub Issues](https://github.com/turalnovruzov/codery/issues)
-- 📦 [NPM Package](https://www.npmjs.com/package/@hdts/codery)
+- 📦 [NPM Package](https://www.npmjs.com/package/codery)
 
 ---
 

@@ -1,11 +1,3 @@
-# Application Documentation
-
-_This file contains project-specific documentation aggregated from user-defined sources._
-
----
-
-## engineering-docs/README.md
-
 # Codery Engineering Documentation
 
 ## Overview

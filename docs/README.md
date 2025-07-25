@@ -22,10 +22,10 @@ Codery is a comprehensive development methodology and workflow system designed t
 
 ## Quick Links
 
-- **Package**: [@hdts/codery](https://www.npmjs.com/package/@hdts/codery)
+- **Package**: [codery](https://www.npmjs.com/package/codery)
 - **Repository**: [GitHub](https://github.com/turalnovruzov/codery)
 - **Issues**: [Report a bug](https://github.com/turalnovruzov/codery/issues)
 
 ## Version
 
-Current version: 0.1.1
+Current version: 0.1.0

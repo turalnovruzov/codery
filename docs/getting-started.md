@@ -10,7 +10,7 @@
 ## Installation
 
 ```bash
-npm install -g @hdts/codery
+npm install -g codery
 ```
 
 Verify installation:
