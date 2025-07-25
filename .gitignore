@@ -10,7 +10,7 @@ node_modules/
 dist/
 
 # Codery configuration
-.codery/config.json
+.codery/
 
 # ESLint cache
 .eslintcache
