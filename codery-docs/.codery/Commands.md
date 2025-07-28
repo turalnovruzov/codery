@@ -12,9 +12,9 @@ This document lists all available commands and directives that can be used withi
   Initialize the Codery system by instructing the AI agent to:
   1. Read or re-read the CLAUDE.md file in the project root
   2. Check for and read .codery/application-docs.md if it exists
-  3. Fully adopt the Codery methodology and all its roles, workflows, and protocols
+  3. Fully adopt the Codery methodology with subagents, workflows, and protocols
   4. Begin operating under the Codery system guidelines
-  5. Start in Mirror Mode as specified in the Roles documentation
+  5. Confirm subagents are available in .claude/agents/
   
   _Note: This command ensures the AI agent is properly configured to work within the Codery framework. The AI should acknowledge reading CLAUDE.md and confirm activation of the Codery system._
 
@@ -25,25 +25,17 @@ This document lists all available commands and directives that can be used withi
   _Note: You must NOT execute any BASH or shell commands for this directive._
 
 - **Status**  
-  Request KANBAN mode to read the Jira ticket and summarize what we are doing.
-
-- **Roles**  
-  Lists all the roles in the codery system.
-
-### Role Management
-
-- **SWITCH `<role>`**  
-  Switch to the specified role and abide by its guidelines, then continue.
+  Request current JIRA ticket status and work summary.
 
 ### Documentation & Communication
 
-- **SNR** (Summarize, Next Steps, Request Role)  
-  Provide a summary, outline next steps, and request the next role.
+- **SNR** (Summarize, Next Steps, Request)  
+  Main agent provides a summary, outlines next steps, and suggests next actions.
   
   Standard SNR protocol:
-  - 🔷 **S—Summarize**: Recap the explanation provided and any clarifications made
-  - 🟡 **N—Next Steps**: Suggest how to proceed based on improved understanding  
-  - 🟩 **R—Request Role**: Suggest an appropriate next role based on the clarified direction
+  - 🔷 **S—Summarize**: Recap what was accomplished by subagents
+  - 🟡 **N—Next Steps**: Suggest how to proceed based on findings  
+  - 🟩 **R—Request**: Suggest appropriate next subagent or action
 
 ### Approval Workflow
 

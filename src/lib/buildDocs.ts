@@ -21,7 +21,6 @@ const packageRoot = path.resolve(__dirname, '../..');
 
 // Define the order of files to merge (customize as needed)
 const fileOrder = [
-  'Roles.md',
   'Subagents.md',
   '', // Placeholder for workflow file
   'JIRA_Workflow.md',
