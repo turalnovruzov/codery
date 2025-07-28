@@ -8,7 +8,7 @@ Codery is a comprehensive development methodology and workflow system designed t
 
 ### Key Features
 
-- **Structured Workflow**: Role-based development with JIRA integration
+- **Structured Workflow**: Subagent-based development with JIRA integration
 - **Git Flow Support**: Built-in branching strategies and conventions
 - **Customizable**: Template-based system adapts to your project
 - **Application Documentation**: Aggregate your existing docs for AI understanding
