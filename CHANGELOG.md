@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/turalnovruzov/codery/compare/v1.2.0...v1.3.0) (2025-07-28)
+
+
+### Features
+
+* **commands:** enhance STATUS command to fetch and display JIRA comments ([637adb7](https://github.com/turalnovruzov/codery/commit/637adb7bf10170947748a14d4f66c54482951c04))
+
 # [1.2.0](https://github.com/turalnovruzov/codery/compare/v1.1.0...v1.2.0) (2025-07-28)
 
 
