@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document lists all available commands and directives that can be used within the Codery system. Commands trigger specific behaviors, role switches, and workflows.
+This document lists all available commands and directives that can be used within the Codery system. Commands trigger specific behaviors, subagent delegation, and workflows.
 
 ## Core Commands
 
@@ -12,9 +12,9 @@ This document lists all available commands and directives that can be used withi
   Initialize the Codery system by instructing the AI agent to:
   1. Read or re-read the CLAUDE.md file in the project root
   2. Check for and read .codery/application-docs.md if it exists
-  3. Fully adopt the Codery methodology and all its roles, workflows, and protocols
+  3. Fully adopt the Codery methodology with subagents, workflows, and protocols
   4. Begin operating under the Codery system guidelines
-  5. Start in Mirror Mode as specified in the Roles documentation
+  5. Confirm subagents are available in .claude/agents/
   
   _Note: This command ensures the AI agent is properly configured to work within the Codery framework. The AI should acknowledge reading CLAUDE.md and confirm activation of the Codery system._
 
@@ -25,30 +25,22 @@ This document lists all available commands and directives that can be used withi
   _Note: You must NOT execute any BASH or shell commands for this directive._
 
 - **Status**  
-  Request KANBAN mode to read the Jira ticket and summarize what we are doing.
-
-- **Roles**  
-  Lists all the roles in the codery system.
-
-### Role Management
-
-- **SWITCH `<role>`**  
-  Switch to the specified role and abide by its guidelines, then continue.
+  Request current JIRA ticket status and work summary.
 
 ### Documentation & Communication
 
-- **SNR** (Summarize, Next Steps, Request Role)  
-  Provide a summary, outline next steps, and request the next role.
+- **SNR** (Summarize, Next Steps, Request)  
+  Main agent provides a summary, outlines next steps, and suggests next actions.
   
   Standard SNR protocol:
-  - 🔷 **S—Summarize**: Recap the explanation provided and any clarifications made
-  - 🟡 **N—Next Steps**: Suggest how to proceed based on improved understanding  
-  - 🟩 **R—Request Role**: Suggest an appropriate next role based on the clarified direction
+  - 🔷 **S—Summarize**: Recap what was accomplished by subagents
+  - 🟡 **N—Next Steps**: Suggest how to proceed based on findings  
+  - 🟩 **R—Request**: Suggest appropriate next subagent or action
 
 ### Approval Workflow
 
 - **Approved `<text>`**  
-  Used after an SNR to accept the recommendations of Next Steps and Request Role, possibly with minor modifications in `<text>`.
+  Used after an SNR to accept the recommendations of Next Steps and Request, possibly with minor modifications in `<text>`.
 
 - **Denied** / **Not Approved**  
   If not approved, return to KanBan or Mirror mode to reassess.
@@ -64,6 +56,17 @@ This document lists all available commands and directives that can be used withi
   - Branch-level lint errors outside your code changes can be left
   - If the directive is **"CLEANUP ALL"**, fix all ESLint errors in the project
 
+### Subagent Management
+
+- **/agents**  
+  Opens Claude Code's native subagent management interface. Allows you to:
+  - View all available Codery subagents (automatically installed by `codery build`)
+  - See descriptions and tool permissions for each subagent
+  - Understand when each subagent should be used
+  - Create custom subagents (project-level)
+  
+  _Note: This is a Claude Code native command that works with Codery's pre-installed subagents._
+
 ### Meta Commands
 
 - **Directives** / **Commands**  
@@ -77,5 +80,5 @@ This document lists all available commands and directives that can be used withi
 1. Commands are case-insensitive but conventionally written in uppercase
 2. Parameters in angle brackets `<>` are required
 3. Parameters in parentheses `()` indicate options (e.g., I for Issue, F for Feature, E for Epic)
-4. Some commands trigger immediate mode switches
+4. Some commands trigger immediate subagent delegation
 5. All commands should be documented in JIRA when applicable

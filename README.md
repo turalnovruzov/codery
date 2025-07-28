@@ -71,7 +71,7 @@ See the [Command Reference](./docs/commands.md) for detailed documentation
 Codery provides:
 
 1. **Structured Development Workflows** - Well-defined processes for AI-human collaboration
-2. **Role Definitions** - 16 operational modes for different development tasks
+2. **Specialized Subagents** - Pre-configured AI specialists for different development tasks
 3. **JIRA Integration** - Deep integration with project management
 4. **Git Strategy** - Structured branching and merge procedures
 5. **Quality Assurance** - Built-in checks and documentation requirements
@@ -98,7 +98,7 @@ your-project/
 Once Codery is set up in your project:
 
 1. AI assistants can read CLAUDE.md to understand your workflows
-2. They'll follow structured development processes with defined roles
+2. They'll follow structured development processes with specialized subagents
 3. All work is tracked through JIRA integration
 4. Git workflows are customized to your branch names
 

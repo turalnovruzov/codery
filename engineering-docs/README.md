@@ -36,7 +36,7 @@ codery/
 │       └── config.ts           # TypeScript interfaces
 ├── codery-docs/
 │   └── .codery/                # Source documentation templates
-│       ├── Roles.md            # Role definitions
+│       ├── Subagents.md        # Subagent definitions
 │       ├── Commands.md         # Available commands
 │       ├── JIRA_Workflow.md    # JIRA integration guide
 │       ├── LifeCycles.md       # Development lifecycles
@@ -111,7 +111,7 @@ The template system enables dynamic documentation generation based on project co
 ### File Processing
 
 **File Order**:
-1. Roles.md
+1. Subagents.md
 2. Workflow file (GitFlow.md or TrunkBased.md based on config)
 3. JIRA_Workflow.md
 4. Commands.md
