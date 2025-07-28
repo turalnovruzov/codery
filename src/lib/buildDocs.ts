@@ -261,6 +261,69 @@ async function buildApplicationDocs(config: CoderyConfig): Promise<boolean> {
   }
 }
 
+// Copy subagent files to user's project
+async function copySubagentFiles(config: CoderyConfig | null, dryRun: boolean = false): Promise<boolean> {
+  const sourceDir = path.join(packageRoot, 'codery-docs/.codery/agents');
+  const targetDir = path.join(process.cwd(), '.claude/agents');
+  
+  // Check if source directory exists
+  if (!fs.existsSync(sourceDir)) {
+    console.log(chalk.yellow('  ⚠️  No subagent files found in package'));
+    return false;
+  }
+  
+  try {
+    // Create target directory if it doesn't exist
+    if (!fs.existsSync(targetDir)) {
+      fs.mkdirSync(targetDir, { recursive: true });
+    }
+    
+    // Get all .md files from agents directory
+    const subagentFiles = fs.readdirSync(sourceDir)
+      .filter(file => file.endsWith('.md'));
+    
+    if (subagentFiles.length === 0) {
+      return false;
+    }
+    
+    if (dryRun) {
+      console.log(`Would copy ${subagentFiles.length} subagent files to ${targetDir}`);
+      subagentFiles.forEach(file => console.log(`  - ${file}`));
+      return true;
+    }
+    
+    console.log(`Copying ${subagentFiles.length} subagent files...`);
+    
+    // Process each subagent file
+    for (const file of subagentFiles) {
+      const sourcePath = path.join(sourceDir, file);
+      const targetPath = path.join(targetDir, file);
+      
+      // Read the subagent content
+      let content = fs.readFileSync(sourcePath, 'utf-8');
+      
+      // Apply template substitution if config is available
+      if (config) {
+        const result = substituteTemplates(content, config);
+        content = result.content;
+        
+        if (result.unsubstituted.length > 0) {
+          console.log(chalk.yellow(`  ⚠️  Unsubstituted in ${file}: ${result.unsubstituted.join(', ')}`));
+        }
+      }
+      
+      // Write to target
+      fs.writeFileSync(targetPath, content, 'utf-8');
+      console.log(`  ✓ ${file}`);
+    }
+    
+    return true;
+  } catch (error: any) {
+    console.log(chalk.red(`  ❌ Failed to copy subagents: ${error.message}`));
+    return false;
+  }
+}
+
 // Main build command
 export async function buildCommand(options: BuildOptions): Promise<void> {
   console.log(chalk.blue('🏰 Codery Build'));
@@ -328,6 +391,11 @@ export async function buildCommand(options: BuildOptions): Promise<void> {
       console.log('---');
       console.log(mergedContent.substring(0, 500) + '...');
       console.log('---');
+      console.log();
+      
+      // Show what subagents would be copied
+      await copySubagentFiles(config, true);
+      
       return;
     }
 
@@ -373,6 +441,13 @@ export async function buildCommand(options: BuildOptions): Promise<void> {
       if (appDocsSuccess) {
         console.log(chalk.green('✓ Created .codery/application-docs.md'));
       }
+    }
+    
+    // Copy subagent files
+    console.log();
+    const subagentsSuccess = await copySubagentFiles(config, false);
+    if (subagentsSuccess) {
+      console.log(chalk.green('✓ Copied subagents to .claude/agents/'));
     }
     
     console.log();
