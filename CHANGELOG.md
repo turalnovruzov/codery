@@ -1,3 +1,11 @@
+# [1.2.0](https://github.com/turalnovruzov/codery/compare/v1.1.0...v1.2.0) (2025-07-28)
+
+
+### Features
+
+* **docs:** add explicit Codery behavioral instructions to Git Flow ([858ca49](https://github.com/turalnovruzov/codery/commit/858ca492c5ef8604ef620b465d74cd8e2e37b1fb))
+* **docs:** reduce GitFlow branch creation instructions to essential requirement ([1dba4d3](https://github.com/turalnovruzov/codery/commit/1dba4d3133b93cf9f280cfef6f7ef67b25d9ff81))
+
 # [1.1.0](https://github.com/turalnovruzov/codery/compare/v1.0.0...v1.1.0) (2025-07-28)
 
 
