@@ -1,3 +1,17 @@
+# [1.1.0](https://github.com/turalnovruzov/codery/compare/v1.0.0...v1.1.0) (2025-07-28)
+
+
+### Bug Fixes
+
+* update documentation to use subagent terminology ([5f5ac56](https://github.com/turalnovruzov/codery/commit/5f5ac564ae9e94f70c5d7bcbd1dfe9b664f85de4))
+
+
+### Features
+
+* add subagent configurations for all Codery roles ([2f28b57](https://github.com/turalnovruzov/codery/commit/2f28b5792105a0a7f0d383e1012bdd12d43814cc))
+* implement subagent copying in buildDocs.ts ([193a9c4](https://github.com/turalnovruzov/codery/commit/193a9c4699337c7e6d91025b54760eb426a35ec6))
+* replace role-based terminology with subagent references ([fb2c856](https://github.com/turalnovruzov/codery/commit/fb2c856563cd40984b2061f982706f991d224c9d))
+
 # 1.0.0 (2025-07-25)
 
 

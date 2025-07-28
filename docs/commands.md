@@ -98,7 +98,7 @@ codery build --skip-config
 🏰 Codery Build
 
 Found 6 markdown files:
-  - Roles
+  - Subagents
   - Git Workflow
   - JIRA Workflow
   - Commands
