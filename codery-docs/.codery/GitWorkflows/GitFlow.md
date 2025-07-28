@@ -41,71 +41,15 @@ Codery follows the Git Flow workflow model with JIRA integration. This document 
 - **Naming**: `hotfix/JIRA-XXX-description`
 - **Purpose**: Emergency production fixes
 
-## 🛡️ CODERY BEHAVIORAL INSTRUCTIONS
+## Critical Branch Creation Requirement
 
-**IMPORTANT**: The following instructions are MANDATORY for Codery. You MUST follow these rules without exception.
+**EXTREMELY IMPORTANT**: It is crucial that Codery ALWAYS creates a branch before beginning work on any task. This prevents accidentally working on protected branches ({{mainBranch}} or {{developBranch}}).
 
-### Branch Creation Requirements
+**Before ANY work**:
 
-1. **YOU MUST ALWAYS CREATE A BRANCH** when starting work on any JIRA ticket
-2. **YOU MUST NEVER** make changes directly on `{{mainBranch}}` or `{{developBranch}}`
-3. **YOU MUST VERIFY** you are on the correct branch before making any changes
-4. **YOU MUST USE** the branch naming convention that matches the JIRA ticket type
-5. **FAILURE TO CREATE BRANCHES** will result in immediate work stoppage
-
-### Enforcement
-
-- If you attempt to commit directly to `{{mainBranch}}` or `{{developBranch}}`, STOP immediately
-- If you are not on a feature/bugfix/hotfix/release branch, DO NOT proceed with any code changes
-- Always run `git branch` to verify your current branch before any Builder Mode operations
-
-## 📋 JIRA Ticket Type to Branch Mapping
-
-You MUST create the appropriate branch type based on the JIRA ticket type:
-
-| JIRA Ticket Type | Branch Type | Created From | Naming Convention | Example |
-|------------------|-------------|--------------|-------------------|----------|
-| Task | feature | {{developBranch}} | feature/JIRA-XXX-description | feature/COD-123-add-login |
-| Story | feature | {{developBranch}} | feature/JIRA-XXX-description | feature/COD-456-user-profile |
-| Bug (non-critical) | bugfix | {{developBranch}} | bugfix/JIRA-XXX-description | bugfix/COD-789-fix-validation |
-| Bug (critical/prod) | hotfix | {{mainBranch}} | hotfix/JIRA-XXX-description | hotfix/COD-911-security-patch |
-| Epic | N/A | N/A | Break into Tasks/Stories | N/A |
-
-**Note**: Critical bugs are those affecting production. All other bugs use bugfix branches.
-
-## ✅ Pre-Work Branch Creation Checklist
-
-Before starting ANY work, you MUST complete this checklist:
-
-- [ ] **Identify JIRA ticket type** (Task, Story, Bug, etc.)
-- [ ] **Determine correct branch type** from the mapping table above
-- [ ] **Check current branch**: Run `git branch` to see current branch
-- [ ] **Switch to base branch**: Checkout {{developBranch}} or {{mainBranch}} as appropriate
-- [ ] **Pull latest changes**: Run `git pull origin [base-branch]`
-- [ ] **Create new branch**: Run `git checkout -b [branch-type]/JIRA-XXX-description`
-- [ ] **Verify branch creation**: Run `git branch` to confirm on new branch
-- [ ] **Push branch to remote**: Run `git push -u origin [branch-name]`
-
-## 🔗 Role Integration Requirements
-
-### Scout Mode
-- MUST identify the JIRA ticket type when analyzing requirements
-- MUST determine the appropriate branch type before proceeding
-
-### Architect Mode
-- MUST include branch creation in technical planning
-- MUST specify which base branch to use
-
-### CRK Assessment
-- MUST verify correct branch exists before approving Builder Mode
-- MUST include branch validation in confidence assessment
-- If not on correct branch type, confidence MUST be 0%
-
-### Builder Mode
-- MUST NOT proceed without verifying correct branch
-- MUST run `git branch` before ANY code modifications
-- MUST stop immediately if on {{mainBranch}} or {{developBranch}}
-- All commits MUST include JIRA ticket reference
+1. Create appropriate branch based on JIRA ticket type (feature/bugfix/hotfix/release)
+2. Verify you're on the correct branch with `git branch`
+3. NEVER work directly on {{mainBranch}} or {{developBranch}}
 
 ## Workflow Commands
 
