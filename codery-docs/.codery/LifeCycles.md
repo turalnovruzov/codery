@@ -11,31 +11,31 @@ The Codery development lifecycle leverages specialized subagents for each phase 
 
 ### 2. **Research Phase**
 - **scout** subagent investigates codebase, APIs, and dependencies
-- Documents all findings in JIRA with `[Scout]` prefix
-- Returns comprehensive report following Output Format
-- Main agent displays full report to user before SNR
+- Returns comprehensive research findings naturally
+- Main agent displays full report to user
+- Main agent documents findings in JIRA with `[Scout]` prefix
 - **STOP**: Main agent provides SNR and waits for user approval before proceeding
 
 ### 3. **Design Phase**
 - **architect** subagent creates solution design
-- Documents architecture decisions and tradeoffs in JIRA
-- Provides clear implementation plan with detailed design and summary
-- Main agent displays full architectural plan to user before SNR
+- Provides clear implementation plan with detailed analysis
+- Main agent displays full architectural plan to user
+- Main agent documents design decisions in JIRA with `[Architect]` prefix
 - **STOP**: Main agent provides SNR and waits for user approval before proceeding
 
 ### 4. **Assessment Phase**
 - **crk** subagent evaluates confidence, risks, and knowledge gaps
 - Must achieve 85%+ confidence before proceeding
-- Documents assessment in JIRA
-- Main agent displays CRK assessment to user before SNR
+- Main agent displays CRK assessment to user
+- Main agent documents assessment in JIRA with `[CRK]` prefix
 - **STOP**: Main agent provides SNR and waits for user approval before proceeding
 
 ### 5. **Implementation Phase**
 - **builder** subagent implements the approved design
-- Documents what was built conceptually in JIRA
-- Provides detailed implementation progress and summary
-- Main agent displays full build report to user before SNR
-- Commits with JIRA ticket references
+- Provides detailed implementation progress naturally
+- Main agent displays full build report to user
+- Main agent documents what was built in JIRA with `[Builder]` prefix
+- Main agent commits with JIRA ticket references
 - **STOP**: Main agent provides SNR and waits for user approval before proceeding
 
 ### 6. **Quality Assurance Phase**
@@ -55,7 +55,7 @@ The Codery development lifecycle leverages specialized subagents for each phase 
 - Main agent provides **SNR** (Summarize, Next Steps, Request) after displaying subagent work
 - **CRITICAL**: Main agent MUST STOP after each SNR and wait for user approval before proceeding to next phase
 - Never automatically proceed from one phase to the next without user approval
-- Every subagent MUST document work in JIRA
+- Main agent MUST document all subagent work in JIRA
 - Subagents operate with independent context windows
 - User approvals happen through main agent interaction
 - Never hide or summarize subagent output - always show full details

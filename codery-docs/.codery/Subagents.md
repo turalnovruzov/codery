@@ -10,25 +10,25 @@ Codery subagents are pre-configured AI specialists that handle specific aspects 
 
 - **Independent Context**: Each subagent operates in its own context window
 - **Tool Restrictions**: Only granted necessary tools for their specific role
-- **JIRA Integration**: Every subagent documents work directly in JIRA
-- **Template Variables**: Automatically configured with your project's {{projectKey}} and {{cloudId}}
+- **Pure Specialists**: Focus on their expertise without handling project management
+- **Natural Output**: Provide findings naturally without rigid formats
 
 ## Available Subagents
 
 ### scout
 Research and exploration specialist. Investigates APIs, libraries, and file structures before implementation.
-- **Tools**: Read, Grep, Glob, LS, WebSearch, WebFetch, Task, JIRA tools
-- **JIRA Format**: `[Scout] Description of finding`
+- **Tools**: Read, Grep, Glob, LS, WebSearch, WebFetch
+- **Focus**: Pure code investigation and research
 
 ### architect  
 System design specialist. Creates technical recommendations and documents architectural decisions.
-- **Tools**: Read, Grep, Glob, LS, TodoWrite, JIRA tools
-- **JIRA Format**: `[Architect] Design decision with rationale`
+- **Tools**: Read, Grep, Glob, LS, TodoWrite
+- **Focus**: Pure solution design and planning
 
 ### builder
 Code implementation specialist. Writes code based on approved designs.
-- **Tools**: Read, Edit, MultiEdit, Write, Grep, Glob, LS, TodoWrite, Bash, JIRA tools
-- **JIRA Format**: `[Builder] What was built conceptually`
+- **Tools**: Read, Edit, MultiEdit, Write, Grep, Glob, LS, TodoWrite, Bash
+- **Focus**: Pure code implementation and testing
 
 ### crk
 Confidence, Risks, and Knowledge assessment specialist. Evaluates readiness before builds.
@@ -78,28 +78,15 @@ When you run `codery build`, all subagents are automatically:
 2. Configured with your JIRA settings
 3. Ready for immediate use in Claude Code
 
-### JIRA Integration Pattern
-Every subagent MUST document work in JIRA:
-```
-[SubagentName] Actual findings/decisions/implementations
-```
-
-Bad examples:
-- "[Scout] Investigated files" ❌
-- "[Builder] Implemented feature" ❌
-
-Good examples:
-- "[Scout] Found auth handled in src/auth/jwt.ts using bcrypt v5.0" ✅
-- "[Builder] Created JWT refresh token system with 15min expiry" ✅
-
 ### Delegation Flow
 1. Main Claude agent receives task with JIRA ticket
 2. Delegates to appropriate subagent with context
-3. Subagent performs work and documents in JIRA
-4. Subagent returns detailed output following its Output Format
+3. Subagent performs work using its specialized expertise
+4. Subagent returns natural, detailed findings to main agent
 5. Main agent displays the subagent's detailed output to user
-6. Main agent provides SNR summary to user
-7. **STOP**: Main agent waits for user approval before any further action
+6. **Main agent handles JIRA documentation** based on subagent findings
+7. Main agent provides SNR summary to user
+8. **STOP**: Main agent waits for user approval before any further action
 
 ## Using Subagents
 
@@ -129,42 +116,23 @@ When working with subagents, the main Claude agent MUST:
 
 ### 1. Display Subagent Output
 After a subagent completes its work:
-- **First**: Display the subagent's detailed output to the user
-- **Then**: Provide your SNR summary
-- **Always**: Ensure users see both the detailed findings AND the summary
+- **First**: Display the subagent's natural, detailed output to the user
+- **Then**: Handle JIRA documentation based on the findings
+- **Finally**: Provide your SNR summary
+- **Always**: Ensure users see the detailed findings before summary
 
-### 2. Output Format Example
-```
-⏺ scout(Investigate authentication system)
-  ⎿  Done (12 tool uses · 15.2k tokens · 45.3s)
-
-## Scout Report: Authentication System Investigation
-
-### Key Discoveries
-- **File/Component**: src/auth/jwt.ts
-  - Purpose: JWT token generation and validation
-  - Key Details: Uses bcrypt v5.0 for password hashing
-  - Dependencies: jsonwebtoken, bcrypt
-
-### Relevant Code Patterns
-- Pattern: Middleware-based authentication
-  - Location: src/middleware/auth.ts
-  - Usage: Applied to protected routes
-
-### Summary
-- Authentication uses JWT with 15-minute expiry
-- Passwords hashed with bcrypt (10 rounds)
-- Refresh token system implemented
-
-⏺ 🔷 S—Summarize:
-Scout investigation complete. Found JWT-based auth system...
-```
+### 2. JIRA Documentation
+The main agent handles all JIRA operations:
+- Document subagent findings in appropriate format
+- Use prefixes like `[Scout]`, `[Architect]`, `[Builder]` for clarity
+- Focus on WHAT was found/designed/built, not just activity
+- Example: `[Scout] Found auth handled in src/auth/jwt.ts using bcrypt v5.0`
 
 ### 3. Never Skip Detailed Output
 - Do NOT summarize or paraphrase subagent output
 - Do NOT hide findings behind SNR alone
 - Do NOT make output display conditional
-- ALWAYS show the full subagent report
+- ALWAYS show the full subagent report naturally
 
 ### 4. Always Wait for User Approval
 - After providing SNR, STOP and wait for user response
@@ -177,14 +145,14 @@ Scout investigation complete. Found JWT-based auth system...
 ### 1. Let Subagents Handle Their Domain
 Don't try to make one subagent do everything. Each has a specific purpose.
 
-### 2. Check JIRA Documentation
-Every subagent action should have a corresponding JIRA comment with substance.
+### 2. Document in JIRA
+Main agent should document all subagent findings with substance in JIRA.
 
 ### 3. Trust the Delegation
 Claude Code knows when to use each subagent based on their descriptions.
 
 ### 4. Maintain Context Flow
-The main agent passes JIRA ticket context to subagents automatically.
+The main agent passes relevant context to subagents and handles all project coordination.
 
 ## Subagent vs Traditional Roles
 
@@ -193,7 +161,7 @@ The main agent passes JIRA ticket context to subagents automatically.
 | Context | Shared with main | Independent window |
 | Tools | All available | Only necessary ones |
 | Switching | Manual commands | Automatic delegation |
-| JIRA | Manual tracking | Built into each subagent |
+| JIRA | Manual tracking | Handled by main agent |
 
 ## Troubleshooting
 
@@ -203,9 +171,9 @@ The main agent passes JIRA ticket context to subagents automatically.
 - Verify no errors during build
 
 ### JIRA Comments Missing
-- Ensure {{projectKey}} and {{cloudId}} are configured
-- Check subagent has JIRA tool permissions
-- Verify JIRA authentication is working
+- Check main agent JIRA authentication is working
+- Verify main agent is properly documenting subagent findings
+- Ensure JIRA ticket context is being passed correctly
 
 ### Wrong Subagent Used
 - Check task description clarity
@@ -217,7 +185,7 @@ The main agent passes JIRA ticket context to subagents automatically.
 Codery subagents transform the role-based methodology into Claude Code's native feature, providing:
 - Better context management through isolation
 - Enhanced security through tool restrictions  
-- Automatic JIRA documentation
-- Seamless integration with existing Codery workflows
+- Natural expertise-focused output
+- Clean separation between specialists and orchestration
 
-The transition from text-based roles to native subagents maintains all Codery principles while leveraging Claude Code's superior implementation.
+The transition from text-based roles to native subagents maintains all Codery principles while leveraging Claude Code's superior implementation for pure specialist patterns.
