@@ -64,6 +64,17 @@ This document lists all available commands and directives that can be used withi
   - Branch-level lint errors outside your code changes can be left
   - If the directive is **"CLEANUP ALL"**, fix all ESLint errors in the project
 
+### Subagent Management
+
+- **/agents**  
+  Opens Claude Code's native subagent management interface. Allows you to:
+  - View all available Codery subagents (automatically installed by `codery build`)
+  - See descriptions and tool permissions for each subagent
+  - Understand when each subagent should be used
+  - Create custom subagents (project-level)
+  
+  _Note: This is a Claude Code native command that works with Codery's pre-installed subagents._
+
 ### Meta Commands
 
 - **Directives** / **Commands**  
