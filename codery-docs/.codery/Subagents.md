@@ -96,8 +96,9 @@ Good examples:
 1. Main Claude agent receives task with JIRA ticket
 2. Delegates to appropriate subagent with context
 3. Subagent performs work and documents in JIRA
-4. Returns results to main agent
-5. Main agent provides SNR summary to user
+4. Subagent returns detailed output following its Output Format
+5. Main agent displays the subagent's detailed output to user
+6. Main agent provides SNR summary to user
 
 ## Using Subagents
 
@@ -120,6 +121,49 @@ Use the `/agents` command in Claude Code to:
 - List all Codery subagents
 - See their descriptions and tools
 - Understand when each should be used
+
+## Main Agent Responsibilities
+
+When working with subagents, the main Claude agent MUST:
+
+### 1. Display Subagent Output
+After a subagent completes its work:
+- **First**: Display the subagent's detailed output to the user
+- **Then**: Provide your SNR summary
+- **Always**: Ensure users see both the detailed findings AND the summary
+
+### 2. Output Format Example
+```
+⏺ scout(Investigate authentication system)
+  ⎿  Done (12 tool uses · 15.2k tokens · 45.3s)
+
+## Scout Report: Authentication System Investigation
+
+### Key Discoveries
+- **File/Component**: src/auth/jwt.ts
+  - Purpose: JWT token generation and validation
+  - Key Details: Uses bcrypt v5.0 for password hashing
+  - Dependencies: jsonwebtoken, bcrypt
+
+### Relevant Code Patterns
+- Pattern: Middleware-based authentication
+  - Location: src/middleware/auth.ts
+  - Usage: Applied to protected routes
+
+### Summary
+- Authentication uses JWT with 15-minute expiry
+- Passwords hashed with bcrypt (10 rounds)
+- Refresh token system implemented
+
+⏺ 🔷 S—Summarize:
+Scout investigation complete. Found JWT-based auth system...
+```
+
+### 3. Never Skip Detailed Output
+- Do NOT summarize or paraphrase subagent output
+- Do NOT hide findings behind SNR alone
+- Do NOT make output display conditional
+- ALWAYS show the full subagent report
 
 ## Best Practices
 

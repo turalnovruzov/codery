@@ -12,12 +12,14 @@ The Codery development lifecycle leverages specialized subagents for each phase 
 ### 2. **Research Phase**
 - **scout** subagent investigates codebase, APIs, and dependencies
 - Documents all findings in JIRA with `[Scout]` prefix
-- Returns comprehensive report
+- Returns comprehensive report following Output Format
+- Main agent displays full report to user before SNR
 
 ### 3. **Design Phase**
 - **architect** subagent creates solution design
 - Documents architecture decisions and tradeoffs in JIRA
-- Provides clear implementation plan
+- Provides clear implementation plan with detailed design and summary
+- Main agent displays full architectural plan to user before SNR
 
 ### 4. **Assessment Phase**
 - **crk** subagent evaluates confidence, risks, and knowledge gaps
@@ -27,6 +29,8 @@ The Codery development lifecycle leverages specialized subagents for each phase 
 ### 5. **Implementation Phase**
 - **builder** subagent implements the approved design
 - Documents what was built conceptually in JIRA
+- Provides detailed implementation progress and summary
+- Main agent displays full build report to user before SNR
 - Commits with JIRA ticket references
 
 ### 6. **Quality Assurance Phase**
@@ -42,10 +46,12 @@ The Codery development lifecycle leverages specialized subagents for each phase 
 
 ## Important Notes
 
-- Main agent provides **SNR** (Summarize, Next Steps, Request) after subagent work
+- Main agent MUST display subagent's detailed output BEFORE providing SNR
+- Main agent provides **SNR** (Summarize, Next Steps, Request) after displaying subagent work
 - Every subagent MUST document work in JIRA
 - Subagents operate with independent context windows
 - User approvals happen through main agent interaction
+- Never hide or summarize subagent output - always show full details
 
 ## Self-Introspective Analysis
 
