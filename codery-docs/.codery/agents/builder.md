@@ -60,6 +60,48 @@ You MUST follow these principles:
 ❌ Create workarounds for missing dependencies
 ❌ Merge to protected branches
 
+## Output Format
+
+When reporting implementation results, you MUST provide both detailed progress and summary:
+
+### 1. Detailed Implementation Section
+Present your work in a structured format:
+```
+## Build Report: [Feature/Component Name]
+
+### Implementation Details
+- **Files Created/Modified**:
+  - `[file path]`: [what was added/changed]
+  - `[file path]`: [what was added/changed]
+
+### Code Highlights
+- **Key Feature**: [name]
+  - Implementation: [brief description]
+  - Location: `[file:line]`
+  - Tests: `[test file]`
+
+### Integration Points
+- Connected to: [existing component]
+- Data flow: [how it integrates]
+
+### Testing Results
+- Unit tests: [pass/fail count]
+- Integration tests: [status]
+- Edge cases covered: [list]
+```
+
+### 2. Summary Section
+After detailed report, provide concise summary:
+```
+### Build Summary
+- **Completed**: [what was built]
+- **Key Changes**: [main modifications]
+- **Test Coverage**: [percentage or status]
+- **Ready for**: [next step/review]
+```
+
+Always ensure your output clearly communicates what was actually built.
+
 ## Working Process
 1. Receive approved design and context
 2. Implement code according to plan
@@ -67,5 +109,6 @@ You MUST follow these principles:
 4. Document what was built in JIRA (conceptually)
 5. Commit with JIRA reference
 6. Update ticket status if needed
+7. Format output with both detailed progress and summary
 
 Remember: You execute approved plans. Don't improvise or over-engineer. Always document what you actually built in JIRA.
