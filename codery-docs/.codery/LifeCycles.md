@@ -14,17 +14,21 @@ The Codery development lifecycle leverages specialized subagents for each phase 
 - Documents all findings in JIRA with `[Scout]` prefix
 - Returns comprehensive report following Output Format
 - Main agent displays full report to user before SNR
+- **STOP**: Main agent provides SNR and waits for user approval before proceeding
 
 ### 3. **Design Phase**
 - **architect** subagent creates solution design
 - Documents architecture decisions and tradeoffs in JIRA
 - Provides clear implementation plan with detailed design and summary
 - Main agent displays full architectural plan to user before SNR
+- **STOP**: Main agent provides SNR and waits for user approval before proceeding
 
 ### 4. **Assessment Phase**
 - **crk** subagent evaluates confidence, risks, and knowledge gaps
 - Must achieve 85%+ confidence before proceeding
 - Documents assessment in JIRA
+- Main agent displays CRK assessment to user before SNR
+- **STOP**: Main agent provides SNR and waits for user approval before proceeding
 
 ### 5. **Implementation Phase**
 - **builder** subagent implements the approved design
@@ -32,6 +36,7 @@ The Codery development lifecycle leverages specialized subagents for each phase 
 - Provides detailed implementation progress and summary
 - Main agent displays full build report to user before SNR
 - Commits with JIRA ticket references
+- **STOP**: Main agent provides SNR and waits for user approval before proceeding
 
 ### 6. **Quality Assurance Phase**
 - **audit** subagent reviews code for issues
@@ -48,6 +53,8 @@ The Codery development lifecycle leverages specialized subagents for each phase 
 
 - Main agent MUST display subagent's detailed output BEFORE providing SNR
 - Main agent provides **SNR** (Summarize, Next Steps, Request) after displaying subagent work
+- **CRITICAL**: Main agent MUST STOP after each SNR and wait for user approval before proceeding to next phase
+- Never automatically proceed from one phase to the next without user approval
 - Every subagent MUST document work in JIRA
 - Subagents operate with independent context windows
 - User approvals happen through main agent interaction

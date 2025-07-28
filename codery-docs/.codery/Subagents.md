@@ -99,6 +99,7 @@ Good examples:
 4. Subagent returns detailed output following its Output Format
 5. Main agent displays the subagent's detailed output to user
 6. Main agent provides SNR summary to user
+7. **STOP**: Main agent waits for user approval before any further action
 
 ## Using Subagents
 
@@ -164,6 +165,12 @@ Scout investigation complete. Found JWT-based auth system...
 - Do NOT hide findings behind SNR alone
 - Do NOT make output display conditional
 - ALWAYS show the full subagent report
+
+### 4. Always Wait for User Approval
+- After providing SNR, STOP and wait for user response
+- Do NOT automatically proceed to next subagent or phase
+- Do NOT continue without explicit user approval (e.g., "approved", "proceed")
+- Only continue when user gives clear direction
 
 ## Best Practices
 
