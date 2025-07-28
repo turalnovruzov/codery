@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document lists all available commands and directives that can be used within the Codery system. Commands trigger specific behaviors, role switches, and workflows.
+This document lists all available commands and directives that can be used within the Codery system. Commands trigger specific behaviors, subagent delegation, and workflows.
 
 ## Core Commands
 
@@ -40,7 +40,7 @@ This document lists all available commands and directives that can be used withi
 ### Approval Workflow
 
 - **Approved `<text>`**  
-  Used after an SNR to accept the recommendations of Next Steps and Request Role, possibly with minor modifications in `<text>`.
+  Used after an SNR to accept the recommendations of Next Steps and Request, possibly with minor modifications in `<text>`.
 
 - **Denied** / **Not Approved**  
   If not approved, return to KanBan or Mirror mode to reassess.
@@ -80,5 +80,5 @@ This document lists all available commands and directives that can be used withi
 1. Commands are case-insensitive but conventionally written in uppercase
 2. Parameters in angle brackets `<>` are required
 3. Parameters in parentheses `()` indicate options (e.g., I for Issue, F for Feature, E for Epic)
-4. Some commands trigger immediate mode switches
+4. Some commands trigger immediate subagent delegation
 5. All commands should be documented in JIRA when applicable
