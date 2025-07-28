@@ -25,7 +25,9 @@ This document lists all available commands and directives that can be used withi
   _Note: You must NOT execute any BASH or shell commands for this directive._
 
 - **Status**  
-  Request current JIRA ticket status and work summary.
+  Request current JIRA ticket status, work summary, and fetch the last 10 comments.  
+  Displays comments in chronological order (newest first) with author, timestamp, and body text.  
+  _Note: Gracefully handles tickets with no comments and formats output for clear readability._
 
 ### Documentation & Communication
 
