@@ -9,7 +9,7 @@ CLAUDE.md
 node_modules/
 dist/
 
-# Codery configuration (user's project config only)
+# Codery configuration
 /.codery/
 
 # ESLint cache

@@ -20,6 +20,13 @@ Codery follows the Git Flow workflow model with JIRA integration. This document 
 - **Naming**: `feature/JIRA-XXX-description`
 - **Purpose**: New feature development
 
+#### Bugfix Branches
+
+- **Created from**: `{{developBranch}}`
+- **Merge back into**: `{{developBranch}}` via pull request
+- **Naming**: `bugfix/JIRA-XXX-description`
+- **Purpose**: Non-critical bug fixes for upcoming releases
+
 #### Release Branches
 
 - **Created from**: `{{developBranch}}`
@@ -33,6 +40,16 @@ Codery follows the Git Flow workflow model with JIRA integration. This document 
 - **Merge into**: `{{mainBranch}}` AND `{{developBranch}}` via pull requests
 - **Naming**: `hotfix/JIRA-XXX-description`
 - **Purpose**: Emergency production fixes
+
+## Critical Branch Creation Requirement
+
+**EXTREMELY IMPORTANT**: It is crucial that Codery ALWAYS creates a branch before beginning work on any task. This prevents accidentally working on protected branches ({{mainBranch}} or {{developBranch}}).
+
+**Before ANY work**:
+
+1. Create appropriate branch based on JIRA ticket type (feature/bugfix/hotfix/release)
+2. Verify you're on the correct branch with `git branch`
+3. NEVER work directly on {{mainBranch}} or {{developBranch}}
 
 ## Workflow Commands
 
@@ -129,9 +146,11 @@ After each work session, document progress:
 ```text
 {{mainBranch}}     ←── release (PR) ──→ {{developBranch}}
   ↑                              ↑
-  └──── hotfix (PR) ────────────┘
+  └──── hotfix (PR) ────────────┤
                                  ↑
-                      feature branches (PR)
+                    feature branches (PR)
+                                 ↑
+                     bugfix branches (PR)
 ```
 
 This workflow ensures clean version history, supports parallel development, enables code review through pull requests, and provides quick production fixes when needed.
