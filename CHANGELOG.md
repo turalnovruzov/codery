@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/turalnovruzov/codery/compare/v1.4.0...v1.5.0) (2025-07-29)
+
+
+### Features
+
+* **templates:** add branch creation requirements to Trunk-Based workflow ([7cb4f5e](https://github.com/turalnovruzov/codery/commit/7cb4f5eeef544b9329595156a91103fb5d1e3a2b))
+
 # [1.4.0](https://github.com/turalnovruzov/codery/compare/v1.3.0...v1.4.0) (2025-07-29)
 
 
