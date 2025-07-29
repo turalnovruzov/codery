@@ -1,3 +1,15 @@
+# [1.6.0](https://github.com/turalnovruzov/codery/compare/v1.5.0...v1.6.0) (2025-07-29)
+
+
+### Bug Fixes
+
+* **retrospective:** add critical error handling and file creation ([b03ae23](https://github.com/turalnovruzov/codery/commit/b03ae2382e6faa7701308d5c6a36619fb03f2411))
+
+
+### Features
+
+* modernize retrospective system with persistent learning ([6cd95f2](https://github.com/turalnovruzov/codery/commit/6cd95f29270bdfd0049a2b9856908879a1427178))
+
 # [1.5.0](https://github.com/turalnovruzov/codery/compare/v1.4.0...v1.5.0) (2025-07-29)
 
 
