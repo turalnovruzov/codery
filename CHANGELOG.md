@@ -1,3 +1,22 @@
+# [1.5.0](https://github.com/turalnovruzov/codery/compare/v1.4.0...v1.5.0) (2025-07-29)
+
+
+### Features
+
+* **templates:** add branch creation requirements to Trunk-Based workflow ([7cb4f5e](https://github.com/turalnovruzov/codery/commit/7cb4f5eeef544b9329595156a91103fb5d1e3a2b))
+
+# [1.4.0](https://github.com/turalnovruzov/codery/compare/v1.3.0...v1.4.0) (2025-07-29)
+
+
+### Bug Fixes
+
+* prevent automatic subagent handoff without user approval ([adb1aa8](https://github.com/turalnovruzov/codery/commit/adb1aa888c6ea515fe5cc089b0838019605d1c4b))
+
+
+### Features
+
+* **subagents:** convert remaining 8 subagents to clean specialist format ([2258341](https://github.com/turalnovruzov/codery/commit/225834191db57f8c5d03ace37d3769dee529e7f3))
+
 # [1.3.0](https://github.com/turalnovruzov/codery/compare/v1.2.0...v1.3.0) (2025-07-28)
 
 
