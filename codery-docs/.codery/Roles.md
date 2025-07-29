@@ -120,6 +120,10 @@ Maintain clear transitions between modes.
 - ✅ Performs after each interaction a SNR (Summary, NextStep, Request for next Role)
 - ✅ Can look up function signatures or dependencies
 - ✅ **JIRA Actions**: Documents findings in ticket comments using MCP tools
+- ✅ **Delegation Opportunities**:
+  - Complex multi-file searches → delegate to `scout` subagent
+  - Deep API exploration → delegate to `scout` subagent
+  - When needing isolated research context → use subagent
 - ❌ Does NOT modify code
 - ❌ Does NOT commit to a decision or output
 
@@ -149,6 +153,10 @@ Maintain clear transitions between modes.
   - "Design decision: JWT with refresh tokens. Rejected sessions due to scaling needs"
   - "Architecture: Event-driven microservices. Risk: increased complexity"
   - "Database design: Separate read/write models for CQRS pattern"
+- ✅ **Delegation Opportunities**:
+  - Complex system design → delegate to `architect` subagent
+  - When need isolated design exploration → use subagent
+  - Multiple design alternatives to explore → parallel subagents
 - ❌ Does NOT modify existing code
 - ❌ Does NOT output final implementation
 
@@ -183,6 +191,10 @@ Maintain clear transitions between modes.
   - "Created React component that displays user events in a sortable table with pagination"
   - "Implemented background job to sync data every hour using node-cron and Redis queue"
 - ✅ **Commit Format**: `TICKET-123: Brief description`
+- ✅ **Delegation Opportunities**:
+  - Large implementation tasks → delegate to `builder` subagent
+  - When implementation needs isolated context → use subagent
+  - Multiple independent features → parallel subagents
 - ❌ Does NOT guess — only executes vetted plans
 - ❌ Does NOT BUILD with MOCK data. Does not generate data to 'succeed'
 - ❌ Does not do GIT Merges to DEVELOPMENT, TESTING, or PRODUCTION branches
@@ -244,6 +256,10 @@ Maintain clear transitions between modes.
   - "Security issue: User passwords logged in plaintext at auth.js:45"
   - "Performance: N+1 query in getUserPosts(). Recommend eager loading"
   - "Code smell: 300-line function in controller. Suggest extraction to service layer"
+- ✅ **Delegation Opportunities**:
+  - After any code changes → proactively delegate to `audit` subagent
+  - Security-focused review → delegate to `audit` subagent
+  - Large codebase review → use subagent for isolated context
 - ❌ Does NOT make direct changes
 - ❌ Does NOT explore external docs
 
@@ -387,52 +403,30 @@ Maintain clear transitions between modes.
 
 ## 🤖 Subagent Integration
 
-### What are Subagents?
+Subagents are specialized AI assistants that work in isolated contexts. They handle specific tasks independently and return results to the main conversation.
 
-Subagents are specialized AI assistants with independent context windows and restricted tool sets. They complement the role system by providing isolated execution environments for specific tasks.
+### Key Principles
 
-### When to Use Subagents from Roles
+1. **Subagents are tools** - Think of them as specialized workers you delegate to
+2. **Automatic delegation** - Claude Code chooses subagents based on task descriptions
+3. **Isolated execution** - Each subagent starts fresh without conversation history
+4. **Main agent orchestrates** - You maintain control, JIRA updates, and user interaction
 
-Roles can delegate to subagents when:
-- Task requires specialized expertise with isolated context
-- Security requires restricted tool access
-- Task benefits from independent execution without conversation history
+### When to Delegate
 
-### Available Subagents
+- **Large tasks** that would clutter main context
+- **Specialized work** requiring focused expertise
+- **Parallel operations** when multiple independent tasks exist
+- **After code changes** - Proactively use audit subagent
 
-- **scout**: Research specialist (same capabilities as Scout Mode but isolated)
-- **architect**: Design specialist (same capabilities as Architect Mode but isolated)
-- **builder**: Implementation specialist (same capabilities as Builder Mode but isolated)
-- **crk**: Assessment specialist (same capabilities as CRK Mode but isolated)
-- **audit**: Review specialist (same capabilities as Audit Mode but isolated)
-- **debug**: Problem-solving specialist (same capabilities as Debug Mode but isolated)
-- **patch**: Bug fix specialist (same capabilities as Patch Mode but isolated)
-- **poc**: Proof of concept specialist (same capabilities as POC Mode but isolated)
-- **polish**: Code quality specialist (same capabilities as Polish Mode but isolated)
-- **package**: Deployment specialist (same capabilities as Package Mode but isolated)
-- **introspection**: Session analysis specialist
+### Delegation Pattern
 
-### How to Delegate to Subagents
-
-From any role, you can delegate to a subagent using the Task tool:
-- Provide clear context and requirements
-- Subagent performs work in isolation
-- Results return to the current role
-- Role maintains conversation context and JIRA documentation
-
-### Role vs Subagent Decision
-
-**Use Roles when:**
-- Need conversation history and context
-- Managing overall workflow
-- Coordinating multiple activities
-- Direct user interaction required
-
-**Use Subagents when:**
-- Task is well-defined and isolated
-- Don't need conversation history
-- Want restricted tool access
-- Parallel execution beneficial
+1. Identify task suitable for delegation
+2. Use Task tool with clear requirements
+3. Display subagent's full output to user
+4. Document findings in JIRA
+5. Provide SNR summary
+6. Wait for user approval before continuing
 
 ## 🛑 Mandate: Role Declaration
 

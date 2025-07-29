@@ -22,9 +22,9 @@ const packageRoot = path.resolve(__dirname, '../..');
 // Define the order of files to merge (customize as needed)
 const fileOrder = [
   'Roles.md',
-  'Subagents.md',
   '', // Placeholder for workflow file
   'JIRA_Workflow.md',
+  'SubagentWorkflow.md',
   'Commands.md',
   'LifeCycles.md',
   'SuccessCriteria.md',
@@ -125,10 +125,6 @@ function mergeMarkdownFiles(files: MarkdownFile[]): string {
   sections.push('');
   sections.push(
     'This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.'
-  );
-  sections.push('');
-  sections.push(
-    'The system uses both Roles (for context-aware work) and Subagents (for isolated tasks).'
   );
   sections.push('');
   sections.push('---');
