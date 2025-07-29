@@ -40,6 +40,74 @@ Codery supports Trunk-Based Development, a modern branching strategy that emphas
 - No direct pushes to {{mainBranch}} - use pull requests
 - Require passing CI/CD pipeline before merge
 
+## 🚨 EXTREMELY IMPORTANT: Critical Branch Creation Requirement
+
+**⚠️ STOP AND READ: You MUST verify your current branch BEFORE ANY code changes!**
+
+### Why This Matters
+Working on the wrong branch (especially {{mainBranch}}) can:
+- Bypass code review requirements
+- Break CI/CD pipelines  
+- Cause production incidents
+- Violate team agreements
+
+### Decision Criteria: Direct Commit vs Feature Branch
+
+#### ✅ Direct Commits to {{mainBranch}} (Rare)
+Only when ALL conditions are met:
+- Change is < 10 lines
+- Zero risk to production
+- Pre-approved by team lead
+- Emergency hotfix with incident ticket
+
+#### 🔀 Feature Branch Required (Default)
+For everything else:
+- Any feature development
+- Bug fixes (use bugfix/ prefix)
+- Refactoring
+- Documentation updates
+- Configuration changes
+
+### Pre-Work Checklist
+Before writing ANY code, execute these commands:
+
+```bash
+# 1. CHECK YOUR CURRENT BRANCH
+git branch --show-current
+
+# 2. If on {{mainBranch}}, STOP and create feature branch:
+git checkout {{mainBranch}}
+git pull origin {{mainBranch}}
+git checkout -b feature/{{projectKey}}-XXX-description
+
+# 3. Verify you're on the correct branch
+git branch --show-current
+```
+
+### Time-Based Safety Rules
+- **Morning Start**: Always verify branch
+- **After Breaks**: Re-verify branch (context switches cause mistakes)
+- **Before Commits**: Final branch check
+- **After PR Reviews**: Ensure you're not on {{mainBranch}}
+
+### Common Mistake Prevention
+
+❌ **WRONG** (Direct work on trunk):
+```bash
+git checkout {{mainBranch}}
+# Start coding immediately - NO!
+```
+
+✅ **CORRECT** (Feature branch first):
+```bash
+git checkout {{mainBranch}}
+git pull origin {{mainBranch}}
+git checkout -b feature/{{projectKey}}-123-user-auth
+# NOW you can start coding
+```
+
+Remember: When in doubt, CREATE A BRANCH. It's always safer and you can always merge quickly in trunk-based development.
+
 ## Workflow Commands
 
 ### Direct Trunk Development (Recommended for Small Changes)
