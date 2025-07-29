@@ -49,6 +49,12 @@ The Codery development lifecycle leverages specialized subagents for each phase 
 - **package** subagent handles deployment
 - Updates JIRA ticket status
 
+### 8. **Retrospective Phase** (Optional)
+- **introspection** subagent analyzes session
+- Documents learnings in .codery/Retrospective.md
+- Identifies patterns for system improvement
+- Ensures knowledge persists across sessions
+
 ## Important Notes
 
 - Main agent MUST display subagent's detailed output BEFORE providing SNR
@@ -64,14 +70,23 @@ The Codery development lifecycle leverages specialized subagents for each phase 
 
 The **introspection** subagent handles session analysis:
 
-### 1. Check PROJECTCODERY Configuration
-- Creates improvement tickets in PROJECTCODERY if configured
-- Otherwise, documents lessons learned
+### 1. Retrospective Documentation
+- Reads existing .codery/Retrospective.md file
+- Identifies genuinely new learnings from session
+- Appends unique insights to avoid duplication
+- Maintains persistent knowledge across sessions
 
-### 2. LessonsLearned.md Entry Format
+### 2. Retrospective.md Entry Format
 ```
-Date | Finding Category | Description | Recommendation
+| Date | Category | Finding | Root Cause | Recommendation | Ticket |
+| YYYY-MM-DD | Category Name | What happened | Why it happened | How to prevent | COD-XXX |
 ```
+
+### 3. Benefits of Persistent Learning
+- Knowledge accumulates across all sessions
+- Common patterns become visible over time
+- Reduces repeated mistakes
+- Improves system continuously
 
 ## Lifecycle Summary
 
@@ -80,5 +95,6 @@ The lifecycle ensures systematic progression:
 1. **Understanding** → **Research** (scout) → **Design** (architect)
 2. **Assessment** (crk) → **Implementation** (builder)
 3. **Quality** (audit/debug/patch) → **Deployment** (package)
+4. **Retrospective** (introspection) → **Learning** (.codery/Retrospective.md)
 
-Each phase uses specialized subagents with mandatory JIRA documentation to maintain project visibility and accountability.
+Each phase uses specialized subagents with mandatory JIRA documentation to maintain project visibility and accountability. The retrospective phase ensures continuous improvement through persistent learning.
