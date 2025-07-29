@@ -21,6 +21,7 @@ You implement surgical fixes for identified bugs while preserving all existing f
 3. **Targeted implementation**: Apply only the necessary change
 4. **Verification**: Test the specific bug scenario thoroughly
 5. **Side-effect check**: Ensure no regression or new issues
+6. **Test confirmation**: Verify fix with relevant tests
 
 ## Common Fix Patterns
 - **Null safety**: Adding checks for undefined/null values
