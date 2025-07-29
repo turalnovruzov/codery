@@ -36,11 +36,13 @@ codery/
 │       └── config.ts           # TypeScript interfaces
 ├── codery-docs/
 │   └── .codery/                # Source documentation templates
-│       ├── Subagents.md        # Subagent definitions
+│       ├── Roles.md            # Role-based development system
 │       ├── Commands.md         # Available commands
 │       ├── JIRA_Workflow.md    # JIRA integration guide
+│       ├── SubagentWorkflow.md # Subagent integration patterns
 │       ├── LifeCycles.md       # Development lifecycles
 │       ├── SuccessCriteria.md  # Success criteria
+│       ├── Retrospective.md    # Session learnings (not in build)
 │       └── GitWorkflows/       # Git workflow templates
 │           ├── GitFlow.md
 │           └── TrunkBased.md
@@ -48,6 +50,20 @@ codery/
 ├── docs/                       # User documentation
 └── engineering-docs/           # This documentation
 ```
+
+## Recent Changes
+
+### Version 1.6.0 - Role and Subagent Integration
+
+**Breaking Change**: The `Subagents.md` file has been removed and replaced with a new architecture that integrates subagents directly into the role system.
+
+**Key Changes**:
+- Moved subagent functionality into `Roles.md` with delegation patterns
+- Added `SubagentWorkflow.md` for Codery-specific integration documentation
+- Reordered file processing to prioritize `Roles.md` as the primary system
+- Added `Retrospective.md` for persistent session learnings (excluded from builds)
+
+**Migration Guide**: Projects that directly referenced `Subagents.md` should update to use the new integrated approach documented in `Roles.md` and `SubagentWorkflow.md`.
 
 ## Core Functionality
 
@@ -111,13 +127,14 @@ The template system enables dynamic documentation generation based on project co
 ### File Processing
 
 **File Order**:
-1. Subagents.md
+1. Roles.md
 2. Workflow file (GitFlow.md or TrunkBased.md based on config)
 3. JIRA_Workflow.md
-4. Commands.md
-5. LifeCycles.md
-6. SuccessCriteria.md
-7. Any remaining files
+4. SubagentWorkflow.md
+5. Commands.md
+6. LifeCycles.md
+7. SuccessCriteria.md
+8. Any remaining files (excluding Retrospective.md)
 
 **Merging Process**:
 1. Adds CLAUDE.md header
@@ -180,6 +197,8 @@ The template system enables dynamic documentation generation based on project co
 2. **New Templates**: Add markdown files to `codery-docs/.codery/`
 3. **New Variables**: Update `CoderyConfig` interface and substitution logic
 4. **New Workflows**: Add to `GitWorkflows/` directory
+5. **New Roles**: Update `Roles.md` with role definition and integration patterns
+6. **File Order**: Update the `fileOrder` array in `src/lib/buildDocs.ts` if needed
 
 ### Code Style Guidelines
 
