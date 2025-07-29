@@ -21,9 +21,10 @@ const packageRoot = path.resolve(__dirname, '../..');
 
 // Define the order of files to merge (customize as needed)
 const fileOrder = [
-  'Subagents.md',
+  'Roles.md',
   '', // Placeholder for workflow file
   'JIRA_Workflow.md',
+  'SubagentWorkflow.md',
   'Commands.md',
   'LifeCycles.md',
   'SuccessCriteria.md',
@@ -54,11 +55,11 @@ function readMarkdownFiles(config: CoderyConfig | null): MarkdownFile[] {
   // Update fileOrder with the selected workflow file
   const updatedFileOrder = fileOrder.map(file => file === '' ? workflowFile : file);
 
-  // Get all .md files from root directory (excluding subdirectories)
+  // Get all .md files from root directory (excluding subdirectories and Retrospective.md)
   const rootFiles = fs.readdirSync(coderyDir)
     .filter(file => {
       const filePath = path.join(coderyDir, file);
-      return fs.statSync(filePath).isFile() && file.endsWith('.md');
+      return fs.statSync(filePath).isFile() && file.endsWith('.md') && file !== 'Retrospective.md';
     });
 
   // Build the complete file list
@@ -75,9 +76,9 @@ function readMarkdownFiles(config: CoderyConfig | null): MarkdownFile[] {
     }
   });
 
-  // Add any remaining root files not in the order
+  // Add any remaining root files not in the order (excluding Retrospective.md)
   rootFiles.forEach(file => {
-    if (!updatedFileOrder.includes(file)) {
+    if (!updatedFileOrder.includes(file) && file !== 'Retrospective.md') {
       allFilesToRead.push(file);
     }
   });

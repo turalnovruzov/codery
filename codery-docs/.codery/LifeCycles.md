@@ -1,70 +1,52 @@
 # Codery Development Lifecycles
 
-## Development Flow with Subagents
+## Classic Lifecycle Role Handoff Order
 
-The Codery development lifecycle leverages specialized subagents for each phase of development. The main Claude agent orchestrates the flow while subagents handle specific tasks.
+### 1. **MIRROR MODE** — Confirm understanding and clarify the request
 
-### 1. **Understanding Phase**
-- Main agent confirms understanding with user
-- May use **scout** subagent for initial research
-- Documents context in JIRA
+- *Handoff to → SCOUT MODE*
+- Add to your checklist: JIRA comments
 
-### 2. **Research Phase**
-- **scout** subagent investigates codebase, APIs, and dependencies
-- Returns comprehensive research findings naturally
-- Main agent displays full report to user
-- Main agent documents findings in JIRA with `[Scout]` prefix
-- **STOP**: Main agent provides SNR and waits for user approval before proceeding
+### 2. **SCOUT MODE** — Gather requirements, context, and technical details
 
-### 3. **Design Phase**
-- **architect** subagent creates solution design
-- Provides clear implementation plan with detailed analysis
-- Main agent displays full architectural plan to user
-- Main agent documents design decisions in JIRA with `[Architect]` prefix
-- **STOP**: Main agent provides SNR and waits for user approval before proceeding
+- *Handoff to → ARCHITECT MODE*
+- Add to your checklist: JIRA comments
 
-### 4. **Assessment Phase**
-- **crk** subagent evaluates confidence, risks, and knowledge gaps
-- Must achieve 85%+ confidence before proceeding
-- Main agent displays CRK assessment to user
-- Main agent documents assessment in JIRA with `[CRK]` prefix
-- **STOP**: Main agent provides SNR and waits for user approval before proceeding
+### 3. **ARCHITECT MODE** — Design the solution, document the approach, and break down tasks
 
-### 5. **Implementation Phase**
-- **builder** subagent implements the approved design
-- Provides detailed implementation progress naturally
-- Main agent displays full build report to user
-- Main agent documents what was built in JIRA with `[Builder]` prefix
-- Main agent commits with JIRA ticket references
-- **STOP**: Main agent provides SNR and waits for user approval before proceeding
+- *Handoff to → TINKER MODE (for planning/spec updates) or directly to BUILDER MODE if plan is clear*
+- Add to your checklist: JIRA comments
 
-### 6. **Quality Assurance Phase**
-- **audit** subagent reviews code for issues
-- **debug** subagent investigates any failures
-- **patch** subagent applies targeted fixes
-- All findings documented in JIRA
+### 4. **TINKER MODE** (optional) — Refine plan, update specs/README, clarify implementation details
 
-### 7. **Finalization Phase**
-- **polish** subagent improves code quality
-- **package** subagent handles deployment
-- Updates JIRA ticket status
+- *Handoff to → BUILDER MODE*
+- Add to your checklist: JIRA comments
 
-### 8. **Retrospective Phase** (Optional)
-- **introspection** subagent analyzes session
-- Documents learnings in .codery/Retrospective.md
-- Identifies patterns for system improvement
-- Ensures knowledge persists across sessions
+### 5. **CRK ASSESSMENT** — Perform and present summary of Confidence Level, Risks, and Knowledge Gap assessment
+
+- Assess if ready for build phase or list unknowns/risks
+- Add to your checklist: JIRA comments
+
+### 6. **BUILDER MODE** — Implement code, tests, and documentation as per the plan
+
+- *Handoff to → KANBAN MODE*
+- Add to your checklist: JIRA comments
+
+### 7. **KANBAN MODE** — Update status, record SNR, and coordinate review/approval
+
+- *Handoff to → USER MODE for final approval*
+- Add to your checklist: JIRA comments
+
+### 8. **USER MODE** — User reviews and approves the work for merge
+
+- *Handoff to → KANBAN MODE to close and merge*
+- Add to your checklist: User's JIRA comment expectations
 
 ## Important Notes
 
-- Main agent MUST display subagent's detailed output BEFORE providing SNR
-- Main agent provides **SNR** (Summarize, Next Steps, Request) after displaying subagent work
-- **CRITICAL**: Main agent MUST STOP after each SNR and wait for user approval before proceeding to next phase
-- Never automatically proceed from one phase to the next without user approval
-- Main agent MUST document all subagent work in JIRA
-- Subagents operate with independent context windows
-- User approvals happen through main agent interaction
-- Never hide or summarize subagent output - always show full details
+- Each step should include a clear **SNR** (Summarize, Next Steps, Request Role) block before handoff
+- Every handoff to BUILDER MODE requires a **CRK** (Confidence, Risks, and Knowledge Gap) assessment
+- CRK findings must be added to your checklist with JIRA comments
 
 ## Self-Introspective Analysis
 
@@ -77,6 +59,7 @@ The **introspection** subagent handles session analysis:
 - Maintains persistent knowledge across sessions
 
 ### 2. Retrospective.md Entry Format
+
 ```
 | Date | Category | Finding | Root Cause | Recommendation | Ticket |
 | YYYY-MM-DD | Category Name | What happened | Why it happened | How to prevent | COD-XXX |
@@ -90,11 +73,10 @@ The **introspection** subagent handles session analysis:
 
 ## Lifecycle Summary
 
-The lifecycle ensures systematic progression:
+The lifecycle ensures systematic progression through phases:
 
-1. **Understanding** → **Research** (scout) → **Design** (architect)
-2. **Assessment** (crk) → **Implementation** (builder)
-3. **Quality** (audit/debug/patch) → **Deployment** (package)
-4. **Retrospective** (introspection) → **Learning** (.codery/Retrospective.md)
+1. **Understanding** (Mirror) → **Research** (Scout) → **Design** (Architect)
+2. **Planning** (Tinker) → **Assessment** (CRK) → **Implementation** (Builder)
+3. **Tracking** (Kanban) → **Approval** (User) → **Completion** (Merge)
 
-Each phase uses specialized subagents with mandatory JIRA documentation to maintain project visibility and accountability. The retrospective phase ensures continuous improvement through persistent learning.
+Each phase has specific responsibilities and mandatory JIRA documentation requirements to maintain project visibility and accountability.
