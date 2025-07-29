@@ -2,7 +2,7 @@
 
 ## Overview
 
-Codery leverages Claude Code's native subagent feature for specialized AI assistants. Subagents replace the previous text-based role system with a more powerful implementation featuring independent context windows, specific tool permissions, and built-in JIRA integration.
+Codery leverages Claude Code's native subagent feature for specialized AI assistants. Subagents complement the role system by providing isolated execution environments with independent context windows, specific tool permissions, and focused expertise.
 
 ## What are Codery Subagents?
 
