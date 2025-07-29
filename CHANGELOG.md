@@ -1,3 +1,26 @@
+# [2.0.0](https://github.com/turalnovruzov/codery/compare/v1.6.0...v2.0.0) (2025-07-29)
+
+
+### Bug Fixes
+
+* **build:** exclude Retrospective.md from CLAUDE.md generation ([2958a4d](https://github.com/turalnovruzov/codery/commit/2958a4de77ad60cd11a7924d6c3e1df618fa5841))
+
+
+### Features
+
+* **templates:** complete role and subagent integration restructuring ([7d56643](https://github.com/turalnovruzov/codery/commit/7d56643e8b7948b21e0f642457dc19859e01a621))
+* **templates:** restore role-based system and integrate with subagents ([c5e9592](https://github.com/turalnovruzov/codery/commit/c5e9592e8a5d0fb49d15098c3a2c8e5418ca2d0d)), closes [#17](https://github.com/turalnovruzov/codery/issues/17)
+
+
+### BREAKING CHANGES
+
+* **templates:** Subagents.md removed. Projects using direct references to this file
+will need to update to use Roles.md and SubagentWorkflow.md instead.
+
+🤖 Generated with [Claude Code](https://claude.ai/code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+
 # [1.6.0](https://github.com/turalnovruzov/codery/compare/v1.5.0...v1.6.0) (2025-07-29)
 
 
