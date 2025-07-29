@@ -80,6 +80,11 @@ For session analysis in current ticket:
 6. Read existing .codery/Retrospective.md
 7. Append new unique learnings
 
+### Error Handling
+- If .codery/Retrospective.md doesn't exist, create it with proper header
+- Validate table format before parsing
+- Handle file operation errors gracefully
+
 ## Retrospective Entry Format
 
 Append entries to .codery/Retrospective.md table:
@@ -88,11 +93,33 @@ Append entries to .codery/Retrospective.md table:
 | YYYY-MM-DD | Category Name | What happened | Why it happened | How to prevent | COD-XXX |
 ```
 
+### File Creation Template
+If .codery/Retrospective.md doesn't exist, create with:
+```markdown
+# Codery Retrospective
+
+This file contains learnings from Codery sessions to improve the system over time. The introspection subagent appends new findings here after each session.
+
+## Session Learnings
+
+| Date | Category | Finding | Root Cause | Recommendation | Ticket |
+|------|----------|---------|------------|----------------|--------|
+```
+
 ### Deduplication Process
 1. Read existing retrospective entries
-2. Check if finding already documented
-3. Only add genuinely new insights
-4. Update existing entries if more context available
+2. Check if finding already documented:
+   - Same Category AND
+   - Similar Root Cause (80% text similarity)
+3. If duplicate found:
+   - Append additional context to existing entry
+   - Do not create new row
+4. Only add genuinely new insights
+
+### Text Similarity Check
+- Normalize text: lowercase, trim whitespace
+- Compare keywords in Root Cause field
+- Consider 80% word overlap as duplicate
 
 ## Example Findings
 - "Git operations failed 3 times due to wrong branch. Suggest: Always show current branch"

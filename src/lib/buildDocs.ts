@@ -450,6 +450,30 @@ export async function buildCommand(options: BuildOptions): Promise<void> {
       console.log(chalk.green('✓ Copied subagents to .claude/agents/'));
     }
     
+    // Copy Retrospective.md if it doesn't exist
+    const coderyDir = path.join(process.cwd(), '.codery');
+    const retrospectivePath = path.join(coderyDir, 'Retrospective.md');
+    
+    if (!fs.existsSync(retrospectivePath)) {
+      const sourceRetrospectivePath = path.join(packageRoot, 'codery-docs/.codery/Retrospective.md');
+      
+      if (fs.existsSync(sourceRetrospectivePath)) {
+        try {
+          // Ensure .codery directory exists
+          if (!fs.existsSync(coderyDir)) {
+            fs.mkdirSync(coderyDir, { recursive: true });
+          }
+          
+          // Copy the Retrospective.md template
+          const retrospectiveContent = fs.readFileSync(sourceRetrospectivePath, 'utf-8');
+          fs.writeFileSync(retrospectivePath, retrospectiveContent, 'utf-8');
+          console.log(chalk.green('✓ Created .codery/Retrospective.md'));
+        } catch (error: any) {
+          console.log(chalk.yellow(`  ⚠️  Failed to create Retrospective.md: ${error.message}`));
+        }
+      }
+    }
+    
     console.log();
     console.log('Next steps:');
     console.log('  1. Review the generated CLAUDE.md file');

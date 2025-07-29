@@ -12,12 +12,12 @@ This document lists all available commands and directives that can be used withi
   Initialize the Codery system by instructing the AI agent to:
   1. Read or re-read the CLAUDE.md file in the project root
   2. Check for and read .codery/application-docs.md if it exists
-  3. Check for and read .codery/Retrospective.md to learn from past sessions
+  3. Check for and read .codery/Retrospective.md to learn from past sessions (if exists)
   4. Fully adopt the Codery methodology with subagents, workflows, and protocols
   5. Begin operating under the Codery system guidelines
   6. Confirm subagents are available in .claude/agents/
   
-  _Note: This command ensures the AI agent is properly configured to work within the Codery framework. The AI should acknowledge reading CLAUDE.md and confirm activation of the Codery system._
+  _Note: This command ensures the AI agent is properly configured to work within the Codery framework. The AI should acknowledge reading CLAUDE.md and confirm activation of the Codery system. If Retrospective.md doesn't exist, the system logs an informative message and continues normally._
 
 ### Information Commands
 
