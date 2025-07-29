@@ -1,3 +1,22 @@
+# [3.0.0](https://github.com/turalnovruzov/codery/compare/v2.0.0...v3.0.0) (2025-07-29)
+
+
+### Code Refactoring
+
+* **templates:** remove context-dependent subagents ([04f3d22](https://github.com/turalnovruzov/codery/commit/04f3d22fbb5894fd5395af53c7dac13d9de6ab37))
+
+
+### Features
+
+* **templates:** improve subagent effectiveness ([49a3ff9](https://github.com/turalnovruzov/codery/commit/49a3ff95d86aebca08254ac3f49fdb9c25f1e020))
+
+
+### BREAKING CHANGES
+
+* **templates:** The following subagents are no longer available:
+architect, crk, introspection, package, poc. Projects using these
+subagents will need to handle these tasks in the main agent context.
+
 # [2.0.0](https://github.com/turalnovruzov/codery/compare/v1.6.0...v2.0.0) (2025-07-29)
 
 
