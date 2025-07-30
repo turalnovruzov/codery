@@ -25,7 +25,6 @@ const fileOrder = [
   '', // Placeholder for workflow file
   'JIRA_Workflow.md',
   'SubagentWorkflow.md',
-  'Commands.md',
   'LifeCycles.md',
   'SuccessCriteria.md',
 ];
@@ -325,6 +324,69 @@ async function copySubagentFiles(config: CoderyConfig | null, dryRun: boolean = 
   }
 }
 
+// Copy command files to user's project
+async function copyCommandFiles(config: CoderyConfig | null, dryRun: boolean = false): Promise<boolean> {
+  const sourceDir = path.join(packageRoot, 'codery-docs/.codery/commands');
+  const targetDir = path.join(process.cwd(), '.claude/commands');
+  
+  // Check if source directory exists
+  if (!fs.existsSync(sourceDir)) {
+    console.log(chalk.yellow('  ⚠️  No command files found in package'));
+    return false;
+  }
+  
+  try {
+    // Create target directory if it doesn't exist
+    if (!fs.existsSync(targetDir)) {
+      fs.mkdirSync(targetDir, { recursive: true });
+    }
+    
+    // Get all .md files from commands directory
+    const commandFiles = fs.readdirSync(sourceDir)
+      .filter(file => file.endsWith('.md'));
+    
+    if (commandFiles.length === 0) {
+      return false;
+    }
+    
+    if (dryRun) {
+      console.log(`Would copy ${commandFiles.length} command files to ${targetDir}`);
+      commandFiles.forEach(file => console.log(`  - ${file}`));
+      return true;
+    }
+    
+    console.log(`Copying ${commandFiles.length} command files...`);
+    
+    // Process each command file
+    for (const file of commandFiles) {
+      const sourcePath = path.join(sourceDir, file);
+      const targetPath = path.join(targetDir, file);
+      
+      // Read the command content
+      let content = fs.readFileSync(sourcePath, 'utf-8');
+      
+      // Apply template substitution if config is available
+      if (config) {
+        const result = substituteTemplates(content, config);
+        content = result.content;
+        
+        if (result.unsubstituted.length > 0) {
+          console.log(chalk.yellow(`  ⚠️  Unsubstituted in ${file}: ${result.unsubstituted.join(', ')}`));
+        }
+      }
+      
+      // Write to target
+      fs.writeFileSync(targetPath, content, 'utf-8');
+      console.log(`  ✓ ${file}`);
+    }
+    
+    return true;
+  } catch (error: any) {
+    console.log(chalk.red(`  ❌ Failed to copy commands: ${error.message}`));
+    return false;
+  }
+}
+
 // Main build command
 export async function buildCommand(options: BuildOptions): Promise<void> {
   console.log(chalk.blue('🏰 Codery Build'));
@@ -397,6 +459,9 @@ export async function buildCommand(options: BuildOptions): Promise<void> {
       // Show what subagents would be copied
       await copySubagentFiles(config, true);
       
+      // Show what commands would be copied
+      await copyCommandFiles(config, true);
+      
       return;
     }
 
@@ -449,6 +514,12 @@ export async function buildCommand(options: BuildOptions): Promise<void> {
     const subagentsSuccess = await copySubagentFiles(config, false);
     if (subagentsSuccess) {
       console.log(chalk.green('✓ Copied subagents to .claude/agents/'));
+    }
+    
+    // Copy command files
+    const commandsSuccess = await copyCommandFiles(config, false);
+    if (commandsSuccess) {
+      console.log(chalk.green('✓ Copied commands to .claude/commands/'));
     }
     
     // Copy Retrospective.md if it doesn't exist
