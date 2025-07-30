@@ -2,7 +2,7 @@
 
 ## Overview
 
-Codery integrates with JIRA through the Atlassian MCP (Model Context Protocol) tools. This document outlines how JIRA is used within the Codery system for comprehensive project tracking and management.
+Codery integrates with JIRA through Atlassian MCP tools for comprehensive project tracking and management.
 
 ## Configuration
 
@@ -13,20 +13,13 @@ Your JIRA integration requires:
 
 ## Core JIRA Concepts
 
-JIRA follows standard Agile methodology with these work item types:
+Standard Agile work item types:
 
-- **Epics**: Large features or initiatives spanning multiple sprints
+- **Epics**: Large features spanning multiple sprints
 - **Stories**: User-facing functionality with acceptance criteria  
-- **Tasks**: Technical work items without user-facing impact
-- **Bugs**: Defects requiring investigation and fixes
-- **Sub-tasks**: Breakdown of stories/tasks into smaller units
-
-## Atlassian MCP Integration
-
-Codery uses the Atlassian MCP tools to interact with JIRA. All operations require:
-
-- **Cloud ID**: `{{cloudId}}`
-- **Project Key**: `{{projectKey}}`
+- **Tasks**: Technical work items
+- **Bugs**: Defects requiring fixes
+- **Sub-tasks**: Breakdown of larger items
 
 ## Workflow States
 
@@ -37,7 +30,7 @@ Standard JIRA workflow progression:
 3. **In Review** - Code review/PR stage  
 4. **Done** - Work completed and merged
 
-## Integration with Git Flow
+## Git Integration
 
 Every Git branch must reference a JIRA ticket:
 
