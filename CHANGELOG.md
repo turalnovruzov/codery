@@ -1,3 +1,15 @@
+## [3.0.1](https://github.com/turalnovruzov/codery/compare/v3.0.0...v3.0.1) (2025-07-30)
+
+
+### Bug Fixes
+
+* **docs:** restore critical content to prevent Codery ambiguities ([538ee0b](https://github.com/turalnovruzov/codery/commit/538ee0bc96159b51f4a5f40a717be9098d4cd872))
+
+
+### Reverts
+
+* restore Commands.md, JIRA_Workflow.md, and Roles.md to main branch versions ([4097f73](https://github.com/turalnovruzov/codery/commit/4097f7346730f53a01ba504ca5005c543ecce1a4))
+
 # [3.0.0](https://github.com/turalnovruzov/codery/compare/v2.0.0...v3.0.0) (2025-07-29)
 
 
