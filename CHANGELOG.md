@@ -1,3 +1,23 @@
+# [4.0.0](https://github.com/turalnovruzov/codery/compare/v3.0.1...v4.0.0) (2025-07-30)
+
+
+### Bug Fixes
+
+* **commands:** update status command to summarize achievements ([ea7ae1a](https://github.com/turalnovruzov/codery/commit/ea7ae1a0e735f0f5191c3896ecbce3573dce46a3))
+
+
+### Features
+
+* **commands:** namespace commands under codery to prevent conflicts ([fb3ac80](https://github.com/turalnovruzov/codery/commit/fb3ac8029e2825f8852d136a792f9188515781e0))
+* **commands:** replace text commands with slash commands ([8753546](https://github.com/turalnovruzov/codery/commit/87535469cac8151c73d7e2f13de96f76257c99d6))
+
+
+### BREAKING CHANGES
+
+* **commands:** Text commands (START, STATUS, etc.) are replaced
+with slash commands (/start, /status, etc.). Users must use the new
+slash command syntax after running 'codery build'.
+
 ## [3.0.1](https://github.com/turalnovruzov/codery/compare/v3.0.0...v3.0.1) (2025-07-30)
 
 
