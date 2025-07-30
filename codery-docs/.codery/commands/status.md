@@ -12,17 +12,21 @@ If no ticket ID is provided as $ARGUMENTS, prompt the user to specify which tick
 
 For the specified ticket (e.g., COD-12), retrieve and display:
 
-- Ticket title and type (Story, Task, Bug, etc.)
+**Ticket Overview:**
+- Title and type (Story, Task, Bug, etc.)
 - Current status (To Do, In Progress, In Review, Done)
 - Priority level
 - Assignee (if any)
 - Created and updated timestamps
-- Last 10 comments in chronological order (newest first) with:
-  - Author name
-  - Timestamp
-  - Comment body
 
-Format the output clearly with the ticket information at the top, followed by the recent comments section. Handle cases where the ticket has no comments gracefully.
+**Recent Activity Summary:**
+Analyze the last 10 comments and provide a concise summary of:
+- What has been achieved recently
+- Key decisions made
+- Current progress status
+- Any blockers or issues identified
+
+Group related activities together (e.g., all Scout findings, all Architecture decisions, all Builder implementations) and highlight the most significant developments. Focus on outcomes rather than just listing actions.
 
 Use the configured JIRA Cloud ID: {{cloudId}}
 Project Key: {{projectKey}}
