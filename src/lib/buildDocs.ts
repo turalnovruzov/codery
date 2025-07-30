@@ -341,9 +341,25 @@ async function copyCommandFiles(config: CoderyConfig | null, dryRun: boolean = f
       fs.mkdirSync(targetDir, { recursive: true });
     }
     
-    // Get all .md files from commands directory
-    const commandFiles = fs.readdirSync(sourceDir)
-      .filter(file => file.endsWith('.md'));
+    // Get all .md files from commands directory (including subdirectories)
+    const commandFiles: string[] = [];
+    
+    function findCommandFiles(dir: string, relativePath: string = '') {
+      const items = fs.readdirSync(dir);
+      
+      for (const item of items) {
+        const fullPath = path.join(dir, item);
+        const itemRelativePath = relativePath ? path.join(relativePath, item) : item;
+        
+        if (fs.statSync(fullPath).isDirectory()) {
+          findCommandFiles(fullPath, itemRelativePath);
+        } else if (item.endsWith('.md')) {
+          commandFiles.push(itemRelativePath);
+        }
+      }
+    }
+    
+    findCommandFiles(sourceDir);
     
     if (commandFiles.length === 0) {
       return false;
@@ -361,6 +377,12 @@ async function copyCommandFiles(config: CoderyConfig | null, dryRun: boolean = f
     for (const file of commandFiles) {
       const sourcePath = path.join(sourceDir, file);
       const targetPath = path.join(targetDir, file);
+      
+      // Ensure target directory exists for nested files
+      const targetFileDir = path.dirname(targetPath);
+      if (!fs.existsSync(targetFileDir)) {
+        fs.mkdirSync(targetFileDir, { recursive: true });
+      }
       
       // Read the command content
       let content = fs.readFileSync(sourcePath, 'utf-8');
