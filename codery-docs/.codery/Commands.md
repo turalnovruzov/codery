@@ -1,84 +1,31 @@
-# Codery Commands Reference
+# Commands Reference
 
-## Overview
+## System Commands
 
-This document lists all available commands and directives that can be used within the Codery system. Commands trigger specific behaviors, role switches, and workflows.
+**START/STARTUP**: Initialize Codery system, read CLAUDE.md, start in Mirror Mode
 
-## Core Commands
+**WhatsUp**: Summarize loaded playbooks/system knowledge
 
-### System Initialization
+**Status**: Show JIRA ticket status and last 10 comments
 
-- **START** / **STARTUP**  
-  Initialize the Codery system by instructing the AI agent to:
-  1. Read or re-read the CLAUDE.md file in the project root
-  2. Check for and read .codery/application-docs.md if it exists
-  3. Check for and read .codery/Retrospective.md to learn from past sessions (if exists)
-  4. Fully adopt the Codery methodology and all its roles, workflows, and protocols
-  5. Begin operating under the Codery system guidelines
-  6. Start in Mirror Mode as specified in the Roles documentation
-  
-  _Note: This command ensures the AI agent is properly configured to work within the Codery framework. The AI should acknowledge reading CLAUDE.md and confirm activation of the Codery system. If Retrospective.md doesn't exist, the system logs an informative message and continues normally._
+**Roles**: List all available roles
 
-### Information Commands
+**SWITCH `<role>`**: Change to specified role
 
-- **WhatsUp**  
-  Summarize what you know about the current codery system and playbooks you have read, specifically by name.  
-  _Note: You must NOT execute any BASH or shell commands for this directive._
+**SNR**: Trigger summary/next steps/role request (see Roles.md)
 
-- **Status**  
-  Request current JIRA ticket status, work summary, and fetch the last 10 comments.  
-  Displays comments in chronological order (newest first) with author, timestamp, and body text.  
-  _Note: Gracefully handles tickets with no comments and formats output for clear readability._
+## Workflow Commands
 
-- **Roles**  
-  Lists all the roles in the codery system.
+**Approved `<text>`**: Accept SNR recommendations with optional modifications
 
-### Role Management
+**Denied/Not Approved**: Return to Kanban/Mirror to reassess
 
-- **SWITCH `<role>`**  
-  Switch to the specified role and abide by its guidelines, then continue.
+**WHY `<text>`**: Trigger Explainer Mode for reasoning
 
-### Documentation & Communication
+**CLEANUP `<text>`**: Fix ESLint errors (ALL = entire project)
 
-- **SNR** (Summarize, Next Steps, Request Role)  
-  Provide a summary, outline next steps, and request the next role.
-  
-  Standard SNR protocol:
-  - 🔷 **S—Summarize**: Recap the explanation provided and any clarifications made
-  - 🟡 **N—Next Steps**: Suggest how to proceed based on improved understanding  
-  - 🟩 **R—Request Role**: Suggest an appropriate next role based on the clarified direction
+**Directives/Commands**: List all available commands
 
-### Approval Workflow
+**Self-Report/Self-Diagnose**: Trigger introspection analysis
 
-- **Approved `<text>`**  
-  Used after an SNR to accept the recommendations of Next Steps and Request Role, possibly with minor modifications in `<text>`.
-
-- **Denied** / **Not Approved**  
-  If not approved, return to KanBan or Mirror mode to reassess.
-
-### Analysis & Debugging
-
-- **WHY `<text>`**  
-  Request an explanation of the reasoning or thought process behind a choice, action, or recommendation. Triggers Explainer Mode.
-
-- **CLEANUP `<text>`**  
-  Request an ESLint cleanup process. This is typically used to fix linting errors in recently modified code.
-  - If the list of errors is small, fix them immediately
-  - Branch-level lint errors outside your code changes can be left
-  - If the directive is **"CLEANUP ALL"**, fix all ESLint errors in the project
-
-### Meta Commands
-
-- **Directives** / **Commands**  
-  List all the directives (this list) to the user with a mini description. Provides a compressed list of all available directives.
-
-- **Self-Report** / **Self-Diagnose**  
-  Triggers the 🔬 Self-Introspective Analysis Mode for session review and learning.
-
-## Usage Notes
-
-1. Commands are case-insensitive but conventionally written in uppercase
-2. Parameters in angle brackets `<>` are required
-3. Parameters in parentheses `()` indicate options (e.g., I for Issue, F for Feature, E for Epic)
-4. Some commands trigger immediate mode switches
-5. All commands should be documented in JIRA when applicable
+_Commands are case-insensitive. `<>` = required, `()` = options_

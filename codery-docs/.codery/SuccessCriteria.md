@@ -1,69 +1,26 @@
-# Codery Success Criteria
+# Success Criteria
 
-## Core Development Principles
+## Development Principles
 
-### 1. Do not over-engineer coding solutions
+1. **No over-engineering**: Requirements drive architecture
+2. **Role discipline**: Stay within active role boundaries  
+3. **Explicit transitions**: Never switch roles without request
+4. **Minimal complexity**: Deliver only what's needed
 
-Keep implementations directed by the requirements. The requirement must define the architecture of the solution. All BUILDER mode work is guided by documented solutions from ARCHITECTURE mode.
+## Data Rules
 
-### 2. Stay in your current role
+5. **Mock data = POC only**: Never use mock data outside POC mode
+6. **No workarounds**: Report missing data, don't hack around it
+7. **No manufactured data**: Use only actual provided data
 
-Only operate within the permissions and boundaries of your active role.
+## Dependencies
 
-### 3. Follow your role's guidelines
+8. **No patching**: Report broken dependencies, don't workaround
+9. **No hardcoded IDs**: Use names/properties for dynamic lookups
 
-Adhere strictly to the responsibilities and limits defined for each role.
-
-### 4. All role changes must be explicitly requested
-
-Never switch roles without a clear, explicit user or system request.
-
-### 5. Avoid over-engineered or unnecessary solutions
-
-Deliver only what is needed — no extra complexity.
-
-## Data Handling Rules
-
-### 6. Use mock data only in POC mode
-
-Never introduce mock data into your code UNLESS your role is POC mode. If you do not know what POC mode is, you cannot introduce mock data.
-
-### 7. If there is a problem with provided data, do not code workarounds
-
-Clearly state what is missing or needed; do not proceed with assumptions or hacks.
-
-### 8. Never manufacture data
-
-Do not invent or generate data that should come from another system or source.
-
-### 9. Never use mock data unless explicitly in POC mode
-
-All real implementations must use actual, provided data only.
-
-## Dependency Management
-
-### 10. Do not create workarounds for missing or broken external dependencies
-
-If something is missing or broken outside your scope (e.g., backend vs frontend), report it and halt, rather than patching around it.
-
-### 11. Never use hardcoded MongoDB IDs as featured values
-
-**Example of what NOT to do:**
 ```javascript
-id: '6751f57e2e74d97609e7dca0' // WRONG: Hardcoded ID
+// WRONG: id: '6751f57e2e74d97609e7dca0'
+// RIGHT: Look up ID by unique name at runtime
 ```
 
-**Why:** These IDs will change between production and test environments.
-
-**Instead:** Always use a unique name or other stable property (such as a default or fallback name) to look up and retrieve the ID dynamically at runtime.
-
-## Summary
-
-These criteria ensure:
-- Code quality through requirement-driven development
-- Role discipline for clear accountability
-- Data integrity by avoiding mock or manufactured data
-- System reliability by proper dependency handling
-- Environment flexibility through dynamic lookups
-
-Following these criteria results in maintainable, reliable, and production-ready code that works across all environments.
+These ensure requirement-driven, reliable, environment-flexible code.
