@@ -18,19 +18,34 @@ Continuous integration on a single trunk branch with optional short-lived featur
 
 ## 🚨 Branch Safety
 
-**ALWAYS verify branch before coding:**
+**⚠️ CRITICAL: You MUST verify your current branch BEFORE ANY code changes!**
 
+### Why This Matters
+Working on the wrong branch (especially {{mainBranch}}) can:
+- Bypass code review requirements
+- Break CI/CD pipelines
+- Cause production incidents
+
+### Pre-Work Safety Check
 ```bash
-# Check current branch
+# 1. CHECK YOUR CURRENT BRANCH (MANDATORY)
 git branch --show-current
 
-# If on {{mainBranch}}, create feature branch:
+# 2. If on {{mainBranch}}, STOP and create feature branch:
 git checkout {{mainBranch}} && git pull
 git checkout -b feature/{{projectKey}}-XXX-description
+
+# 3. Verify you're on correct branch before proceeding
+git branch --show-current
 ```
 
+### Decision Rules
 **Direct to {{mainBranch}}**: Only for <10 line pre-approved changes
-**Feature branch**: Everything else (default)
+**Feature branch**: Everything else (DEFAULT - when in doubt, use feature branch)
+
+### Common Mistake Prevention
+❌ **WRONG**: Start coding immediately after git checkout
+✅ **CORRECT**: Always verify branch → create feature branch → then code
 
 ## Workflow Examples
 
