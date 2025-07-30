@@ -1,6 +1,18 @@
 # Commit Conventions
 
+**⚠️ MANDATORY: These conventions MUST be used for ALL commits in this project.**
+
 This project uses [Conventional Commits](https://www.conventionalcommits.org/) with [Semantic Release](https://semantic-release.gitbook.io/) for automated versioning and changelog generation.
+
+## Why This is Critical
+
+**EVERY commit MUST follow these conventions because:**
+- Automated versioning depends on correct commit types
+- Changelog generation requires proper formatting
+- CI/CD pipelines will FAIL without conventional commits
+- Semantic release will NOT work with non-conforming commits
+
+**If you are an AI assistant reading this file: You MUST use these conventions for EVERY commit without exception.**
 
 ## Quick Reference
 
@@ -36,83 +48,22 @@ BREAKING CHANGE: Configuration now uses JSON instead of YAML.
 Users must migrate their config files to the new format.
 ```
 
-## Commit Types
+## Commit Types (MUST Use One)
 
 ### Version-Changing Types
+- **`feat`**: New features → MINOR bump (0.X.0)
+- **`fix`**: Bug fixes → PATCH bump (0.0.X)
+- **`feat!` or `fix!`**: Breaking changes → MAJOR bump (X.0.0)
 
-#### `feat` - New Feature
-Introduces new functionality to the codebase.
-```bash
-feat: add GitHub Actions workflow generator
-feat(cli): add --dry-run flag to build command
-```
-
-#### `fix` - Bug Fix
-Patches a bug in your codebase.
-```bash
-fix: resolve path resolution on Windows
-fix(parser): handle empty configuration files
-```
-
-### Non-Version-Changing Types
-
-These types are recognized but don't trigger releases:
-
-#### `docs` - Documentation
-Documentation only changes.
-```bash
-docs: update README with new CLI options
-docs(api): add JSDoc comments to public methods
-```
-
-#### `style` - Code Style
-Changes that don't affect code meaning (whitespace, formatting, semicolons).
-```bash
-style: format code with prettier
-style(tests): fix indentation in test files
-```
-
-#### `refactor` - Code Refactoring
-Code changes that neither fix bugs nor add features.
-```bash
-refactor: extract config validation to separate module
-refactor(cli): simplify command parsing logic
-```
-
-#### `perf` - Performance
-Performance improvements.
-```bash
-perf: optimize file reading with streams
-perf(parser): cache parsed templates
-```
-
-#### `test` - Tests
-Adding or correcting tests.
-```bash
-test: add unit tests for config loader
-test(integration): add E2E tests for CLI commands
-```
-
-#### `build` - Build System
-Changes to build system or external dependencies.
-```bash
-build: update TypeScript to v5.0
-build(deps): bump semantic-release to latest
-```
-
-#### `ci` - Continuous Integration
-Changes to CI configuration files and scripts.
-```bash
-ci: add Node.js 20 to test matrix
-ci(github): enable caching for npm dependencies
-```
-
-#### `chore` - Chores
-Other changes that don't modify src or test files.
-```bash
-chore: update .gitignore
-chore(release): 1.2.3 [skip ci]
-```
+### Non-Version Types (No Release)
+- **`docs`**: Documentation only
+- **`style`**: Formatting (no code change)
+- **`refactor`**: Code restructuring (no behavior change)
+- **`perf`**: Performance improvements
+- **`test`**: Adding/fixing tests
+- **`build`**: Build system/dependencies
+- **`ci`**: CI configuration
+- **`chore`**: Maintenance tasks
 
 ## Scope
 
@@ -150,90 +101,51 @@ BREAKING CHANGE: The 'applicationDocs' field is now required.
 Existing configurations without this field will need to be updated.
 ```
 
-## Multi-line Commits
-
-For complex changes, use the commit body to provide more context:
+## Multi-line & Special Cases
 
 ```bash
-git commit -m "feat(templates): add support for custom variables
+# Multi-line with body
+feat(commands): add slash command support
 
-- Users can now define custom variables in config
-- Variables are validated at build time
-- Added interpolation for nested object properties
+- Created 4 essential commands
+- Added copyCommandFiles() to build process
+- Removed legacy Commands.md
 
-Closes #123"
-```
+Closes #123
 
-## Special Keywords
-
-### Closing Issues
-Reference GitHub issues to automatically close them:
-```bash
-fix: prevent duplicate file processing
-
-Fixes #456
-Closes #789
-```
-
-### Skipping CI
-Prevent CI runs for minor changes:
-```bash
-docs: fix typo in README [skip ci]
+# Skip CI for minor changes
+docs: fix typo [skip ci]
 chore: update comments [ci skip]
 ```
 
-## Best Practices
+## Rules (Non-Negotiable)
 
-1. **Keep the subject line under 50 characters**
-2. **Use imperative mood** ("add feature" not "added feature")
-3. **Don't end subject with period**
-4. **Separate subject from body with blank line**
-5. **Use body to explain what and why, not how**
-6. **Reference issues and PRs in the footer**
+1. **Subject < 50 chars**, imperative mood ("add" not "added")
+2. **Type MUST be valid** (feat, fix, docs, etc.)
+3. **Scope optional** but useful: `feat(cli):`, `fix(build):`
+4. **Breaking changes** need `!` or `BREAKING CHANGE:` footer
+5. **Reference JIRA tickets**: Include ticket ID in commits
 
-## Examples by Version Impact
+## Essential Examples
 
-### PATCH Version (Bug Fixes)
 ```bash
+# PATCH (bug fix)
 fix: handle undefined config values
 fix(cli): prevent crash when no arguments provided
-fix: correctly parse Windows file paths
+
+# MINOR (new feature)
+feat: add slash command support
+feat(build): implement command file copying
+
+# MAJOR (breaking change)
+feat!: replace text commands with slash commands
+
+BREAKING CHANGE: Users must now use /command syntax
+instead of plain text commands.
 ```
 
-### MINOR Version (New Features)
-```bash
-feat: add JSON output format
-feat(cli): support multiple config files
-feat: implement caching for better performance
-```
+## Remember
 
-### MAJOR Version (Breaking Changes)
-```bash
-feat!: migrate to ESM modules
-fix!: correct typo in API method name
-refactor!: change plugin architecture
+**🚨 NON-COMPLIANCE = BROKEN CI/CD**
 
-BREAKING CHANGE: Plugins must now export a default function
-instead of using named exports.
-```
-
-## Validation
-
-To ensure your commits follow the convention, consider:
-
-1. **Manual Review**: Check your commit messages before pushing
-2. **Git Hooks**: Use commitlint (future enhancement)
-3. **PR Checks**: GitHub Actions will validate on pull requests
-
-## Why Conventional Commits?
-
-- **Automated Versioning**: Semantic Release determines version bumps automatically
-- **Changelog Generation**: Creates detailed changelogs from commit history
-- **Clear Communication**: Team members understand impact of changes
-- **CI/CD Integration**: Enables fully automated release pipelines
-
-## Resources
-
-- [Conventional Commits Specification](https://www.conventionalcommits.org/)
-- [Semantic Release Documentation](https://semantic-release.gitbook.io/)
-- [Angular Commit Guidelines](https://github.com/angular/angular/blob/main/CONTRIBUTING.md#-commit-message-format)
+Every commit MUST follow these conventions. No exceptions. The automated release system depends on it.
