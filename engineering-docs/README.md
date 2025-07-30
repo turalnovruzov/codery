@@ -65,6 +65,17 @@ codery/
 
 **Migration Guide**: Projects that directly referenced `Subagents.md` should update to use the new integrated approach documented in `Roles.md` and `SubagentWorkflow.md`.
 
+## Important Notes
+
+### Documentation Generation Process
+
+**CRITICAL**: CLAUDE.md is auto-generated from source files in `codery-docs/.codery/`. The `.codery/` directory in the project root is also auto-generated. When optimizing CLAUDE.md size, work with the source files in `codery-docs/.codery/`, NOT the generated files.
+
+**Source → Generated Flow**:
+- Source: `codery-docs/.codery/*.md` 
+- Generated: `CLAUDE.md` (via `codery build` command)
+- Generated: `.codery/` directory (auto-generated, do not edit)
+
 ## Core Functionality
 
 ### 1. Initialize Command (`codery init`)
