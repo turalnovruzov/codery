@@ -17,14 +17,14 @@ Codery follows the Git Flow workflow model with JIRA integration. This document 
 
 - **Created from**: `{{developBranch}}`
 - **Merge back into**: `{{developBranch}}` via pull request
-- **Naming**: `feature/JIRA-XXX-description`
+- **Naming**: `feature/{{projectKey}}-XXX-description`
 - **Purpose**: New feature development
 
 #### Bugfix Branches
 
 - **Created from**: `{{developBranch}}`
 - **Merge back into**: `{{developBranch}}` via pull request
-- **Naming**: `bugfix/JIRA-XXX-description`
+- **Naming**: `bugfix/{{projectKey}}-XXX-description`
 - **Purpose**: Non-critical bug fixes for upcoming releases
 
 #### Release Branches
@@ -38,7 +38,7 @@ Codery follows the Git Flow workflow model with JIRA integration. This document 
 
 - **Created from**: `{{mainBranch}}`
 - **Merge into**: `{{mainBranch}}` AND `{{developBranch}}` via pull requests
-- **Naming**: `hotfix/JIRA-XXX-description`
+- **Naming**: `hotfix/{{projectKey}}-XXX-description`
 - **Purpose**: Emergency production fixes
 
 ## Critical Branch Creation Requirement
@@ -58,16 +58,15 @@ Codery follows the Git Flow workflow model with JIRA integration. This document 
 ```bash
 git checkout {{developBranch}}
 git pull origin {{developBranch}}
-git checkout -b feature/JIRA-123-new-feature
-# ... work on feature ...
+git checkout -b feature/{{projectKey}}-123-new-feature
 git add .
-git commit -m "JIRA-123: Feature description"
-git push origin feature/JIRA-123-new-feature
-# Create pull request from feature/JIRA-123-new-feature → {{developBranch}}
-# After PR is merged, delete local branch
+git commit -m "{{projectKey}}-123: Feature description"
+git push origin feature/{{projectKey}}-123-new-feature
+# Create pull request to {{developBranch}}
+# After merge:
 git checkout {{developBranch}}
 git pull origin {{developBranch}}
-git branch -d feature/JIRA-123-new-feature
+git branch -d feature/{{projectKey}}-123-new-feature
 ```
 
 ### Release Creation
@@ -76,14 +75,12 @@ git branch -d feature/JIRA-123-new-feature
 git checkout {{developBranch}}
 git pull origin {{developBranch}}
 git checkout -b release/1.2.0
-# ... final testing, version bump ...
 git add .
-git commit -m "JIRA-XXX: Prepare release 1.2.0"
+git commit -m "{{projectKey}}-XXX: Prepare release 1.2.0"
 git push origin release/1.2.0
-# Create pull request from release/1.2.0 → {{mainBranch}}
-# After PR is merged to {{mainBranch}}, tag the release
-# Create pull request from release/1.2.0 → {{developBranch}}
-# After both PRs are merged, delete local branch
+# Create PRs to both {{mainBranch}} and {{developBranch}}
+# Tag on {{mainBranch}} after merge
+# After both merges:
 git checkout {{developBranch}}
 git pull origin {{developBranch}}
 git branch -d release/1.2.0
@@ -94,18 +91,16 @@ git branch -d release/1.2.0
 ```bash
 git checkout {{mainBranch}}
 git pull origin {{mainBranch}}
-git checkout -b hotfix/JIRA-456-critical-fix
-# ... fix issue ...
+git checkout -b hotfix/{{projectKey}}-456-critical-fix
 git add .
-git commit -m "JIRA-456: Fix critical issue"
-git push origin hotfix/JIRA-456-critical-fix
-# Create pull request from hotfix/JIRA-456-critical-fix → {{mainBranch}}
-# After PR is merged to {{mainBranch}}, tag the hotfix
-# Create pull request from hotfix/JIRA-456-critical-fix → {{developBranch}}
-# After both PRs are merged, delete local branch
+git commit -m "{{projectKey}}-456: Fix critical issue"
+git push origin hotfix/{{projectKey}}-456-critical-fix
+# Create PRs to both {{mainBranch}} and {{developBranch}}
+# Tag on {{mainBranch}} after merge
+# After both merges:
 git checkout {{developBranch}}
 git pull origin {{developBranch}}
-git branch -d hotfix/JIRA-456-critical-fix
+git branch -d hotfix/{{projectKey}}-456-critical-fix
 ```
 
 ## Pull Request Workflow
@@ -119,7 +114,7 @@ git branch -d hotfix/JIRA-456-critical-fix
 ## JIRA Integration
 
 - All branches must reference JIRA ticket numbers
-- Commit messages include JIRA ticket: `JIRA-123: Description`
+- Commit messages include JIRA ticket: `{{projectKey}}-123: Description`
 - Time logging and comments required for all work
 - Branch lifecycle tracked in JIRA ticket status
 - Link pull requests to JIRA tickets
@@ -132,14 +127,6 @@ git branch -d hotfix/JIRA-456-critical-fix
 4. **Tag releases on {{mainBranch}}** after release PR is merged
 5. **Hotfixes increment patch version** (e.g., 1.2.0 → 1.2.1)
 6. **Always pull before branching** to ensure you have latest code
-
-## SNR Protocol
-
-After each work session, document progress:
-
-- **S** (Summary): What was completed
-- **N** (Next): What comes next
-- **R** (Request): Role needed for next phase
 
 ## Quick Reference
 
