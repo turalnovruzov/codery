@@ -1,5 +1,5 @@
 export interface CoderyConfig {
-  cloudId: string;
+  cloudId?: string;
   projectKey: string;
   developBranch?: string;
   mainBranch?: string;
