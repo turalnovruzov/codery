@@ -112,7 +112,8 @@ export async function initCommand(options: InitOptions): Promise<void> {
       projectKey: answers.projectKey,
       mainBranch: answers.mainBranch,
       gitWorkflowType: answers.gitWorkflowType,
-      jiraIntegrationType: answers.jiraIntegrationType
+      jiraIntegrationType: answers.jiraIntegrationType,
+      applicationDocs: []
     };
 
     // Only add cloudId for MCP integration
