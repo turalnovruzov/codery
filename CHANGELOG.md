@@ -1,3 +1,23 @@
+# [5.0.0](https://github.com/turalnovruzov/codery/compare/v4.0.0...v5.0.0) (2025-07-31)
+
+
+### Bug Fixes
+
+* **init:** reorder prompts and make cloudId conditional based on JIRA integration type ([d3680c7](https://github.com/turalnovruzov/codery/commit/d3680c774aee4132740c06b5f174060b3dc3096d))
+
+
+### Features
+
+* **docs:** add comprehensive JIRA CLI integration documentation ([a180aff](https://github.com/turalnovruzov/codery/commit/a180aff63734bf5fd57c1e1f86611765c3e5d257))
+* **init:** add applicationDocs field to generated config ([b35d9d0](https://github.com/turalnovruzov/codery/commit/b35d9d0d7b81806c8738f5ccd5ec154691cfd7a8))
+* **integration:** add JIRA integration type selection ([d4d1c43](https://github.com/turalnovruzov/codery/commit/d4d1c4369b90302d7b81aa85b6d493da36c703e5))
+
+
+### BREAKING CHANGES
+
+* **init:** cloudId is now optional in CoderyConfig interface.
+Existing configs with CLI integration may have unnecessary cloudId field.
+
 # [4.0.0](https://github.com/turalnovruzov/codery/compare/v3.0.1...v4.0.0) (2025-07-30)
 
 
