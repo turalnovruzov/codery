@@ -2,14 +2,7 @@
 
 ## Overview
 
-Codery integrates with JIRA through Atlassian MCP tools for comprehensive project tracking and management.
-
-## Configuration
-
-Your JIRA integration requires:
-
-- **Cloud ID**: `{{cloudId}}` (Your Atlassian URL)
-- **Project Key**: `{{projectKey}}`
+Codery integrates with JIRA for comprehensive project tracking and management.
 
 ## Core JIRA Concepts
 

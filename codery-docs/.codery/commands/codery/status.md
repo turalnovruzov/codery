@@ -27,6 +27,3 @@ Analyze the last 10 comments and provide a concise summary of:
 - Any blockers or issues identified
 
 Group related activities together (e.g., all Scout findings, all Architecture decisions, all Builder implementations) and highlight the most significant developments. Focus on outcomes rather than just listing actions.
-
-Use the configured JIRA Cloud ID: {{cloudId}}
-Project Key: {{projectKey}}

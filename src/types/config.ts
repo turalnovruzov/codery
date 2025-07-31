@@ -1,10 +1,11 @@
 export interface CoderyConfig {
-  cloudId: string;
+  cloudId?: string;
   projectKey: string;
   developBranch?: string;
   mainBranch?: string;
   applicationDocs?: string[];
   gitWorkflowType?: 'gitflow' | 'trunk-based';
+  jiraIntegrationType?: 'mcp' | 'cli';
 }
 
 export const defaultConfig: CoderyConfig = {
