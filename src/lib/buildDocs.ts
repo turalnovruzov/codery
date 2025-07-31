@@ -24,6 +24,7 @@ const fileOrder = [
   'Roles.md',
   '', // Placeholder for workflow file
   'JIRA_Workflow.md',
+  '', // Placeholder for JIRA integration file
   'SubagentWorkflow.md',
   'LifeCycles.md',
   'SuccessCriteria.md',
@@ -39,6 +40,16 @@ function getWorkflowFile(config: CoderyConfig | null): string {
   return workflowMap[workflowType];
 }
 
+// Get the appropriate JIRA integration file based on config
+function getJiraIntegrationFile(config: CoderyConfig | null): string {
+  const integrationType = config?.jiraIntegrationType || 'mcp';
+  const integrationMap: Record<string, string> = {
+    'mcp': 'integrations/JIRA_MCP.md',
+    'cli': 'integrations/JIRA_CLI.md'
+  };
+  return integrationMap[integrationType];
+}
+
 // Read all markdown files from the .codery directory
 function readMarkdownFiles(config: CoderyConfig | null): MarkdownFile[] {
   const coderyDir = path.join(packageRoot, 'codery-docs/.codery');
@@ -48,11 +59,19 @@ function readMarkdownFiles(config: CoderyConfig | null): MarkdownFile[] {
     throw new Error(`Codery documentation directory not found: ${coderyDir}`);
   }
 
-  // Get the workflow file
+  // Get the workflow file and JIRA integration file
   const workflowFile = getWorkflowFile(config);
+  const jiraIntegrationFile = getJiraIntegrationFile(config);
 
-  // Update fileOrder with the selected workflow file
-  const updatedFileOrder = fileOrder.map(file => file === '' ? workflowFile : file);
+  // Update fileOrder with the selected files
+  let placeholderIndex = 0;
+  const updatedFileOrder = fileOrder.map(file => {
+    if (file === '') {
+      placeholderIndex++;
+      return placeholderIndex === 1 ? workflowFile : jiraIntegrationFile;
+    }
+    return file;
+  });
 
   // Get all .md files from root directory (excluding subdirectories and Retrospective.md)
   const rootFiles = fs.readdirSync(coderyDir)

@@ -93,6 +93,16 @@ export async function initCommand(options: InitOptions): Promise<void> {
         message: 'Enter your development branch name:',
         default: defaultConfig.developBranch || 'develop',
         when: (currentAnswers) => currentAnswers.gitWorkflowType === 'gitflow'
+      },
+      {
+        type: 'list',
+        name: 'jiraIntegrationType',
+        message: 'Select your JIRA integration method:',
+        choices: [
+          { name: 'MCP - Model Context Protocol (default)', value: 'mcp' },
+          { name: 'CLI - JIRA Command Line Interface', value: 'cli' }
+        ],
+        default: 'mcp'
       }
     ]);
 
@@ -101,7 +111,8 @@ export async function initCommand(options: InitOptions): Promise<void> {
       cloudId: answers.cloudId,
       projectKey: answers.projectKey,
       mainBranch: answers.mainBranch,
-      gitWorkflowType: answers.gitWorkflowType
+      gitWorkflowType: answers.gitWorkflowType,
+      jiraIntegrationType: answers.jiraIntegrationType
     };
 
     // Only add developBranch for gitflow
@@ -132,6 +143,7 @@ export async function initCommand(options: InitOptions): Promise<void> {
     console.log();
     console.log('Configuration summary:');
     console.log(`  - Git Workflow: ${chalk.cyan(config.gitWorkflowType === 'gitflow' ? 'Git Flow' : 'Trunk-Based Development')}`);
+    console.log(`  - JIRA Integration: ${chalk.cyan(config.jiraIntegrationType === 'mcp' ? 'MCP (Model Context Protocol)' : 'CLI (Command Line Interface)')}`);
     console.log(`  - Atlassian URL: ${chalk.cyan(config.cloudId)}`);
     console.log(`  - Project Key: ${chalk.cyan(config.projectKey)}`);
     console.log(`  - Main Branch: ${chalk.cyan(config.mainBranch)}`);

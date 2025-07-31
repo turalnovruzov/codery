@@ -5,6 +5,7 @@ export interface CoderyConfig {
   mainBranch?: string;
   applicationDocs?: string[];
   gitWorkflowType?: 'gitflow' | 'trunk-based';
+  jiraIntegrationType?: 'mcp' | 'cli';
 }
 
 export const defaultConfig: CoderyConfig = {
