@@ -28,7 +28,10 @@
     "claude",
     "methodology"
   ],
-  "author": "Toby Balsley <toby.balsley@gmail.com> (https://www.hdtsllc.com/)",
+  "author": "Tural Novruzov <tural.nt.1@gmail.com>",
+  "contributors": [
+    "Toby Balsley <toby.balsley@gmail.com> (https://www.hdtsllc.com/)"
+  ],
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/turalnovruzov/codery/issues"
