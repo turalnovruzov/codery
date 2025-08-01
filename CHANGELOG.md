@@ -1,3 +1,10 @@
+## [5.1.1](https://github.com/turalnovruzov/codery/compare/v5.1.0...v5.1.1) (2025-08-01)
+
+
+### Bug Fixes
+
+* update package author information ([e743ca2](https://github.com/turalnovruzov/codery/commit/e743ca297ebea198ee9f5a6cd6bbbde5be72bfad))
+
 # [5.1.0](https://github.com/turalnovruzov/codery/compare/v5.0.0...v5.1.0) (2025-08-01)
 
 
