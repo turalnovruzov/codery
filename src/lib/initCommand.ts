@@ -15,7 +15,19 @@ export async function initCommand(options: InitOptions): Promise<void> {
   const coderyDir = path.join(process.cwd(), '.codery');
   const configPath = path.join(coderyDir, 'config.json');
 
-  // Check if config already exists
+  // Read existing config if present
+  let existingConfig: Partial<CoderyConfig> = {};
+  if (fs.existsSync(configPath)) {
+    try {
+      const configContent = fs.readFileSync(configPath, 'utf-8');
+      existingConfig = JSON.parse(configContent);
+      console.log(chalk.dim('Found existing configuration'));
+    } catch (error) {
+      console.log(chalk.yellow('⚠️  Could not parse existing config, will use defaults'));
+    }
+  }
+
+  // Check if config already exists (for overwrite prompt)
   if (fs.existsSync(configPath) && !options.force) {
     console.log(chalk.yellow('⚠️  Configuration file already exists: .codery/config.json'));
     console.log();
@@ -24,7 +36,7 @@ export async function initCommand(options: InitOptions): Promise<void> {
       {
         type: 'confirm',
         name: 'overwrite',
-        message: 'Do you want to overwrite the existing configuration?',
+        message: 'Do you want to update the existing configuration?',
         default: false,
       },
     ]);
@@ -34,6 +46,9 @@ export async function initCommand(options: InitOptions): Promise<void> {
       process.exit(0);
     }
   }
+
+  // Merge existing config with defaults for prompt defaults
+  const currentValues = { ...defaultConfig, ...existingConfig };
 
   try {
     // Create .codery directory if it doesn't exist
@@ -55,7 +70,7 @@ export async function initCommand(options: InitOptions): Promise<void> {
           { name: 'Git Flow (feature branches, develop/main)', value: 'gitflow' },
           { name: 'Trunk-Based (direct commits to main)', value: 'trunk-based' }
         ],
-        default: 'gitflow'
+        default: currentValues.gitWorkflowType || 'gitflow'
       },
       {
         type: 'list',
@@ -65,13 +80,13 @@ export async function initCommand(options: InitOptions): Promise<void> {
           { name: 'MCP - Model Context Protocol (default)', value: 'mcp' },
           { name: 'CLI - JIRA Command Line Interface', value: 'cli' }
         ],
-        default: 'mcp'
+        default: currentValues.jiraIntegrationType || 'mcp'
       },
       {
         type: 'input',
         name: 'cloudId',
         message: 'Enter your Atlassian instance URL:',
-        default: defaultConfig.cloudId,
+        default: currentValues.cloudId,
         validate: (input: string) => {
           if (input.startsWith('https://') && input.includes('.atlassian.net')) {
             return true;
@@ -84,7 +99,7 @@ export async function initCommand(options: InitOptions): Promise<void> {
         type: 'input',
         name: 'projectKey',
         message: 'Enter your JIRA project key:',
-        default: defaultConfig.projectKey,
+        default: currentValues.projectKey,
         validate: (input: string) => {
           if (input.match(/^[A-Z][A-Z0-9]*$/)) {
             return true;
@@ -96,34 +111,42 @@ export async function initCommand(options: InitOptions): Promise<void> {
         type: 'input',
         name: 'mainBranch',
         message: 'Enter your main/production branch name:',
-        default: defaultConfig.mainBranch || 'main'
+        default: currentValues.mainBranch || 'main'
       },
       {
         type: 'input',
         name: 'developBranch',
         message: 'Enter your development branch name:',
-        default: defaultConfig.developBranch || 'develop',
+        default: currentValues.developBranch || 'develop',
         when: (currentAnswers) => currentAnswers.gitWorkflowType === 'gitflow'
       }
     ]);
 
-    // Build config object
+    // Build config object - preserve existing fields and merge with new answers
     const config: CoderyConfig = {
+      ...existingConfig,  // Preserve all existing fields
       projectKey: answers.projectKey,
       mainBranch: answers.mainBranch,
       gitWorkflowType: answers.gitWorkflowType,
       jiraIntegrationType: answers.jiraIntegrationType,
-      applicationDocs: []
+      // Preserve applicationDocs if it exists, otherwise initialize as empty
+      applicationDocs: existingConfig.applicationDocs || []
     };
 
     // Only add cloudId for MCP integration
     if (answers.jiraIntegrationType === 'mcp') {
       config.cloudId = answers.cloudId;
+    } else {
+      // Remove cloudId if switching from MCP to CLI
+      delete config.cloudId;
     }
 
     // Only add developBranch for gitflow
     if (answers.gitWorkflowType === 'gitflow') {
       config.developBranch = answers.developBranch;
+    } else {
+      // Remove developBranch if switching from gitflow to trunk-based
+      delete config.developBranch;
     }
 
     // Write config
@@ -145,7 +168,7 @@ export async function initCommand(options: InitOptions): Promise<void> {
     }
 
     console.log();
-    console.log(chalk.green('✨ Codery initialization complete!'));
+    console.log(chalk.green('✨ Codery configuration updated!'));
     console.log();
     console.log('Configuration summary:');
     console.log(`  - Git Workflow: ${chalk.cyan(config.gitWorkflowType === 'gitflow' ? 'Git Flow' : 'Trunk-Based Development')}`);
@@ -157,6 +180,9 @@ export async function initCommand(options: InitOptions): Promise<void> {
     console.log(`  - Main Branch: ${chalk.cyan(config.mainBranch)}`);
     if (config.developBranch) {
       console.log(`  - Develop Branch: ${chalk.cyan(config.developBranch)}`);
+    }
+    if (config.applicationDocs && config.applicationDocs.length > 0) {
+      console.log(`  - Application Docs: ${chalk.cyan(`${config.applicationDocs.length} path(s) preserved`)}`);
     }
     console.log();
     console.log('Next steps:');
