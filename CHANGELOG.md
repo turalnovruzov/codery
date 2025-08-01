@@ -1,3 +1,10 @@
+# [5.1.0](https://github.com/turalnovruzov/codery/compare/v5.0.0...v5.1.0) (2025-08-01)
+
+
+### Features
+
+* **init:** add support for reading and preserving existing configuration ([ebe3ac8](https://github.com/turalnovruzov/codery/commit/ebe3ac88ba3df36996bac080c61dc98eb00e91db))
+
 # [5.0.0](https://github.com/turalnovruzov/codery/compare/v4.0.0...v5.0.0) (2025-07-31)
 
 
