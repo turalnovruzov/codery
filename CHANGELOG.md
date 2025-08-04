@@ -1,3 +1,15 @@
+# [6.0.0](https://github.com/turalnovruzov/codery/compare/v5.1.1...v6.0.0) (2025-08-04)
+
+
+### Features
+
+* **roles:** add automatic subagent delegation triggers ([0f4ed76](https://github.com/turalnovruzov/codery/commit/0f4ed7628c7965a8b1edb8674d4d47b68bd29b66))
+
+
+### BREAKING CHANGES
+
+* **roles:** AI assistants will now automatically delegate to subagents when thresholds are met, without waiting for user approval
+
 ## [5.1.1](https://github.com/turalnovruzov/codery/compare/v5.1.0...v5.1.1) (2025-08-01)
 
 
