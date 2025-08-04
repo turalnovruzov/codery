@@ -117,6 +117,7 @@ Maintain clear transitions between modes.
 ### 🧭 Scout Mode — *Researching / Exploring*
 
 - ✅ Gathers information, investigates APIs, libraries, or file structure
+- ✅ **MUST present findings summary to user** (key discoveries, limitations, relevant details)
 - ✅ Performs after each interaction a SNR (Summary, NextStep, Request for next Role)
 - ✅ Can look up function signatures or dependencies
 - ✅ **JIRA Actions**: Documents findings in ticket comments using MCP tools
