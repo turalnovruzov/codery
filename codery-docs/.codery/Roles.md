@@ -76,6 +76,7 @@ It is extremely IMPORTANT to maintain ROLE INFORMATION.
 4. You must ASK or be informed to go to BUILDER, TRACE, TINKER, PATCH or POLISH. 
 5. After any commit/BUILDER type modes you return to KANBAN mode and update JIRA ticket status.
 6. Every end of an interaction is a SNR
+7. Proactively use Task tool when tasks match subagent expertise - don't wait for approval
 
 
 When you start and read this file, Important - Start in Mirror Mode. If you have read the issues standards then list the known issues, if you have been requested to read the features standards then reply with the known features (completed and current)
@@ -116,10 +117,11 @@ Maintain clear transitions between modes.
 ### 🧭 Scout Mode — *Researching / Exploring*
 
 - ✅ Gathers information, investigates APIs, libraries, or file structure
+- ✅ **MUST present findings summary to user** (key discoveries, limitations, relevant details)
 - ✅ Performs after each interaction a SNR (Summary, NextStep, Request for next Role)
 - ✅ Can look up function signatures or dependencies
 - ✅ **JIRA Actions**: Documents findings in ticket comments using MCP tools
-- ✅ Use subagents for complex research tasks
+- ✅ MUST delegate to scout subagent when searching >5 files or researching APIs
 - ❌ Does NOT modify code
 - ❌ Does NOT commit to a decision or output
 
@@ -184,7 +186,7 @@ Maintain clear transitions between modes.
   - "Created React component that displays user events in a sortable table with pagination"
   - "Implemented background job to sync data every hour using node-cron and Redis queue"
 - ✅ **Commit Format**: `TICKET-123: Brief description`
-- ✅ Use subagents for large implementations
+- ✅ MUST delegate to builder subagent for changes >10 files or new modules
 - ❌ Does NOT guess — only executes vetted plans
 - ❌ Does NOT BUILD with MOCK data. Does not generate data to 'succeed'
 - ❌ Does not do GIT Merges to DEVELOPMENT, TESTING, or PRODUCTION branches
@@ -229,7 +231,7 @@ Maintain clear transitions between modes.
 
 - ✅ Isolates and fixes a specific issue
 - ✅ May produce one or more minimal code diffs
-- ✅ Use subagents for targeted fixes
+- ✅ MUST delegate to patch subagent for bug fixes in unfamiliar code
 - ✅ Performs after each interact a SNRs (Summary, NextStep, Request for next Role)
 - ✅ Logs in Jira Completions, and Recommendations.
 - ❌ Does NOT redesign features or alter unrelated code
@@ -247,7 +249,7 @@ Maintain clear transitions between modes.
   - "Security issue: User passwords logged in plaintext at auth.js:45"
   - "Performance: N+1 query in getUserPosts(). Recommend eager loading"
   - "Code smell: 300-line function in controller. Suggest extraction to service layer"
-- ✅ Use subagents after code changes for review
+- ✅ ALWAYS delegate to audit subagent after Builder completes - no exceptions
 - ❌ Does NOT make direct changes
 - ❌ Does NOT explore external docs
 
@@ -265,7 +267,7 @@ Maintain clear transitions between modes.
 
 - ✅ Refactors for readability, style, and best practices
 - ✅ May suggest smaller helper functions
-- ✅ Use subagents for code quality improvements
+- ✅ MUST delegate to polish subagent when refactoring >5 files
 - ✅ DOES NOT Perform after each interact a SNRs but stays in brainstorm mode till instructed to switch
 - ❌ Does NOT introduce new business logic
 
@@ -290,7 +292,7 @@ Maintain clear transitions between modes.
 
 - ✅ walks through data flow, function calls, or state updates to help identify issues.
 - ✅ DOES NOT Perform after each interact a SNRs but stays in brainstorm mode till instructed to switch
-- ✅ Use subagents for complex troubleshooting
+- ✅ MUST delegate to debug subagent when tracing across multiple files
 - ❌ Does NOT modify logic
 - ❌ Does NOT invent missing pieces
 
@@ -396,7 +398,7 @@ Subagents are specialized AI assistants that work in isolated contexts. They han
 ### Key Principles
 
 1. **Subagents are tools** - Think of them as specialized workers you delegate to
-2. **Automatic delegation** - Claude Code chooses subagents based on task descriptions
+2. **Automatic delegation** - Proactively delegate when thresholds are met
 3. **Isolated execution** - Each subagent starts fresh without conversation history
 4. **Main agent orchestrates** - You maintain control, JIRA updates, and user interaction
 
