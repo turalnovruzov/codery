@@ -4,13 +4,18 @@ import { Command } from 'commander';
 import chalk from 'chalk';
 import { buildCommand } from '../lib/buildDocs';
 import { initCommand } from '../lib/initCommand';
+import { getVersion } from '../lib/version';
+import { checkForUpdates } from '../lib/updateChecker';
+
+// Check for updates on every command invocation
+checkForUpdates();
 
 const program = new Command();
 
 program
   .name('codery')
   .description('Codery CLI - Build AI development workflows for your project')
-  .version('0.1.0');
+  .version(getVersion());
 
 program
   .command('init')
