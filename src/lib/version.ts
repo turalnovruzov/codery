@@ -1,37 +1,36 @@
 import { readFileSync } from 'fs';
 import { join } from 'path';
 
-let cachedVersion: string | null = null;
+let cachedPackageInfo: { name: string; version: string } | null = null;
 
-export function getVersion(): string {
-  if (cachedVersion) {
-    return cachedVersion;
+function loadPackageInfo(): { name: string; version: string } {
+  if (cachedPackageInfo) {
+    return cachedPackageInfo;
   }
 
   try {
     const packageJsonPath = join(__dirname, '../../package.json');
     const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'));
-    cachedVersion = packageJson.version;
-    return packageJson.version;
-  } catch (_error) {
-    console.warn('Unable to read version from package.json, using fallback');
-    return '0.0.0';
+    cachedPackageInfo = {
+      name: packageJson.name || 'codery',
+      version: packageJson.version || '0.0.0',
+    };
+    return cachedPackageInfo;
+  } catch (error) {
+    // Log error in debug mode
+    if (process.env.DEBUG) {
+      console.warn('Unable to read package.json:', error instanceof Error ? error.message : 'Unknown error');
+    }
+    // Return fallback and cache it
+    cachedPackageInfo = { name: 'codery', version: '0.0.0' };
+    return cachedPackageInfo;
   }
 }
 
+export function getVersion(): string {
+  return loadPackageInfo().version;
+}
+
 export function getPackageInfo(): { name: string; version: string } {
-  try {
-    const packageJsonPath = join(__dirname, '../../package.json');
-    const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'));
-    return {
-      name: packageJson.name,
-      version: packageJson.version,
-    };
-  } catch (_error) {
-    console.warn('Unable to read package.json, using fallback');
-    return {
-      name: 'codery',
-      version: '0.0.0',
-    };
-  }
+  return loadPackageInfo();
 }
