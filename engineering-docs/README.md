@@ -8,8 +8,9 @@ Codery is a command-line tool designed to bridge the gap between AI assistants (
 
 - **Enable AI-driven development**: Provides structured documentation that AI assistants can parse and follow
 - **Standardize workflows**: Enforces consistent development practices through role-based methodologies
-- **Integrate with existing tools**: Seamlessly works with JIRA and Git workflows
+- **Integrate with existing tools**: Seamlessly works with JIRA (via MCP or CLI) and Git workflows
 - **Customize for each project**: Template-based system adapts to your specific needs
+- **Support Claude Code**: Native integration with Claude Code slash commands for streamlined workflows
 
 ## Architecture
 
@@ -19,8 +20,10 @@ Codery is a command-line tool designed to bridge the gap between AI assistants (
 - **CLI Framework**: Commander.js
 - **Interactive Prompts**: Inquirer.js
 - **Styling**: Chalk
-- **Runtime**: Node.js (>=18.0.0)
+- **Runtime**: Node.js (>=20.8.1)
 - **Build System**: TypeScript Compiler (tsc)
+- **Versioning**: Semantic Release (automated NPM publishing)
+- **Package Version**: 6.0.0
 
 ### Project Structure
 
@@ -37,33 +40,70 @@ codery/
 ├── codery-docs/
 │   └── .codery/                # Source documentation templates
 │       ├── Roles.md            # Role-based development system
-│       ├── Commands.md         # Available commands
 │       ├── JIRA_Workflow.md    # JIRA integration guide
-│       ├── SubagentWorkflow.md # Subagent integration patterns
 │       ├── LifeCycles.md       # Development lifecycles
 │       ├── SuccessCriteria.md  # Success criteria
-│       ├── Retrospective.md    # Session learnings (not in build)
+│       ├── Retrospective.md    # Session learnings (excluded from build)
+│       ├── agents/             # Subagent templates
+│       │   ├── scout.md        # Research and exploration specialist
+│       │   ├── builder.md      # Code implementation specialist
+│       │   ├── patch.md        # Bug fix specialist
+│       │   ├── audit.md        # Code review specialist
+│       │   ├── polish.md       # Code quality specialist
+│       │   └── debug.md        # Debugging specialist
+│       ├── commands/           # Claude Code slash commands
+│       │   └── codery/         # Namespaced commands
+│       │       ├── start.md    # Initialize Codery system
+│       │       ├── status.md   # Check JIRA ticket status
+│       │       ├── snr.md      # Perform SNR protocol
+│       │       └── retrospective.md # Session analysis
+│       ├── integrations/       # Integration options
+│       │   ├── JIRA_MCP.md    # MCP-based JIRA integration
+│       │   └── JIRA_CLI.md    # CLI-based JIRA integration
 │       └── GitWorkflows/       # Git workflow templates
 │           ├── GitFlow.md
 │           └── TrunkBased.md
+├── .claude/                    # Generated Claude Code commands
+│   └── commands/               # Auto-copied from codery-docs
 ├── dist/                       # Compiled JavaScript
 ├── docs/                       # User documentation
 └── engineering-docs/           # This documentation
 ```
 
-## Recent Changes
+## Version History
 
-### Version 1.6.0 - Role and Subagent Integration
+### Version 6.0.0 - Automatic Subagent Delegation (Breaking Change)
+- **Breaking**: AI assistants now automatically delegate to subagents when thresholds are met
+- Added proactive delegation triggers in Roles.md
+- No longer requires user approval for subagent delegation
 
-**Breaking Change**: The `Subagents.md` file has been removed and replaced with a new architecture that integrates subagents directly into the role system.
+### Version 5.x - JIRA Integration Options
+- Added JIRA CLI integration as alternative to MCP (COD-22)
+- Made cloudId optional in config (Breaking in 5.0.0)
+- Added configuration preservation on re-init (COD-24)
+- Added jiraIntegrationType config option ('mcp' | 'cli')
 
-**Key Changes**:
-- Moved subagent functionality into `Roles.md` with delegation patterns
-- Added `SubagentWorkflow.md` for Codery-specific integration documentation
-- Reordered file processing to prioritize `Roles.md` as the primary system
-- Added `Retrospective.md` for persistent session learnings (excluded from builds)
+### Version 4.0.0 - Slash Commands (Breaking Change)
+- **Breaking**: Replaced text commands with slash commands (COD-12)
+- Commands now namespaced under `/codery:*`
+- Added automatic `.claude/commands/` directory generation
+- Commands: `/codery:start`, `/codery:status`, `/codery:snr`, `/codery:retrospective`
 
-**Migration Guide**: Projects that directly referenced `Subagents.md` should update to use the new integrated approach documented in `Roles.md` and `SubagentWorkflow.md`.
+### Version 3.x - Subagent Optimization
+- Removed context-dependent subagents (architect, crk, introspection, package, poc)
+- Streamlined to specialist subagents only (scout, builder, patch, audit, polish, debug)
+- Improved subagent isolation and effectiveness
+
+### Version 2.x - Retrospective System
+- Added persistent learning via `.codery/Retrospective.md` (COD-14)
+- Implemented session analysis and continuous improvement tracking
+- Retrospective file excluded from CLAUDE.md builds
+
+### Version 1.x - Initial Release
+- Core role-based system implementation
+- Git workflow support (Git Flow and Trunk-Based)
+- Basic JIRA integration via MCP
+- Application documentation aggregation
 
 ## Important Notes
 
@@ -83,36 +123,47 @@ codery/
 **Purpose**: Sets up project-specific configuration through an interactive wizard.
 
 **Process**:
-1. Prompts for Git workflow type (Git Flow or Trunk-Based)
-2. Collects Atlassian URL and JIRA project key
-3. Configures branch names
-4. Creates `.codery/config.json`
-5. Updates `.gitignore` to exclude config file
+1. Checks for existing configuration and preserves it if found (COD-24)
+2. Prompts for JIRA integration type (MCP or CLI)
+3. Prompts for Git workflow type (Git Flow or Trunk-Based)
+4. Collects JIRA project key
+5. Conditionally collects Atlassian URL (only for MCP integration)
+6. Configures branch names based on workflow
+7. Creates `.codery/config.json`
+8. Updates `.gitignore` to exclude config file
 
 **Key Features**:
+- Configuration preservation on re-init
+- JIRA integration type selection (MCP vs CLI)
 - Interactive prompts with validation
 - Workflow-specific configuration
 - Automatic `.gitignore` management
 - Force overwrite option
+- Empty applicationDocs array initialization
 
 ### 2. Build Command (`codery build`)
 
-**Purpose**: Generates CLAUDE.md by merging and processing documentation templates.
+**Purpose**: Generates CLAUDE.md and Claude Code commands by merging and processing documentation templates.
 
 **Process**:
 1. Loads configuration from `.codery/config.json`
 2. Reads markdown files from `codery-docs/.codery/`
 3. Performs template variable substitution
-4. Merges files in predefined order
-5. Optionally builds application documentation
-6. Writes final CLAUDE.md
+4. Selects integration-specific documentation (JIRA_MCP.md or JIRA_CLI.md)
+5. Merges files in predefined order
+6. Copies slash commands to `.claude/commands/` directory
+7. Optionally builds application documentation
+8. Writes final CLAUDE.md
 
 **Key Features**:
 - Template variable substitution using `{{variable}}` syntax
-- Workflow-specific file selection
+- Integration-specific file selection (MCP vs CLI)
+- Workflow-specific file selection (Git Flow vs Trunk-Based)
+- Automatic slash command deployment
 - Application documentation aggregation
 - Dry-run mode for preview
 - Skip-config option for building without substitution
+- Subagent templates included in build
 
 ## Implementation Details
 
@@ -123,10 +174,11 @@ The template system enables dynamic documentation generation based on project co
 **Variable Syntax**: `{{variableName}}`
 
 **Supported Variables**:
-- `{{cloudId}}` - Atlassian Cloud ID/URL
+- `{{cloudId}}` - Atlassian Cloud ID/URL (optional, MCP only)
 - `{{projectKey}}` - JIRA project key
 - `{{mainBranch}}` - Main branch name
 - `{{developBranch}}` - Development branch name (Git Flow only)
+- `{{jiraIntegrationType}}` - Integration type ('mcp' or 'cli')
 - `{{customValues.property}}` - Nested custom values
 
 **Substitution Process**:
@@ -138,14 +190,14 @@ The template system enables dynamic documentation generation based on project co
 ### File Processing
 
 **File Order**:
-1. Roles.md
+1. Roles.md (includes integrated subagent delegation)
 2. Workflow file (GitFlow.md or TrunkBased.md based on config)
 3. JIRA_Workflow.md
-4. SubagentWorkflow.md
-5. Commands.md
-6. LifeCycles.md
-7. SuccessCriteria.md
-8. Any remaining files (excluding Retrospective.md)
+4. Integration file (JIRA_MCP.md or JIRA_CLI.md based on config)
+5. LifeCycles.md
+6. SuccessCriteria.md
+7. Subagent templates from agents/ directory
+8. Any remaining files (excluding Retrospective.md and commands/)
 
 **Merging Process**:
 1. Adds CLAUDE.md header
@@ -158,12 +210,13 @@ The template system enables dynamic documentation generation based on project co
 **Config Structure** (`CoderyConfig` interface):
 ```typescript
 {
-  cloudId: string;           // Atlassian URL
+  cloudId?: string;           // Atlassian URL (optional, MCP only)
   projectKey: string;        // JIRA project key
   developBranch?: string;    // For Git Flow
   mainBranch?: string;       // Main branch name
   applicationDocs?: string[]; // User documentation paths
   gitWorkflowType?: 'gitflow' | 'trunk-based';
+  jiraIntegrationType?: 'mcp' | 'cli'; // JIRA integration type
 }
 ```
 
@@ -205,11 +258,14 @@ The template system enables dynamic documentation generation based on project co
 ### Adding New Features
 
 1. **New Commands**: Add to `src/bin/codery.ts` and implement in `src/lib/`
-2. **New Templates**: Add markdown files to `codery-docs/.codery/`
-3. **New Variables**: Update `CoderyConfig` interface and substitution logic
-4. **New Workflows**: Add to `GitWorkflows/` directory
-5. **New Roles**: Update `Roles.md` with role definition and integration patterns
-6. **File Order**: Update the `fileOrder` array in `src/lib/buildDocs.ts` if needed
+2. **New Slash Commands**: Add to `codery-docs/.codery/commands/codery/`
+3. **New Templates**: Add markdown files to `codery-docs/.codery/`
+4. **New Subagents**: Add to `codery-docs/.codery/agents/`
+5. **New Variables**: Update `CoderyConfig` interface and substitution logic
+6. **New Workflows**: Add to `GitWorkflows/` directory
+7. **New Integrations**: Add to `integrations/` directory
+8. **New Roles**: Update `Roles.md` with role definition and delegation patterns
+9. **File Order**: Update the `fileOrder` array in `src/lib/buildDocs.ts` if needed
 
 ### Code Style Guidelines
 
@@ -261,6 +317,38 @@ Options:
 - Aggregates user-specified documentation
 - Creates `.codery/application-docs.md`
 
+## Implemented Features
+
+### Semantic Release Integration (COD-7)
+- Automated versioning based on conventional commits
+- Automatic NPM publishing with provenance
+- Changelog generation
+- GitHub release creation
+
+### Slash Commands System (COD-12)
+- Native Claude Code integration
+- Namespaced commands under `/codery:*`
+- Automatic command deployment to `.claude/commands/`
+- Commands for start, status, SNR, and retrospective
+
+### JIRA Integration Options (COD-22)
+- Support for both MCP and CLI integration types
+- Conditional configuration based on integration type
+- Comprehensive JIRA CLI documentation
+- Integration-specific template selection
+
+### Subagent System (COD-8, COD-21)
+- Specialized AI assistants for specific tasks
+- Automatic delegation based on thresholds
+- Isolated execution contexts
+- Six core subagents: scout, builder, patch, audit, polish, debug
+
+### Retrospective System (COD-14)
+- Persistent session learning
+- Continuous improvement tracking
+- Introspection subagent for analysis
+- Knowledge accumulation across sessions
+
 ## Future Enhancements
 
 1. **Interactive Configuration Updates**: Edit config through CLI
@@ -268,7 +356,7 @@ Options:
 3. **Custom Template Support**: Allow user-defined templates
 4. **Plugin System**: Extend functionality through plugins
 5. **Multi-Environment Support**: Different configs for dev/prod
-6. **API Integration**: Validate JIRA credentials and project keys
+6. **API Integration**: Direct JIRA API validation
 
 ## Troubleshooting
 
