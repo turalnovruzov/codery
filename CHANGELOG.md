@@ -1,3 +1,10 @@
+## [6.1.1](https://github.com/turalnovruzov/codery/compare/v6.1.0...v6.1.1) (2025-08-10)
+
+
+### Bug Fixes
+
+* add ls -la guidance to start command for hidden directory detection ([f2b80e1](https://github.com/turalnovruzov/codery/commit/f2b80e1bf625aa58bed233ec9bb1ea7e8c183984))
+
 # [6.1.0](https://github.com/turalnovruzov/codery/compare/v6.0.0...v6.1.0) (2025-08-10)
 
 
