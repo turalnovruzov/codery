@@ -1,3 +1,10 @@
+# [6.1.0](https://github.com/turalnovruzov/codery/compare/v6.0.0...v6.1.0) (2025-08-10)
+
+
+### Features
+
+* **jira:** add preview and approval workflow for ticket operations ([d4ac0ec](https://github.com/turalnovruzov/codery/commit/d4ac0eccd058c0d1bb467072a74e47299f7019db))
+
 # [6.0.0](https://github.com/turalnovruzov/codery/compare/v5.1.1...v6.0.0) (2025-08-04)
 
 
