@@ -23,6 +23,13 @@ Standard JIRA workflow progression:
 3. **In Review** - Code review/PR stage  
 4. **Done** - Work completed and merged
 
+## Preview & Approval Requirements
+
+**MANDATORY**: Before any JIRA ticket create or edit operation:
+1. Display the full ticket details to the user
+2. Ask for explicit approval: "Do you approve creating/editing this ticket?"
+3. Only proceed with the tool call after receiving confirmation ("approved", "yes", "create it", etc.)
+
 ## Git Integration
 
 Every Git branch must reference a JIRA ticket:
