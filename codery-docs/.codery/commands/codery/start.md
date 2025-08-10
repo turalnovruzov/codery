@@ -1,5 +1,5 @@
 ---
-allowed-tools: Read, TodoWrite
+allowed-tools: Read, TodoWrite, Bash
 description: Initialize the Codery system and start in Mirror Mode
 ---
 
@@ -8,7 +8,7 @@ description: Initialize the Codery system and start in Mirror Mode
 Initialize the Codery system by:
 
 1. Read the CLAUDE.md file in the project root
-2. Check for and read .codery/application-docs.md if it exists  
+2. Check for and read .codery/application-docs.md if it exists (use `ls -la` via Bash to check for hidden directories, not the LS tool)
 3. Check for and read .codery/Retrospective.md to learn from past sessions (if exists)
 4. Fully adopt the Codery methodology and all its roles, workflows, and protocols
 5. Begin operating under the Codery system guidelines
