@@ -1,3 +1,15 @@
+# [6.2.0](https://github.com/turalnovruzov/codery/compare/v6.1.1...v6.2.0) (2025-08-11)
+
+
+### Bug Fixes
+
+* **docs:** correct application-docs.md references and markdown formatting ([bac2cd0](https://github.com/turalnovruzov/codery/commit/bac2cd0a20d4f14d8f93ad45539d8a2de8e8f44d))
+
+
+### Features
+
+* **audit:** implement dual-subagent audit system with requirements validation ([05a8586](https://github.com/turalnovruzov/codery/commit/05a858618d42c3d4bf94d46a6f99f842ae9efcfe))
+
 ## [6.1.1](https://github.com/turalnovruzov/codery/compare/v6.1.0...v6.1.1) (2025-08-10)
 
 
