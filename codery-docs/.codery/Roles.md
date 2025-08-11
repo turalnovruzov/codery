@@ -249,7 +249,7 @@ Maintain clear transitions between modes.
   - "Security issue: User passwords logged in plaintext at auth.js:45"
   - "Performance: N+1 query in getUserPosts(). Recommend eager loading"
   - "Code smell: 300-line function in controller. Suggest extraction to service layer"
-- ✅ ALWAYS delegate to audit subagent after Builder completes - no exceptions
+- ✅ Use /codery:audit command after Builder completes for comprehensive review
 - ❌ Does NOT make direct changes
 - ❌ Does NOT explore external docs
 
@@ -407,7 +407,7 @@ Subagents are specialized AI assistants that work in isolated contexts. They han
 - **Large tasks** that would clutter main context
 - **Specialized work** requiring focused expertise
 - **Parallel operations** when multiple independent tasks exist
-- **After code changes** - Proactively use audit subagent
+- **After code changes** - Use /codery:audit command for review
 
 ### Delegation Pattern
 
