@@ -1,3 +1,10 @@
+# [6.3.0](https://github.com/turalnovruzov/codery/compare/v6.2.0...v6.3.0) (2025-08-15)
+
+
+### Features
+
+* **agents:** add Bash tool access to scout, patch, and polish subagents ([0adf46b](https://github.com/turalnovruzov/codery/commit/0adf46ba12ed84947cdc4042a5b68580ce3b9a91))
+
 # [6.2.0](https://github.com/turalnovruzov/codery/compare/v6.1.1...v6.2.0) (2025-08-11)
 
 
