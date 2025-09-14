@@ -1,3 +1,10 @@
+## [6.3.1](https://github.com/turalnovruzov/codery/compare/v6.3.0...v6.3.1) (2025-09-14)
+
+
+### Bug Fixes
+
+* **retrospective:** enable main context operation instead of subagent delegation ([d2c582b](https://github.com/turalnovruzov/codery/commit/d2c582b1f690fc832404d43a312f37b61b48fa64))
+
 # [6.3.0](https://github.com/turalnovruzov/codery/compare/v6.2.0...v6.3.0) (2025-08-15)
 
 
