@@ -43,7 +43,7 @@
 
 ## Self-Introspective Analysis
 
-The **introspection** subagent handles session analysis:
+Session analysis is handled directly in the main context:
 
 ### 1. Retrospective Documentation
 - Reads existing .codery/Retrospective.md file

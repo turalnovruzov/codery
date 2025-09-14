@@ -1,5 +1,5 @@
 ---
-allowed-tools: Task
+allowed-tools: Read, Edit, MultiEdit, TodoWrite, Bash
 description: Trigger self-introspective analysis for session review and learning
 ---
 
