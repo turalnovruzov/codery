@@ -103,6 +103,56 @@ git pull origin {{developBranch}}
 git branch -d hotfix/{{projectKey}}-456-critical-fix
 ```
 
+## Changelog Management
+
+Maintain CHANGELOG.md following Keep a Changelog format (keepachangelog.com) and Semantic Versioning (semver.org).
+
+### During Feature Development
+
+Work freely without updating CHANGELOG.md. Experimental changes, reverts, and iterations happen naturally during development.
+
+### Before Pull Request Creation
+
+Before creating PR to {{developBranch}}, update CHANGELOG.md Unreleased section:
+
+1. Analyze commits since branch diverged from {{developBranch}}
+2. Review actual file changes: `git diff {{developBranch}}...HEAD`
+3. Ignore intermediate experiments and reverted changes
+4. Categorize changes into Keep a Changelog sections:
+   - **Added**: New features, capabilities
+   - **Changed**: Changes to existing functionality
+   - **Fixed**: Bug fixes
+   - **Deprecated**: Soon-to-be removed features
+   - **Removed**: Removed features
+   - **Security**: Security fixes
+5. Add entries under `## [Unreleased]` section with format: `- Description ({{projectKey}}-XXX)`
+
+### During Open PR
+
+If additional commits are pushed to the feature branch, update CHANGELOG.md again to reflect new changes.
+
+### Release Workflow
+
+When ready to release from {{developBranch}}:
+
+1. **Analyze Unreleased changes**: Review all entries in Unreleased section
+2. **Determine semantic version** (X.Y.Z):
+   - **MAJOR (X.0.0)**: Breaking changes, incompatible API changes
+   - **MINOR (0.X.0)**: New features, backward-compatible functionality
+   - **PATCH (0.0.X)**: Bug fixes only, backward-compatible
+3. **Create release branch**: `git checkout -b release/X.Y.Z` from {{developBranch}}
+4. **Version the changelog**:
+   - Move `## [Unreleased]` content → `## [X.Y.Z] - YYYY-MM-DD`
+   - Keep empty `## [Unreleased]` section at top for future changes
+   - Commit: `git commit -m "chore: prepare release X.Y.Z"`
+5. **Test in release branch**: If bugs found, fix them and add to `[X.Y.Z]` section (not Unreleased)
+6. **Merge via PRs**: Create pull requests to both {{mainBranch}} and {{developBranch}}
+7. **Tag after merge**: After {{mainBranch}} PR merges, tag: `git tag vX.Y.Z && git push origin vX.Y.Z`
+
+### Hotfix Changelog
+
+For hotfix branches, add fixes directly to a new patch version section (e.g., `## [1.2.1] - YYYY-MM-DD`) during the hotfix process.
+
 ## Pull Request Workflow
 
 1. **Never merge locally** - all merges happen via pull requests
