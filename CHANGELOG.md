@@ -1,3 +1,10 @@
+# [6.4.0](https://github.com/turalnovruzov/codery/compare/v6.3.1...v6.4.0) (2025-10-12)
+
+
+### Features
+
+* add changelog and release management commands ([967fdca](https://github.com/turalnovruzov/codery/commit/967fdca74c46776e420fe8adbb8b139245772f20))
+
 ## [6.3.1](https://github.com/turalnovruzov/codery/compare/v6.3.0...v6.3.1) (2025-09-14)
 
 
