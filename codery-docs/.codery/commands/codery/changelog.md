@@ -24,13 +24,4 @@ If ticket ID provided as $ARGUMENTS, include it in the changelog entries.
 6. **Commit**: `git add CHANGELOG.md && git commit -m "chore: update CHANGELOG.md"`
 7. **JIRA comment**: Document changelog update on ticket
 
-## Keep a Changelog Categories
-
-- **Added**: New features, capabilities
-- **Changed**: Changes to existing functionality
-- **Deprecated**: Soon-to-be removed features
-- **Removed**: Removed features
-- **Fixed**: Bug fixes
-- **Security**: Security fixes
-
-Format entries as: `- Description (TICKET-ID)`
+Refer to GitFlow.md for Keep a Changelog categories and formatting details.

@@ -36,13 +36,4 @@ Create a release branch following the Git Flow release workflow documented in yo
    - After testing: Create PRs to both {{mainBranch}} and {{developBranch}}
    - After merge to {{mainBranch}}: Tag with `git tag vX.Y.Z`
 
-## Semantic Versioning
-
-Follow semver.org:
-- MAJOR: Incompatible API changes
-- MINOR: Backward-compatible functionality
-- PATCH: Backward-compatible bug fixes
-
-## Notes
-
-If fixes are made during release testing, add them to the [X.Y.Z] section (not Unreleased).
+Refer to GitFlow.md for complete release workflow and semantic versioning details.
