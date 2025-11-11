@@ -1,3 +1,10 @@
+## [6.4.1](https://github.com/turalnovruzov/codery/compare/v6.4.0...v6.4.1) (2025-11-11)
+
+
+### Bug Fixes
+
+* **changelog:** implement user-centric changelog approach ([a14abec](https://github.com/turalnovruzov/codery/commit/a14abec20ca749012c254e0b36d5bed3f1102a46))
+
 # [6.4.0](https://github.com/turalnovruzov/codery/compare/v6.3.1...v6.4.0) (2025-10-12)
 
 
