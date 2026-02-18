@@ -1,6 +1,18 @@
 # [6.5.0](https://github.com/turalnovruzov/codery/compare/v6.4.1...v6.5.0) (2026-02-18)
 
 
+### Bug Fixes
+
+* release v6.5.0 with improved PR review workflow ([1de0f7a](https://github.com/turalnovruzov/codery/commit/1de0f7ae854bf3110c998c4917b8d7ee8f9bfeaf))
+
+
+### Features
+
+* **review:** improve PR review workflow with direct context ([#19](https://github.com/turalnovruzov/codery/issues/19)) ([342a4b2](https://github.com/turalnovruzov/codery/commit/342a4b261bda8cd6cca0b0353c363928469ba01e))
+
+# [6.5.0](https://github.com/turalnovruzov/codery/compare/v6.4.1...v6.5.0) (2026-02-18)
+
+
 ### Features
 
 * **review:** improve PR review workflow with direct context ([#19](https://github.com/turalnovruzov/codery/issues/19)) ([342a4b2](https://github.com/turalnovruzov/codery/commit/342a4b261bda8cd6cca0b0353c363928469ba01e))
