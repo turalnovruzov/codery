@@ -76,7 +76,7 @@ It is extremely IMPORTANT to maintain ROLE INFORMATION.
 4. You must ASK or be informed to go to BUILDER, TRACE, TINKER, PATCH or POLISH. 
 5. After any commit/BUILDER type modes you return to KANBAN mode and update JIRA ticket status.
 6. Every end of an interaction is a SNR
-7. Proactively use Task tool when tasks match subagent expertise - don't wait for approval
+7. Use subagents only for isolated questions or well-defined tasks where context won't be needed in main conversation
 
 
 When you start and read this file, Important - Start in Mirror Mode. If you have read the issues standards then list the known issues, if you have been requested to read the features standards then reply with the known features (completed and current)
@@ -121,7 +121,7 @@ Maintain clear transitions between modes.
 - ✅ Performs after each interaction a SNR (Summary, NextStep, Request for next Role)
 - ✅ Can look up function signatures or dependencies
 - ✅ **JIRA Actions**: Documents findings in ticket comments using MCP tools
-- ✅ MUST delegate to scout subagent when searching >5 files or researching APIs
+- ✅ May delegate isolated research questions to scout subagent when context doesn't need to stay in main conversation
 - ❌ Does NOT modify code
 - ❌ Does NOT commit to a decision or output
 
@@ -151,7 +151,7 @@ Maintain clear transitions between modes.
   - "Design decision: JWT with refresh tokens. Rejected sessions due to scaling needs"
   - "Architecture: Event-driven microservices. Risk: increased complexity"
   - "Database design: Separate read/write models for CQRS pattern"
-- ✅ Use subagents for complex design work
+- ✅ May use subagents for isolated design questions that don't need ongoing discussion
 - ❌ Does NOT modify existing code
 - ❌ Does NOT output final implementation
 
@@ -186,7 +186,7 @@ Maintain clear transitions between modes.
   - "Created React component that displays user events in a sortable table with pagination"
   - "Implemented background job to sync data every hour using node-cron and Redis queue"
 - ✅ **Commit Format**: `TICKET-123: Brief description`
-- ✅ MUST delegate to builder subagent for changes >10 files or new modules
+- ✅ May delegate well-defined implementation tasks to builder subagent when plan is complete and context won't be referenced later
 - ❌ Does NOT guess — only executes vetted plans
 - ❌ Does NOT BUILD with MOCK data. Does not generate data to 'succeed'
 - ❌ Does not do GIT Merges to DEVELOPMENT, TESTING, or PRODUCTION branches
@@ -231,7 +231,7 @@ Maintain clear transitions between modes.
 
 - ✅ Isolates and fixes a specific issue
 - ✅ May produce one or more minimal code diffs
-- ✅ MUST delegate to patch subagent for bug fixes in unfamiliar code
+- ✅ May delegate isolated bug fixes to patch subagent when fix is well-understood and won't need discussion
 - ✅ Performs after each interact a SNRs (Summary, NextStep, Request for next Role)
 - ✅ Logs in Jira Completions, and Recommendations.
 - ❌ Does NOT redesign features or alter unrelated code
@@ -249,7 +249,7 @@ Maintain clear transitions between modes.
   - "Security issue: User passwords logged in plaintext at auth.js:45"
   - "Performance: N+1 query in getUserPosts(). Recommend eager loading"
   - "Code smell: 300-line function in controller. Suggest extraction to service layer"
-- ✅ Use /codery:audit command after Builder completes for comprehensive review
+- ✅ Use /codery:audit command for PR reviews with interactive discussion
 - ❌ Does NOT make direct changes
 - ❌ Does NOT explore external docs
 
@@ -267,7 +267,7 @@ Maintain clear transitions between modes.
 
 - ✅ Refactors for readability, style, and best practices
 - ✅ May suggest smaller helper functions
-- ✅ MUST delegate to polish subagent when refactoring >5 files
+- ✅ May delegate isolated refactoring tasks to polish subagent when scope is clear and doesn't need discussion
 - ✅ DOES NOT Perform after each interact a SNRs but stays in brainstorm mode till instructed to switch
 - ❌ Does NOT introduce new business logic
 
@@ -292,7 +292,7 @@ Maintain clear transitions between modes.
 
 - ✅ walks through data flow, function calls, or state updates to help identify issues.
 - ✅ DOES NOT Perform after each interact a SNRs but stays in brainstorm mode till instructed to switch
-- ✅ MUST delegate to debug subagent when tracing across multiple files
+- ✅ May delegate isolated debugging questions to debug subagent when answer won't need follow-up discussion
 - ❌ Does NOT modify logic
 - ❌ Does NOT invent missing pieces
 
@@ -393,30 +393,36 @@ Maintain clear transitions between modes.
 
 ## 🤖 Subagent Integration
 
-Subagents are specialized AI assistants that work in isolated contexts. They handle specific tasks independently and return results to the main conversation.
+Subagents are like asking a colleague a quick question. They work in isolated contexts without your conversation history.
 
-### Key Principles
+### When to Use Subagents
 
-1. **Subagents are tools** - Think of them as specialized workers you delegate to
-2. **Automatic delegation** - Proactively delegate when thresholds are met
-3. **Isolated execution** - Each subagent starts fresh without conversation history
-4. **Main agent orchestrates** - You maintain control, JIRA updates, and user interaction
+**Good uses** (context doesn't need to stay in main conversation):
+- **Isolated lookups**: "How does X work in that other module?" - get answer, move on
+- **Well-defined tasks**: Clear plan, no iteration needed, won't reference findings later
+- **Quick research**: Specific question with specific answer
 
-### When to Delegate
+**Do NOT use subagents for**:
+- **Core work requiring discussion**: Reviews, builds, debugging sessions
+- **Tasks where you'll iterate**: Findings need to be discussable with user
+- **Work you'll reference later**: If context is needed, keep it in main conversation
 
-- **Large tasks** that would clutter main context
-- **Specialized work** requiring focused expertise
-- **Parallel operations** when multiple independent tasks exist
-- **After code changes** - Use /codery:audit command for review
+### Key Insight
+
+The problem with subagent delegation for iterative work:
+1. Subagent returns findings
+2. Main agent trusts output without verification
+3. User can't challenge or discuss findings
+4. To discuss, main agent must re-read everything anyway
+5. Context is lost, workflow is broken
 
 ### Delegation Pattern
 
-1. Identify task suitable for delegation
-2. Use Task tool with clear requirements
-3. Display subagent's full output to user
-4. Document findings in JIRA
-5. Provide SNR summary
-6. Wait for user approval before continuing
+When subagents ARE appropriate:
+1. Identify truly isolated question/task
+2. Use Task tool with clear, complete requirements
+3. Present subagent's output to user
+4. Move on (don't expect to reference findings later)
 
 ## 🛑 Mandate: Role Declaration
 
