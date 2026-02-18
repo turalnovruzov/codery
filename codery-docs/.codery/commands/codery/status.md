@@ -1,72 +1,56 @@
 ---
-description: Check JIRA ticket and/or PR status with auto-linking
+description: Understand the full context of a PR or JIRA ticket
 argument-hint: <PR-number or ticket-id>
 ---
 
 # Status Command
 
-Fetch and display the current status of a JIRA ticket and/or PR, automatically linking related items.
+**Goal**: Give the user a complete understanding of where this PR/ticket stands so they can make informed decisions.
 
-## Auto-Linking Logic
+## Your Objective
 
-**If PR number given** (e.g., `123`, `#123`):
-1. Run `gh pr view <number>` to get PR details
-2. Parse PR title/body for JIRA ticket ID (pattern: `COD-XXX`)
-3. If ticket found, also fetch JIRA ticket details
+You are an intelligent assistant. Don't just fetch and display data - **understand the situation** and surface actionable insights. Think about what context would be helpful.
 
-**If ticket ID given** (e.g., `COD-123`):
-1. Fetch JIRA ticket details
-2. Check remote links for associated PR
-3. If PR found, also fetch PR details
+## Context Loading
 
-**If no argument given**:
-1. Check current branch name for ticket ID pattern (e.g., `feature/COD-123-description`)
-2. Check for open PR on current branch via `gh pr view`
-3. Load whatever context is found
+Based on the argument, load related context:
 
-## Display Format
+**If PR number given**: Fetch PR details, find linked JIRA ticket, load both.
 
-### PR Information (if available)
-- Title and number
-- Status (open, merged, closed)
-- Author and reviewers
-- Branch info (head → base)
-- Check status (CI passing/failing)
-- Recent review comments summary
+**If ticket ID given**: Fetch ticket, check for linked PR, load both.
 
-### Ticket Information (if available)
-- Title and type (Story, Task, Bug, etc.)
-- Current status (To Do, In Progress, In Review, Done)
-- Priority level
-- Assignee (if any)
-- Created and updated timestamps
+**If no argument**: Check current branch for ticket pattern or open PR.
 
-### Recent Activity Summary
-Analyze the last 10 JIRA comments and provide a concise summary of:
-- What has been achieved recently
-- Key decisions made
-- Current progress status
-- Any blockers or issues identified
+## Think Broader
 
-Group related activities together (e.g., all Scout findings, all Architecture decisions, all Builder implementations) and highlight the most significant developments. Focus on outcomes rather than just listing actions.
+**For PRs, consider:**
+- Are there commits **after** the last review? → Alert user: "New changes since your review - want to re-check?"
+- What's the review status? Approved, changes requested, pending?
+- Are CI checks passing or failing?
 
-## Example Output
+**For JIRA tickets, consider:**
+- Is this a **subtask**? → Read the parent Story/Epic to understand the bigger picture
+- Are there **sibling tasks** that provide context?
+- What do the comments reveal about decisions made?
 
-```
-## PR #45: Add user authentication
-Status: Open | Checks: Passing
-Author: @developer | Reviewers: @reviewer1
-Branch: feature/COD-31-auth → main
+**For timeline awareness:**
+- Compare review timestamps vs commit timestamps
+- Identify if action is needed from reviewer or assignee
 
-## Ticket: COD-31 - Implement user authentication
-Type: Story | Status: In Progress | Priority: High
-Assignee: developer@example.com
+## What to Surface
 
-### Recent Activity
-- [Builder] Implemented JWT token generation and validation
-- [Architect] Decided on stateless auth with 15-min token expiry
-- [Scout] Researched OAuth vs JWT, recommended JWT for simplicity
+Don't just list fields. Provide **insights**:
 
-### Current State
-Implementation complete, awaiting code review.
-```
+- "This subtask is part of [Story] which aims to [goal]"
+- "Changes were requested 2 days ago, but assignee pushed 3 new commits since - may have addressed feedback"
+- "PR is approved and CI passing - ready to merge"
+- "Blocked: waiting on review from @reviewer"
+
+## Output Guidelines
+
+- Start with the most actionable insight
+- Provide context hierarchy (Epic → Story → Subtask) when relevant
+- Highlight what needs attention
+- Suggest logical next action
+
+Be proactive. If you see something the user should know, tell them.
