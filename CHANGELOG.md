@@ -1,3 +1,10 @@
+## [6.5.1](https://github.com/turalnovruzov/codery/compare/v6.5.0...v6.5.1) (2026-02-18)
+
+
+### Bug Fixes
+
+* **status:** make command goal-oriented instead of prescriptive ([#20](https://github.com/turalnovruzov/codery/issues/20)) ([24ddb70](https://github.com/turalnovruzov/codery/commit/24ddb70a7a9fbb4b1ca877f6efaa56b1f39977c2))
+
 # [6.5.0](https://github.com/turalnovruzov/codery/compare/v6.4.1...v6.5.0) (2026-02-18)
 
 
