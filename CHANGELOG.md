@@ -1,3 +1,10 @@
+# [6.6.0](https://github.com/turalnovruzov/codery/compare/v6.5.1...v6.6.0) (2026-02-23)
+
+
+### Features
+
+* **docs:** add /codery:docs-check command for documentation maintenance ([#21](https://github.com/turalnovruzov/codery/issues/21)) ([6d72a77](https://github.com/turalnovruzov/codery/commit/6d72a77c66542ca2d23fdcef1c8f6cd56f1b8d80))
+
 ## [6.5.1](https://github.com/turalnovruzov/codery/compare/v6.5.0...v6.5.1) (2026-02-18)
 
 
