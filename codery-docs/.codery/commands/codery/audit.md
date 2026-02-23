@@ -94,6 +94,16 @@ When the user requests (e.g., "generate report", "write the review"), create a M
 <Overall assessment and approval recommendation>
 ```
 
+## Documentation Check
+
+After reviewing code changes, consider whether documentation might need updates. If the PR includes:
+- New features or capabilities
+- API changes
+- Configuration changes
+- Architectural decisions
+
+Mention: "This PR may affect documentation. Run `/codery:docs-check` to verify docs are up to date."
+
 ## Important Notes
 
 - Review happens in main context for full discussion capability
