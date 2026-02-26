@@ -74,7 +74,7 @@ async function buildProject(projectPath: string): Promise<{ success: boolean; er
 
   try {
     process.chdir(projectPath);
-    await buildCommand({ output: undefined, dryRun: false, skipConfig: false, force: true });
+    await buildCommand({ output: undefined, dryRun: false, skipConfig: false, force: true, quiet: true });
     return { success: true };
   } catch (error: any) {
     return { success: false, error: error.message };

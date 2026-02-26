@@ -9,6 +9,7 @@ interface BuildOptions {
   dryRun?: boolean;
   skipConfig?: boolean;
   force?: boolean;
+  quiet?: boolean;
 }
 
 interface MarkdownFile {
@@ -431,8 +432,15 @@ async function copyCommandFiles(config: CoderyConfig | null, dryRun: boolean = f
 
 // Main build command
 export async function buildCommand(options: BuildOptions): Promise<void> {
-  console.log(chalk.blue('🏰 Codery Build'));
-  console.log();
+  // Helper to conditionally log based on quiet mode
+  const log = (...args: unknown[]) => {
+    if (!options.quiet) {
+      console.log(...args);
+    }
+  };
+
+  log(chalk.blue('🏰 Codery Build'));
+  log();
 
   try {
     // Load configuration if not skipping
@@ -442,9 +450,9 @@ export async function buildCommand(options: BuildOptions): Promise<void> {
     if (!options.skipConfig) {
       config = loadConfig();
       if (!config) {
-        console.log(chalk.yellow('⚠️  No configuration found. Run "codery init" to create one.'));
-        console.log(chalk.dim('   Building without template substitution...'));
-        console.log();
+        log(chalk.yellow('⚠️  No configuration found. Run "codery init" to create one.'));
+        log(chalk.dim('   Building without template substitution...'));
+        log();
       }
     }
 
@@ -452,19 +460,19 @@ export async function buildCommand(options: BuildOptions): Promise<void> {
     const markdownFiles = readMarkdownFiles(config);
 
     if (markdownFiles.length === 0) {
-      console.log(chalk.yellow('No markdown files found in codery-docs/.codery'));
+      log(chalk.yellow('No markdown files found in codery-docs/.codery'));
       return;
     }
 
-    console.log(`Found ${markdownFiles.length} markdown files:`);
+    log(`Found ${markdownFiles.length} markdown files:`);
     markdownFiles.forEach(file => {
-      console.log(`  - ${file.name}`);
+      log(`  - ${file.name}`);
     });
-    console.log();
+    log();
 
     // Apply template substitution if config is available
     if (config && !options.skipConfig) {
-      console.log('Applying template substitution...');
+      log('Applying template substitution...');
       markdownFiles.forEach(file => {
         const result = substituteTemplates(file.content, config);
         file.content = result.content;
@@ -472,11 +480,11 @@ export async function buildCommand(options: BuildOptions): Promise<void> {
       });
 
       if (allUnsubstituted.length > 0) {
-        console.log(
+        log(
           chalk.yellow(`⚠️  Unsubstituted variables: ${[...new Set(allUnsubstituted)].join(', ')}`)
         );
       }
-      console.log();
+      log();
     }
 
     // Merge files
@@ -487,16 +495,16 @@ export async function buildCommand(options: BuildOptions): Promise<void> {
 
     // Dry run mode
     if (options.dryRun) {
-      console.log(chalk.yellow('DRY RUN MODE - No files will be created'));
-      console.log();
-      console.log(`Would create: ${outputPath}`);
-      console.log(`File size: ~${Math.round(mergedContent.length / 1024)}KB`);
-      console.log();
-      console.log('Preview of merged content:');
-      console.log('---');
-      console.log(mergedContent.substring(0, 500) + '...');
-      console.log('---');
-      console.log();
+      log(chalk.yellow('DRY RUN MODE - No files will be created'));
+      log();
+      log(`Would create: ${outputPath}`);
+      log(`File size: ~${Math.round(mergedContent.length / 1024)}KB`);
+      log();
+      log('Preview of merged content:');
+      log('---');
+      log(mergedContent.substring(0, 500) + '...');
+      log('---');
+      log();
       
       // Show what subagents would be copied
       await copySubagentFiles(config, true);
@@ -509,8 +517,8 @@ export async function buildCommand(options: BuildOptions): Promise<void> {
 
     // Check if file exists and prompt for confirmation (unless --force)
     if (fs.existsSync(outputPath) && !options.force) {
-      console.log(chalk.yellow(`⚠️  File already exists: ${outputPath}`));
-      console.log();
+      log(chalk.yellow(`⚠️  File already exists: ${outputPath}`));
+      log();
 
       const { confirm } = await inquirer.prompt<{ confirm: boolean }>([
         {
@@ -522,7 +530,7 @@ export async function buildCommand(options: BuildOptions): Promise<void> {
       ]);
 
       if (!confirm) {
-        console.log(chalk.red('Build cancelled.'));
+        log(chalk.red('Build cancelled.'));
         process.exit(0);
       }
     }
@@ -530,70 +538,70 @@ export async function buildCommand(options: BuildOptions): Promise<void> {
     // Write the merged file
     fs.writeFileSync(outputPath, mergedContent, 'utf-8');
 
-    console.log();
-    console.log(chalk.green('✨ Codery build complete!'));
-    console.log();
-    console.log(`Created: ${outputPath}`);
-    console.log(`Size: ~${Math.round(mergedContent.length / 1024)}KB`);
-    console.log();
-    console.log('Your CLAUDE.md file contains:');
+    log();
+    log(chalk.green('✨ Codery build complete!'));
+    log();
+    log(`Created: ${outputPath}`);
+    log(`Size: ~${Math.round(mergedContent.length / 1024)}KB`);
+    log();
+    log('Your CLAUDE.md file contains:');
     markdownFiles.forEach(file => {
-      console.log(`  - ${file.name.replace('.md', '').replace(/_/g, ' ')}`);
+      log(`  - ${file.name.replace('.md', '').replace(/_/g, ' ')}`);
     });
-    
+
     // Build application documentation if configured
     if (config?.applicationDocs && config.applicationDocs.length > 0) {
-      console.log();
-      console.log('Building application documentation...');
+      log();
+      log('Building application documentation...');
       const appDocsSuccess = await buildApplicationDocs(config);
       if (appDocsSuccess) {
-        console.log(chalk.green('✓ Created .codery/application-docs.md'));
+        log(chalk.green('✓ Created .codery/application-docs.md'));
       }
     }
-    
+
     // Copy subagent files
-    console.log();
+    log();
     const subagentsSuccess = await copySubagentFiles(config, false);
     if (subagentsSuccess) {
-      console.log(chalk.green('✓ Copied subagents to .claude/agents/'));
+      log(chalk.green('✓ Copied subagents to .claude/agents/'));
     }
-    
+
     // Copy command files
     const commandsSuccess = await copyCommandFiles(config, false);
     if (commandsSuccess) {
-      console.log(chalk.green('✓ Copied commands to .claude/commands/'));
+      log(chalk.green('✓ Copied commands to .claude/commands/'));
     }
     
     // Copy Retrospective.md if it doesn't exist
     const coderyDir = path.join(process.cwd(), '.codery');
     const retrospectivePath = path.join(coderyDir, 'Retrospective.md');
-    
+
     if (!fs.existsSync(retrospectivePath)) {
       const sourceRetrospectivePath = path.join(packageRoot, 'codery-docs/.codery/Retrospective.md');
-      
+
       if (fs.existsSync(sourceRetrospectivePath)) {
         try {
           // Ensure .codery directory exists
           if (!fs.existsSync(coderyDir)) {
             fs.mkdirSync(coderyDir, { recursive: true });
           }
-          
+
           // Copy the Retrospective.md template
           const retrospectiveContent = fs.readFileSync(sourceRetrospectivePath, 'utf-8');
           fs.writeFileSync(retrospectivePath, retrospectiveContent, 'utf-8');
-          console.log(chalk.green('✓ Created .codery/Retrospective.md'));
+          log(chalk.green('✓ Created .codery/Retrospective.md'));
         } catch (error: any) {
-          console.log(chalk.yellow(`  ⚠️  Failed to create Retrospective.md: ${error.message}`));
+          log(chalk.yellow(`  ⚠️  Failed to create Retrospective.md: ${error.message}`));
         }
       }
     }
-    
-    console.log();
-    console.log('Next steps:');
-    console.log('  1. Review the generated CLAUDE.md file');
-    console.log('  2. Customize it for your specific project needs');
-    console.log('  3. Commit it to your repository');
-    console.log('  4. Start using AI assistants with your Codery-enabled project!');
+
+    log();
+    log('Next steps:');
+    log('  1. Review the generated CLAUDE.md file');
+    log('  2. Customize it for your specific project needs');
+    log('  3. Commit it to your repository');
+    log('  4. Start using AI assistants with your Codery-enabled project!');
   } catch (error: any) {
     console.error(chalk.red('Build failed:'), error.message);
     throw error;
