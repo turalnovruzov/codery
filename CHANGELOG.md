@@ -1,3 +1,10 @@
+# [6.7.0](https://github.com/turalnovruzov/codery/compare/v6.6.0...v6.7.0) (2026-02-26)
+
+
+### Features
+
+* **cli:** add one-command update for all Codery projects ([#22](https://github.com/turalnovruzov/codery/issues/22)) ([e7a6e56](https://github.com/turalnovruzov/codery/commit/e7a6e566e59c65a1aec414efae83c5a707d7de0a))
+
 # [6.6.0](https://github.com/turalnovruzov/codery/compare/v6.5.1...v6.6.0) (2026-02-23)
 
 
