@@ -216,7 +216,9 @@ function substituteTemplates(
 }
 
 // Build application documentation from user-specified files
-async function buildApplicationDocs(config: CoderyConfig): Promise<boolean> {
+async function buildApplicationDocs(config: CoderyConfig, quiet: boolean = false): Promise<boolean> {
+  const log = (...args: unknown[]) => { if (!quiet) console.log(...args); };
+
   if (!config.applicationDocs || config.applicationDocs.length === 0) {
     return false;
   }
@@ -238,16 +240,16 @@ async function buildApplicationDocs(config: CoderyConfig): Promise<boolean> {
     try {
       // Resolve the path relative to current working directory
       const resolvedPath = path.resolve(process.cwd(), docPath);
-      
+
       // Check if file exists
       if (!fs.existsSync(resolvedPath)) {
-        console.log(chalk.yellow(`  ⚠️  File not found: ${docPath}`));
+        log(chalk.yellow(`  ⚠️  File not found: ${docPath}`));
         continue;
       }
 
       // Read the file content
       const content = fs.readFileSync(resolvedPath, 'utf-8');
-      
+
       // Add section
       sections.push('---');
       sections.push('');
@@ -255,15 +257,15 @@ async function buildApplicationDocs(config: CoderyConfig): Promise<boolean> {
       sections.push('');
       sections.push(content.trim());
       sections.push('');
-      
+
       hasValidFiles = true;
     } catch (error: any) {
-      console.log(chalk.yellow(`  ⚠️  Error reading ${docPath}: ${error.message}`));
+      log(chalk.yellow(`  ⚠️  Error reading ${docPath}: ${error.message}`));
     }
   }
 
   if (!hasValidFiles) {
-    console.log(chalk.yellow('  No valid application documentation files found'));
+    log(chalk.yellow('  No valid application documentation files found'));
     return false;
   }
 
@@ -277,101 +279,103 @@ async function buildApplicationDocs(config: CoderyConfig): Promise<boolean> {
     fs.writeFileSync(outputPath, sections.join('\n'), 'utf-8');
     return true;
   } catch (error: any) {
-    console.log(chalk.red(`  ❌ Failed to write application docs: ${error.message}`));
+    log(chalk.red(`  ❌ Failed to write application docs: ${error.message}`));
     return false;
   }
 }
 
 // Copy subagent files to user's project
-async function copySubagentFiles(config: CoderyConfig | null, dryRun: boolean = false): Promise<boolean> {
+async function copySubagentFiles(config: CoderyConfig | null, dryRun: boolean = false, quiet: boolean = false): Promise<boolean> {
+  const log = (...args: unknown[]) => { if (!quiet) console.log(...args); };
   const sourceDir = path.join(packageRoot, 'codery-docs/.codery/agents');
   const targetDir = path.join(process.cwd(), '.claude/agents');
-  
+
   // Check if source directory exists
   if (!fs.existsSync(sourceDir)) {
-    console.log(chalk.yellow('  ⚠️  No subagent files found in package'));
+    log(chalk.yellow('  ⚠️  No subagent files found in package'));
     return false;
   }
-  
+
   try {
     // Create target directory if it doesn't exist
     if (!fs.existsSync(targetDir)) {
       fs.mkdirSync(targetDir, { recursive: true });
     }
-    
+
     // Get all .md files from agents directory
     const subagentFiles = fs.readdirSync(sourceDir)
       .filter(file => file.endsWith('.md'));
-    
+
     if (subagentFiles.length === 0) {
       return false;
     }
-    
+
     if (dryRun) {
-      console.log(`Would copy ${subagentFiles.length} subagent files to ${targetDir}`);
-      subagentFiles.forEach(file => console.log(`  - ${file}`));
+      log(`Would copy ${subagentFiles.length} subagent files to ${targetDir}`);
+      subagentFiles.forEach(file => log(`  - ${file}`));
       return true;
     }
-    
-    console.log(`Copying ${subagentFiles.length} subagent files...`);
-    
+
+    log(`Copying ${subagentFiles.length} subagent files...`);
+
     // Process each subagent file
     for (const file of subagentFiles) {
       const sourcePath = path.join(sourceDir, file);
       const targetPath = path.join(targetDir, file);
-      
+
       // Read the subagent content
       let content = fs.readFileSync(sourcePath, 'utf-8');
-      
+
       // Apply template substitution if config is available
       if (config) {
         const result = substituteTemplates(content, config);
         content = result.content;
-        
+
         if (result.unsubstituted.length > 0) {
-          console.log(chalk.yellow(`  ⚠️  Unsubstituted in ${file}: ${result.unsubstituted.join(', ')}`));
+          log(chalk.yellow(`  ⚠️  Unsubstituted in ${file}: ${result.unsubstituted.join(', ')}`));
         }
       }
-      
+
       // Write to target
       fs.writeFileSync(targetPath, content, 'utf-8');
-      console.log(`  ✓ ${file}`);
+      log(`  ✓ ${file}`);
     }
-    
+
     return true;
   } catch (error: any) {
-    console.log(chalk.red(`  ❌ Failed to copy subagents: ${error.message}`));
+    log(chalk.red(`  ❌ Failed to copy subagents: ${error.message}`));
     return false;
   }
 }
 
 // Copy command files to user's project
-async function copyCommandFiles(config: CoderyConfig | null, dryRun: boolean = false): Promise<boolean> {
+async function copyCommandFiles(config: CoderyConfig | null, dryRun: boolean = false, quiet: boolean = false): Promise<boolean> {
+  const log = (...args: unknown[]) => { if (!quiet) console.log(...args); };
   const sourceDir = path.join(packageRoot, 'codery-docs/.codery/commands');
   const targetDir = path.join(process.cwd(), '.claude/commands');
-  
+
   // Check if source directory exists
   if (!fs.existsSync(sourceDir)) {
-    console.log(chalk.yellow('  ⚠️  No command files found in package'));
+    log(chalk.yellow('  ⚠️  No command files found in package'));
     return false;
   }
-  
+
   try {
     // Create target directory if it doesn't exist
     if (!fs.existsSync(targetDir)) {
       fs.mkdirSync(targetDir, { recursive: true });
     }
-    
+
     // Get all .md files from commands directory (including subdirectories)
     const commandFiles: string[] = [];
-    
+
     function findCommandFiles(dir: string, relativePath: string = '') {
       const items = fs.readdirSync(dir);
-      
+
       for (const item of items) {
         const fullPath = path.join(dir, item);
         const itemRelativePath = relativePath ? path.join(relativePath, item) : item;
-        
+
         if (fs.statSync(fullPath).isDirectory()) {
           findCommandFiles(fullPath, itemRelativePath);
         } else if (item.endsWith('.md')) {
@@ -379,53 +383,53 @@ async function copyCommandFiles(config: CoderyConfig | null, dryRun: boolean = f
         }
       }
     }
-    
+
     findCommandFiles(sourceDir);
-    
+
     if (commandFiles.length === 0) {
       return false;
     }
-    
+
     if (dryRun) {
-      console.log(`Would copy ${commandFiles.length} command files to ${targetDir}`);
-      commandFiles.forEach(file => console.log(`  - ${file}`));
+      log(`Would copy ${commandFiles.length} command files to ${targetDir}`);
+      commandFiles.forEach(file => log(`  - ${file}`));
       return true;
     }
-    
-    console.log(`Copying ${commandFiles.length} command files...`);
-    
+
+    log(`Copying ${commandFiles.length} command files...`);
+
     // Process each command file
     for (const file of commandFiles) {
       const sourcePath = path.join(sourceDir, file);
       const targetPath = path.join(targetDir, file);
-      
+
       // Ensure target directory exists for nested files
       const targetFileDir = path.dirname(targetPath);
       if (!fs.existsSync(targetFileDir)) {
         fs.mkdirSync(targetFileDir, { recursive: true });
       }
-      
+
       // Read the command content
       let content = fs.readFileSync(sourcePath, 'utf-8');
-      
+
       // Apply template substitution if config is available
       if (config) {
         const result = substituteTemplates(content, config);
         content = result.content;
-        
+
         if (result.unsubstituted.length > 0) {
-          console.log(chalk.yellow(`  ⚠️  Unsubstituted in ${file}: ${result.unsubstituted.join(', ')}`));
+          log(chalk.yellow(`  ⚠️  Unsubstituted in ${file}: ${result.unsubstituted.join(', ')}`));
         }
       }
-      
+
       // Write to target
       fs.writeFileSync(targetPath, content, 'utf-8');
-      console.log(`  ✓ ${file}`);
+      log(`  ✓ ${file}`);
     }
-    
+
     return true;
   } catch (error: any) {
-    console.log(chalk.red(`  ❌ Failed to copy commands: ${error.message}`));
+    log(chalk.red(`  ❌ Failed to copy commands: ${error.message}`));
     return false;
   }
 }
@@ -507,10 +511,10 @@ export async function buildCommand(options: BuildOptions): Promise<void> {
       log();
       
       // Show what subagents would be copied
-      await copySubagentFiles(config, true);
-      
+      await copySubagentFiles(config, true, options.quiet);
+
       // Show what commands would be copied
-      await copyCommandFiles(config, true);
+      await copyCommandFiles(config, true, options.quiet);
       
       return;
     }
@@ -553,7 +557,7 @@ export async function buildCommand(options: BuildOptions): Promise<void> {
     if (config?.applicationDocs && config.applicationDocs.length > 0) {
       log();
       log('Building application documentation...');
-      const appDocsSuccess = await buildApplicationDocs(config);
+      const appDocsSuccess = await buildApplicationDocs(config, options.quiet);
       if (appDocsSuccess) {
         log(chalk.green('✓ Created .codery/application-docs.md'));
       }
@@ -561,13 +565,13 @@ export async function buildCommand(options: BuildOptions): Promise<void> {
 
     // Copy subagent files
     log();
-    const subagentsSuccess = await copySubagentFiles(config, false);
+    const subagentsSuccess = await copySubagentFiles(config, false, options.quiet);
     if (subagentsSuccess) {
       log(chalk.green('✓ Copied subagents to .claude/agents/'));
     }
 
     // Copy command files
-    const commandsSuccess = await copyCommandFiles(config, false);
+    const commandsSuccess = await copyCommandFiles(config, false, options.quiet);
     if (commandsSuccess) {
       log(chalk.green('✓ Copied commands to .claude/commands/'));
     }
