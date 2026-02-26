@@ -1,3 +1,10 @@
+## [6.8.1](https://github.com/turalnovruzov/codery/compare/v6.8.0...v6.8.1) (2026-02-26)
+
+
+### Bug Fixes
+
+* **update:** add quiet mode to suppress verbose build output ([#24](https://github.com/turalnovruzov/codery/issues/24)) ([6fef388](https://github.com/turalnovruzov/codery/commit/6fef3886e2531840853f575f0813fadccb402b23))
+
 # [6.8.0](https://github.com/turalnovruzov/codery/compare/v6.7.0...v6.8.0) (2026-02-26)
 
 
