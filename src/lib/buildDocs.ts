@@ -8,6 +8,7 @@ interface BuildOptions {
   output?: string;
   dryRun?: boolean;
   skipConfig?: boolean;
+  force?: boolean;
 }
 
 interface MarkdownFile {
@@ -506,8 +507,8 @@ export async function buildCommand(options: BuildOptions): Promise<void> {
       return;
     }
 
-    // Check if file exists and prompt for confirmation
-    if (fs.existsSync(outputPath)) {
+    // Check if file exists and prompt for confirmation (unless --force)
+    if (fs.existsSync(outputPath) && !options.force) {
       console.log(chalk.yellow(`⚠️  File already exists: ${outputPath}`));
       console.log();
 
