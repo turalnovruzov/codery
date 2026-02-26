@@ -74,7 +74,7 @@ codery/
 
 ## Version History
 
-### Version 7.0.0 - Project Registry System (COD-33)
+### Version 6.7.0 - Project Registry System (COD-33)
 - Added project registry (`~/.codery/projects.json`) to track Codery-enabled projects
 - New `codery update` command to update npm package and rebuild all registered projects
 - New `codery register [path]` command to manually add projects to registry
@@ -82,6 +82,7 @@ codery/
 - New `codery list` command to display all registered projects
 - Auto-registration on `codery init`
 - Added `--force` flag to `codery build` for non-interactive builds
+- Added `--yes` flag to `codery update` for non-interactive mode
 
 ### Version 6.0.0 - Automatic Subagent Delegation (Breaking Change)
 - **Breaking**: AI assistants now automatically delegate to subagents when thresholds are met
