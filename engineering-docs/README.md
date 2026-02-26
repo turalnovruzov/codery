@@ -72,7 +72,42 @@ codery/
 └── engineering-docs/           # This documentation
 ```
 
+## Git Philosophy
+
+Codery follows the npm principle: **track inputs, ignore outputs**.
+
+| npm | Codery |
+|-----|--------|
+| `package.json` (tracked) | `.codery/config.json` (tracked) |
+| `node_modules/` (ignored) | `CLAUDE.md`, `.claude/`, etc. (ignored) |
+| `npm install` | `codery build` |
+
+### What's Tracked vs Ignored
+
+| File | Type | Git Status |
+|------|------|------------|
+| `.codery/config.json` | Input (build spec) | **Tracked** |
+| `CLAUDE.md` | Output (generated) | **Ignored** |
+| `.claude/` | Output (generated) | **Ignored** |
+| `.codery/application-docs.md` | Output (generated) | **Ignored** |
+| `.codery/Retrospective.md` | Output (generated) | **Ignored** |
+
+### Why This Matters
+
+- **No git pollution**: Codery updates don't create commits
+- **No merge conflicts**: Multiple devs can't conflict on generated files
+- **Team consistency**: Everyone uses same config, generates same output
+- **Clean onboarding**: `git clone` → `npm install` → `codery build`
+
+See `docs/gitignore-migration.md` for migration guide for existing projects.
+
 ## Version History
+
+### Version 6.8.0 - Git Philosophy Update (COD-38)
+- Changed `codery init` to follow "track inputs, ignore outputs" principle
+- Config.json is now tracked (like package.json)
+- Generated files (CLAUDE.md, .claude/, etc.) are now ignored
+- Added migration guide for existing projects
 
 ### Version 6.7.0 - Project Registry System (COD-33)
 - Added project registry (`~/.codery/projects.json`) to track Codery-enabled projects
@@ -142,7 +177,7 @@ codery/
 5. Conditionally collects Atlassian URL (only for MCP integration)
 6. Configures branch names based on workflow
 7. Creates `.codery/config.json`
-8. Updates `.gitignore` to exclude config file
+8. Updates `.gitignore` to exclude generated files (not config)
 
 **Key Features**:
 - Configuration preservation on re-init
@@ -271,7 +306,7 @@ The template system enables dynamic documentation generation based on project co
 }
 ```
 
-**Storage**: `.codery/config.json` (git-ignored)
+**Storage**: `.codery/config.json` (tracked in git - see Git Philosophy below)
 
 ## Development Guide
 
