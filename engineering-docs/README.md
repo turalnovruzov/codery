@@ -195,6 +195,7 @@ codery/
 - Single command updates all projects
 - Graceful failure - continues if one project fails
 - Detects and offers to remove missing projects
+- `--yes` flag for non-interactive mode (auto-removes missing projects)
 - Progress output with summary
 
 ### 4. Registry Commands (`codery register`, `codery unregister`, `codery list`)
@@ -349,7 +350,10 @@ Options:
 
 **codery update**
 ```bash
-codery update
+codery update [options]
+
+Options:
+  --yes    Auto-remove missing projects without prompting
 ```
 Updates the global Codery package and rebuilds all registered projects.
 

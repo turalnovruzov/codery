@@ -51,9 +51,10 @@ program
 program
   .command('update')
   .description('Update Codery and rebuild all registered projects')
-  .action(async () => {
+  .option('--yes', 'Auto-remove missing projects without prompting')
+  .action(async options => {
     try {
-      await updateCommand();
+      await updateCommand(options);
     } catch (error: any) {
       console.error(chalk.red('Error:'), error.message);
       process.exit(1);

@@ -10,6 +10,10 @@ import {
 } from './registry';
 import { buildCommand } from './buildDocs';
 
+interface UpdateOptions {
+  yes?: boolean;
+}
+
 interface UpdateResult {
   path: string;
   status: 'success' | 'failed' | 'not-found' | 'removed';
@@ -79,7 +83,7 @@ async function buildProject(projectPath: string): Promise<{ success: boolean; er
   }
 }
 
-export async function updateCommand(): Promise<void> {
+export async function updateCommand(options: UpdateOptions = {}): Promise<void> {
   console.log(chalk.blue('🔄 Codery Update'));
   console.log();
 
@@ -145,14 +149,19 @@ export async function updateCommand(): Promise<void> {
   if (toRemove.length > 0) {
     console.log();
     for (const project of toRemove) {
-      const { shouldRemove } = await inquirer.prompt<{ shouldRemove: boolean }>([
-        {
-          type: 'confirm',
-          name: 'shouldRemove',
-          message: `Project not found: ${project.path}. Remove from registry?`,
-          default: true,
-        },
-      ]);
+      let shouldRemove = options.yes;
+
+      if (!options.yes) {
+        const answer = await inquirer.prompt<{ shouldRemove: boolean }>([
+          {
+            type: 'confirm',
+            name: 'shouldRemove',
+            message: `Project not found: ${project.path}. Remove from registry?`,
+            default: true,
+          },
+        ]);
+        shouldRemove = answer.shouldRemove;
+      }
 
       if (shouldRemove) {
         removeProject(project.path);
