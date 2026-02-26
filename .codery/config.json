@@ -1,0 +1,10 @@
+{
+  "projectKey": "COD",
+  "mainBranch": "main",
+  "gitWorkflowType": "trunk-based",
+  "jiraIntegrationType": "cli",
+  "applicationDocs": [
+    "engineering-docs/README.md",
+    "engineering-docs/commit-conventions.md"
+  ]
+}
