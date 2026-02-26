@@ -3,6 +3,7 @@ import * as path from 'path';
 import chalk from 'chalk';
 import inquirer from 'inquirer';
 import { defaultConfig, CoderyConfig } from '../types/config';
+import { addProject } from './registry';
 
 interface InitOptions {
   force?: boolean;
@@ -22,7 +23,7 @@ export async function initCommand(options: InitOptions): Promise<void> {
       const configContent = fs.readFileSync(configPath, 'utf-8');
       existingConfig = JSON.parse(configContent);
       console.log(chalk.dim('Found existing configuration'));
-    } catch (error) {
+    } catch (_error) {
       console.log(chalk.yellow('⚠️  Could not parse existing config, will use defaults'));
     }
   }
@@ -165,6 +166,12 @@ export async function initCommand(options: InitOptions): Promise<void> {
         fs.writeFileSync(gitignorePath, updatedContent, 'utf-8');
         console.log(chalk.green('✓'), 'Added .codery/config.json to .gitignore');
       }
+    }
+
+    // Register project for updates
+    const wasAdded = addProject(process.cwd());
+    if (wasAdded) {
+      console.log(chalk.green('✓'), 'Project registered for updates');
     }
 
     console.log();
