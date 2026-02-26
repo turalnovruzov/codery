@@ -1,19 +1,16 @@
 # MacOS
 .DS_Store
 
-# Claude
-CLAUDE.md
-.claude
-
 # Node.js
 node_modules/
 dist/
 
-# Codery configuration
-/.codery/
-
 # ESLint cache
 .eslintcache
 
-# Codery configuration
-.codery/config.json
+# Codery generated files (regenerate with: codery build)
+# Note: .codery/config.json is NOT ignored - it should be tracked like package.json
+CLAUDE.md
+.claude/
+.codery/application-docs.md
+.codery/Retrospective.md

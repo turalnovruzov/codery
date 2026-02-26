@@ -156,15 +156,34 @@ export async function initCommand(options: InitOptions): Promise<void> {
     console.log();
     console.log(chalk.green('✓'), 'Created config.json with your project settings');
 
-    // Add to .gitignore if it exists
+    // Add generated files to .gitignore (but NOT config.json - it should be tracked)
     const gitignorePath = path.join(process.cwd(), '.gitignore');
     if (fs.existsSync(gitignorePath)) {
       const gitignoreContent = fs.readFileSync(gitignorePath, 'utf-8');
-      if (!gitignoreContent.includes('.codery/config.json')) {
+      const entriesToAdd: string[] = [];
+
+      // Generated files that should be ignored (like node_modules)
+      const generatedFiles = [
+        'CLAUDE.md',
+        '.claude/',
+        '.codery/application-docs.md',
+        '.codery/Retrospective.md',
+      ];
+
+      for (const entry of generatedFiles) {
+        if (!gitignoreContent.includes(entry)) {
+          entriesToAdd.push(entry);
+        }
+      }
+
+      if (entriesToAdd.length > 0) {
         const updatedContent =
-          gitignoreContent.trimEnd() + '\n\n# Codery configuration\n.codery/config.json\n';
+          gitignoreContent.trimEnd() +
+          '\n\n# Codery generated files (like node_modules - regenerate with: codery build)\n' +
+          entriesToAdd.join('\n') +
+          '\n';
         fs.writeFileSync(gitignorePath, updatedContent, 'utf-8');
-        console.log(chalk.green('✓'), 'Added .codery/config.json to .gitignore');
+        console.log(chalk.green('✓'), `Added ${entriesToAdd.length} Codery generated file(s) to .gitignore`);
       }
     }
 
