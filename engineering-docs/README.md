@@ -34,7 +34,9 @@ codery/
 │   │   └── codery.ts           # CLI entry point
 │   ├── lib/
 │   │   ├── buildDocs.ts        # Build command implementation
-│   │   └── initCommand.ts      # Init command implementation
+│   │   ├── initCommand.ts      # Init command implementation
+│   │   ├── registry.ts         # Project registry management
+│   │   └── updateCommand.ts    # Update command implementation
 │   └── types/
 │       └── config.ts           # TypeScript interfaces
 ├── codery-docs/
@@ -71,6 +73,15 @@ codery/
 ```
 
 ## Version History
+
+### Version 7.0.0 - Project Registry System (COD-33)
+- Added project registry (`~/.codery/projects.json`) to track Codery-enabled projects
+- New `codery update` command to update npm package and rebuild all registered projects
+- New `codery register [path]` command to manually add projects to registry
+- New `codery unregister [path]` command to remove projects from registry
+- New `codery list` command to display all registered projects
+- Auto-registration on `codery init`
+- Added `--force` flag to `codery build` for non-interactive builds
 
 ### Version 6.0.0 - Automatic Subagent Delegation (Breaking Change)
 - **Breaking**: AI assistants now automatically delegate to subagents when thresholds are met
@@ -140,6 +151,7 @@ codery/
 - Automatic `.gitignore` management
 - Force overwrite option
 - Empty applicationDocs array initialization
+- Auto-registration in project registry for `codery update`
 
 ### 2. Build Command (`codery build`)
 
@@ -164,6 +176,43 @@ codery/
 - Dry-run mode for preview
 - Skip-config option for building without substitution
 - Subagent templates included in build
+- Force mode for non-interactive builds (skips overwrite prompt)
+
+### 3. Update Command (`codery update`)
+
+**Purpose**: Updates the Codery npm package and rebuilds all registered projects in one command.
+
+**Process**:
+1. Runs `npm update -g codery` to update the global package
+2. Loads the project registry from `~/.codery/projects.json`
+3. For each registered project:
+   - Verifies the path exists
+   - Runs `codery build --force` if valid
+   - Prompts to remove if path not found
+4. Displays summary of results
+
+**Key Features**:
+- Single command updates all projects
+- Graceful failure - continues if one project fails
+- Detects and offers to remove missing projects
+- Progress output with summary
+
+### 4. Registry Commands (`codery register`, `codery unregister`, `codery list`)
+
+**Purpose**: Manage the project registry for `codery update`.
+
+**Registry Location**: `~/.codery/projects.json`
+
+**Commands**:
+- `codery register [path]` - Add a project to the registry (defaults to current directory)
+- `codery unregister [path]` - Remove a project from the registry
+- `codery list` - Display all registered projects with status
+
+**Key Features**:
+- Idempotent registration (no duplicates)
+- Absolute path storage
+- Missing project detection in list output
+- Per-machine registry (not synced across machines)
 
 ## Implementation Details
 
@@ -295,7 +344,32 @@ Options:
   --output <path>    Output path for CLAUDE.md
   --dry-run         Preview without creating files
   --skip-config     Build without template substitution
+  --force           Overwrite existing files without prompting
 ```
+
+**codery update**
+```bash
+codery update
+```
+Updates the global Codery package and rebuilds all registered projects.
+
+**codery register**
+```bash
+codery register [path]
+```
+Register a project for updates. Defaults to current directory if no path specified.
+
+**codery unregister**
+```bash
+codery unregister [path]
+```
+Remove a project from the registry. Defaults to current directory if no path specified.
+
+**codery list**
+```bash
+codery list
+```
+Display all registered Codery projects with their status.
 
 ### Core Functions
 
@@ -348,6 +422,13 @@ Options:
 - Continuous improvement tracking
 - Introspection subagent for analysis
 - Knowledge accumulation across sessions
+
+### Project Registry System (COD-33)
+- Global project registry at `~/.codery/projects.json`
+- One-command update for all projects (`codery update`)
+- Project management commands (`register`, `unregister`, `list`)
+- Auto-registration on `codery init`
+- Non-interactive build mode with `--force` flag
 
 ## Future Enhancements
 
