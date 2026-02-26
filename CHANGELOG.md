@@ -1,3 +1,10 @@
+# [6.8.0](https://github.com/turalnovruzov/codery/compare/v6.7.0...v6.8.0) (2026-02-26)
+
+
+### Features
+
+* **init:** follow track inputs, ignore outputs philosophy ([#23](https://github.com/turalnovruzov/codery/issues/23)) ([8822958](https://github.com/turalnovruzov/codery/commit/88229588fd7c8acd44e852103e26d3102726365f))
+
 # [6.7.0](https://github.com/turalnovruzov/codery/compare/v6.6.0...v6.7.0) (2026-02-26)
 
 
