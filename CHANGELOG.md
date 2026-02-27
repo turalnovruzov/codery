@@ -1,3 +1,10 @@
+## [6.8.2](https://github.com/turalnovruzov/codery/compare/v6.8.1...v6.8.2) (2026-02-27)
+
+
+### Bug Fixes
+
+* **cli:** read version from package.json and make all helpers quiet-aware ([a56f7c4](https://github.com/turalnovruzov/codery/commit/a56f7c4340c6da2aa7e85f727b49f4114b9802e9))
+
 ## [6.8.1](https://github.com/turalnovruzov/codery/compare/v6.8.0...v6.8.1) (2026-02-26)
 
 
