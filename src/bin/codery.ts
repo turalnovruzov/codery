@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+import * as fs from 'fs';
+import * as path from 'path';
 import { Command } from 'commander';
 import chalk from 'chalk';
 import { buildCommand } from '../lib/buildDocs';
@@ -12,12 +14,16 @@ import {
   projectExists,
 } from '../lib/registry';
 
+// Read version from package.json
+const packageJsonPath = path.resolve(__dirname, '../../package.json');
+const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'));
+
 const program = new Command();
 
 program
   .name('codery')
   .description('Codery CLI - Build AI development workflows for your project')
-  .version('0.1.0');
+  .version(packageJson.version);
 
 program
   .command('init')
