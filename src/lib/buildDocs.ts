@@ -12,164 +12,8 @@ interface BuildOptions {
   quiet?: boolean;
 }
 
-interface MarkdownFile {
-  name: string;
-  path: string;
-  content: string;
-}
-
 // Get the package root directory
 const packageRoot = path.resolve(__dirname, '../..');
-
-// Define the order of files to merge (customize as needed)
-const fileOrder = [
-  'Roles.md',
-  '', // Placeholder for workflow file
-  'JIRA_Workflow.md',
-  '', // Placeholder for JIRA integration file
-  'SubagentWorkflow.md',
-  'LifeCycles.md',
-  'SuccessCriteria.md',
-];
-
-// Get the appropriate workflow file based on config
-function getWorkflowFile(config: CoderyConfig | null): string {
-  const workflowType = config?.gitWorkflowType || 'gitflow';
-  const workflowMap: Record<string, string> = {
-    'gitflow': 'GitWorkflows/GitFlow.md',
-    'trunk-based': 'GitWorkflows/TrunkBased.md'
-  };
-  return workflowMap[workflowType];
-}
-
-// Get the appropriate JIRA integration file based on config
-function getJiraIntegrationFile(config: CoderyConfig | null): string {
-  const integrationType = config?.jiraIntegrationType || 'mcp';
-  const integrationMap: Record<string, string> = {
-    'mcp': 'integrations/JIRA_MCP.md',
-    'cli': 'integrations/JIRA_CLI.md'
-  };
-  return integrationMap[integrationType];
-}
-
-// Read all markdown files from the .codery directory
-function readMarkdownFiles(config: CoderyConfig | null): MarkdownFile[] {
-  const coderyDir = path.join(packageRoot, 'codery-docs/.codery');
-  const files: MarkdownFile[] = [];
-
-  if (!fs.existsSync(coderyDir)) {
-    throw new Error(`Codery documentation directory not found: ${coderyDir}`);
-  }
-
-  // Get the workflow file and JIRA integration file
-  const workflowFile = getWorkflowFile(config);
-  const jiraIntegrationFile = getJiraIntegrationFile(config);
-
-  // Update fileOrder with the selected files
-  let placeholderIndex = 0;
-  const updatedFileOrder = fileOrder.map(file => {
-    if (file === '') {
-      placeholderIndex++;
-      return placeholderIndex === 1 ? workflowFile : jiraIntegrationFile;
-    }
-    return file;
-  });
-
-  // Get all .md files from root directory (excluding subdirectories and Retrospective.md)
-  const rootFiles = fs.readdirSync(coderyDir)
-    .filter(file => {
-      const filePath = path.join(coderyDir, file);
-      return fs.statSync(filePath).isFile() && file.endsWith('.md') && file !== 'Retrospective.md';
-    });
-
-  // Build the complete file list
-  const allFilesToRead: string[] = [];
-
-  // Add files in the specified order
-  updatedFileOrder.forEach(file => {
-    if (file.includes('/')) {
-      // It's a file in a subdirectory (like GitWorkflows/GitFlow.md)
-      allFilesToRead.push(file);
-    } else if (rootFiles.includes(file)) {
-      // It's a root file
-      allFilesToRead.push(file);
-    }
-  });
-
-  // Add any remaining root files not in the order (excluding Retrospective.md)
-  rootFiles.forEach(file => {
-    if (!updatedFileOrder.includes(file) && file !== 'Retrospective.md') {
-      allFilesToRead.push(file);
-    }
-  });
-
-  // Read each file
-  allFilesToRead.forEach(filename => {
-    const filePath = path.join(coderyDir, filename);
-    
-    // Check for backward compatibility - if GitWorkflows file doesn't exist, try old location
-    if (!fs.existsSync(filePath) && filename.includes('GitWorkflows/GitFlow.md')) {
-      const oldPath = path.join(coderyDir, 'Git_Workflow.md');
-      if (fs.existsSync(oldPath)) {
-        console.log(chalk.yellow('⚠️  Using legacy Git_Workflow.md location. Run migration to update.'));
-        const content = fs.readFileSync(oldPath, 'utf-8');
-        files.push({
-          name: 'Git_Workflow.md',
-          path: oldPath,
-          content: content.trim(),
-        });
-        return;
-      }
-    }
-
-    if (fs.existsSync(filePath)) {
-      const content = fs.readFileSync(filePath, 'utf-8');
-      const displayName = filename.includes('/') ? path.basename(filename) : filename;
-      files.push({
-        name: displayName,
-        path: filePath,
-        content: content.trim(),
-      });
-    }
-  });
-
-  return files;
-}
-
-// Merge markdown files into a single document
-function mergeMarkdownFiles(files: MarkdownFile[]): string {
-  const sections: string[] = [];
-
-  // Add header
-  sections.push('# CLAUDE.md');
-  sections.push('');
-  sections.push(
-    'This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.'
-  );
-  sections.push('');
-  sections.push('---');
-  sections.push('');
-
-  // Add each file as a section
-  files.forEach((file, index) => {
-    // Extract title from filename (remove .md extension)
-    const sectionTitle = file.name.replace('.md', '').replace(/_/g, ' ');
-
-    // Add section
-    sections.push(`## ${sectionTitle}`);
-    sections.push('');
-    sections.push(file.content);
-    sections.push('');
-
-    // Add separator between sections (except for the last one)
-    if (index < files.length - 1) {
-      sections.push('---');
-      sections.push('');
-    }
-  });
-
-  return sections.join('\n');
-}
 
 // Load configuration from .codery/config.json
 function loadConfig(): CoderyConfig | null {
@@ -197,6 +41,11 @@ function substituteTemplates(
   const templateRegex = /\{\{(\w+(?:\.\w+)*)\}\}/g;
 
   const substitutedContent = content.replace(templateRegex, (match, variable) => {
+    // Skip the applicationDocsImports placeholder — handled separately
+    if (variable === 'applicationDocsImports') {
+      return match;
+    }
+
     // Handle nested properties like customValues.teamName
     const value = variable.split('.').reduce((obj: any, key: string) => {
       return obj?.[key];
@@ -215,228 +64,165 @@ function substituteTemplates(
   return { content: substitutedContent, unsubstituted };
 }
 
-// Build application documentation from user-specified files
-async function buildApplicationDocs(config: CoderyConfig, quiet: boolean = false): Promise<boolean> {
-  const log = (...args: unknown[]) => { if (!quiet) console.log(...args); };
-
+// Generate @import lines for applicationDocs
+function generateAppDocsImports(config: CoderyConfig): string {
   if (!config.applicationDocs || config.applicationDocs.length === 0) {
-    return false;
+    return '';
   }
 
+  return config.applicationDocs
+    .map(docPath => `@${docPath}`)
+    .join('\n');
+}
+
+// Get the appropriate JIRA reference source file based on config
+function getJiraReferenceSource(config: CoderyConfig | null): string {
+  const integrationType = config?.jiraIntegrationType || 'mcp';
+  const fileMap: Record<string, string> = {
+    'mcp': 'jira-reference-mcp.md',
+    'cli': 'jira-reference-cli.md'
+  };
+  return fileMap[integrationType];
+}
+
+// Get the appropriate git workflow source file based on config
+function getGitWorkflowSource(config: CoderyConfig | null): string {
+  const workflowType = config?.gitWorkflowType || 'gitflow';
+  const fileMap: Record<string, string> = {
+    'gitflow': 'GitWorkflows/GitFlow.md',
+    'trunk-based': 'GitWorkflows/TrunkBased.md'
+  };
+  return fileMap[workflowType];
+}
+
+// Copy reference files to .codery/ directory with substitution
+function copyReferenceFiles(
+  config: CoderyConfig | null,
+  dryRun: boolean = false,
+  quiet: boolean = false
+): boolean {
+  const log = (...args: unknown[]) => { if (!quiet) console.log(...args); };
   const coderyDir = path.join(process.cwd(), '.codery');
-  const outputPath = path.join(coderyDir, 'application-docs.md');
-  const sections: string[] = [];
-
-  // Add header
-  sections.push('# Application Documentation');
-  sections.push('');
-  sections.push('_This file contains project-specific documentation aggregated from user-defined sources._');
-  sections.push('');
-
-  let hasValidFiles = false;
-
-  // Process each documentation file
-  for (const docPath of config.applicationDocs) {
-    try {
-      // Resolve the path relative to current working directory
-      const resolvedPath = path.resolve(process.cwd(), docPath);
-
-      // Check if file exists
-      if (!fs.existsSync(resolvedPath)) {
-        log(chalk.yellow(`  ⚠️  File not found: ${docPath}`));
-        continue;
-      }
-
-      // Read the file content
-      const content = fs.readFileSync(resolvedPath, 'utf-8');
-
-      // Add section
-      sections.push('---');
-      sections.push('');
-      sections.push(`## ${docPath}`);
-      sections.push('');
-      sections.push(content.trim());
-      sections.push('');
-
-      hasValidFiles = true;
-    } catch (error: any) {
-      log(chalk.yellow(`  ⚠️  Error reading ${docPath}: ${error.message}`));
-    }
-  }
-
-  if (!hasValidFiles) {
-    log(chalk.yellow('  No valid application documentation files found'));
-    return false;
-  }
+  const sourceDir = path.join(packageRoot, 'codery-docs/.codery');
 
   try {
-    // Ensure .codery directory exists
     if (!fs.existsSync(coderyDir)) {
       fs.mkdirSync(coderyDir, { recursive: true });
     }
 
-    // Write the merged documentation
-    fs.writeFileSync(outputPath, sections.join('\n'), 'utf-8');
+    // Copy JIRA reference
+    const jiraSource = path.join(sourceDir, getJiraReferenceSource(config));
+    const jiraTarget = path.join(coderyDir, 'jira-reference.md');
+
+    if (fs.existsSync(jiraSource)) {
+      if (dryRun) {
+        log(`Would copy ${getJiraReferenceSource(config)} → .codery/jira-reference.md`);
+      } else {
+        let content = fs.readFileSync(jiraSource, 'utf-8');
+        if (config) {
+          const result = substituteTemplates(content, config);
+          content = result.content;
+        }
+        fs.writeFileSync(jiraTarget, content, 'utf-8');
+        log(`  ✓ jira-reference.md`);
+      }
+    }
+
+    // Copy git workflow
+    const gitSource = path.join(sourceDir, getGitWorkflowSource(config));
+    const gitTarget = path.join(coderyDir, 'git-workflow.md');
+
+    if (fs.existsSync(gitSource)) {
+      if (dryRun) {
+        log(`Would copy ${getGitWorkflowSource(config)} → .codery/git-workflow.md`);
+      } else {
+        let content = fs.readFileSync(gitSource, 'utf-8');
+        if (config) {
+          const result = substituteTemplates(content, config);
+          content = result.content;
+        }
+        fs.writeFileSync(gitTarget, content, 'utf-8');
+        log(`  ✓ git-workflow.md`);
+      }
+    }
+
     return true;
   } catch (error: any) {
-    log(chalk.red(`  ❌ Failed to write application docs: ${error.message}`));
+    log(chalk.red(`  ❌ Failed to copy reference files: ${error.message}`));
     return false;
   }
 }
 
-// Copy subagent files to user's project
-async function copySubagentFiles(config: CoderyConfig | null, dryRun: boolean = false, quiet: boolean = false): Promise<boolean> {
+// Copy skill files to .claude/skills/ directory with substitution
+function copySkillFiles(
+  config: CoderyConfig | null,
+  dryRun: boolean = false,
+  quiet: boolean = false
+): boolean {
   const log = (...args: unknown[]) => { if (!quiet) console.log(...args); };
-  const sourceDir = path.join(packageRoot, 'codery-docs/.codery/agents');
-  const targetDir = path.join(process.cwd(), '.claude/agents');
+  const sourceDir = path.join(packageRoot, 'codery-docs/.codery/skills');
+  const targetDir = path.join(process.cwd(), '.claude/skills');
 
-  // Check if source directory exists
   if (!fs.existsSync(sourceDir)) {
-    log(chalk.yellow('  ⚠️  No subagent files found in package'));
+    log(chalk.yellow('  ⚠️  No skill files found in package'));
     return false;
   }
 
   try {
-    // Create target directory if it doesn't exist
-    if (!fs.existsSync(targetDir)) {
-      fs.mkdirSync(targetDir, { recursive: true });
-    }
+    // Get all skill directories
+    const skillDirs = fs.readdirSync(sourceDir)
+      .filter(item => fs.statSync(path.join(sourceDir, item)).isDirectory());
 
-    // Get all .md files from agents directory
-    const subagentFiles = fs.readdirSync(sourceDir)
-      .filter(file => file.endsWith('.md'));
-
-    if (subagentFiles.length === 0) {
+    if (skillDirs.length === 0) {
       return false;
     }
 
     if (dryRun) {
-      log(`Would copy ${subagentFiles.length} subagent files to ${targetDir}`);
-      subagentFiles.forEach(file => log(`  - ${file}`));
+      log(`Would copy ${skillDirs.length} skills to ${targetDir}`);
+      skillDirs.forEach(dir => log(`  - ${dir}/SKILL.md`));
       return true;
     }
 
-    log(`Copying ${subagentFiles.length} subagent files...`);
+    log(`Copying ${skillDirs.length} skills...`);
 
-    // Process each subagent file
-    for (const file of subagentFiles) {
-      const sourcePath = path.join(sourceDir, file);
-      const targetPath = path.join(targetDir, file);
+    for (const skillDir of skillDirs) {
+      const sourcePath = path.join(sourceDir, skillDir, 'SKILL.md');
+      const targetSkillDir = path.join(targetDir, skillDir);
+      const targetPath = path.join(targetSkillDir, 'SKILL.md');
 
-      // Read the subagent content
+      if (!fs.existsSync(sourcePath)) {
+        continue;
+      }
+
+      // Create skill directory
+      if (!fs.existsSync(targetSkillDir)) {
+        fs.mkdirSync(targetSkillDir, { recursive: true });
+      }
+
+      // Read, substitute, write
       let content = fs.readFileSync(sourcePath, 'utf-8');
-
-      // Apply template substitution if config is available
       if (config) {
         const result = substituteTemplates(content, config);
         content = result.content;
 
         if (result.unsubstituted.length > 0) {
-          log(chalk.yellow(`  ⚠️  Unsubstituted in ${file}: ${result.unsubstituted.join(', ')}`));
+          log(chalk.yellow(`  ⚠️  Unsubstituted in ${skillDir}: ${result.unsubstituted.join(', ')}`));
         }
       }
 
-      // Write to target
       fs.writeFileSync(targetPath, content, 'utf-8');
-      log(`  ✓ ${file}`);
+      log(`  ✓ ${skillDir}/SKILL.md`);
     }
 
     return true;
   } catch (error: any) {
-    log(chalk.red(`  ❌ Failed to copy subagents: ${error.message}`));
-    return false;
-  }
-}
-
-// Copy command files to user's project
-async function copyCommandFiles(config: CoderyConfig | null, dryRun: boolean = false, quiet: boolean = false): Promise<boolean> {
-  const log = (...args: unknown[]) => { if (!quiet) console.log(...args); };
-  const sourceDir = path.join(packageRoot, 'codery-docs/.codery/commands');
-  const targetDir = path.join(process.cwd(), '.claude/commands');
-
-  // Check if source directory exists
-  if (!fs.existsSync(sourceDir)) {
-    log(chalk.yellow('  ⚠️  No command files found in package'));
-    return false;
-  }
-
-  try {
-    // Create target directory if it doesn't exist
-    if (!fs.existsSync(targetDir)) {
-      fs.mkdirSync(targetDir, { recursive: true });
-    }
-
-    // Get all .md files from commands directory (including subdirectories)
-    const commandFiles: string[] = [];
-
-    function findCommandFiles(dir: string, relativePath: string = '') {
-      const items = fs.readdirSync(dir);
-
-      for (const item of items) {
-        const fullPath = path.join(dir, item);
-        const itemRelativePath = relativePath ? path.join(relativePath, item) : item;
-
-        if (fs.statSync(fullPath).isDirectory()) {
-          findCommandFiles(fullPath, itemRelativePath);
-        } else if (item.endsWith('.md')) {
-          commandFiles.push(itemRelativePath);
-        }
-      }
-    }
-
-    findCommandFiles(sourceDir);
-
-    if (commandFiles.length === 0) {
-      return false;
-    }
-
-    if (dryRun) {
-      log(`Would copy ${commandFiles.length} command files to ${targetDir}`);
-      commandFiles.forEach(file => log(`  - ${file}`));
-      return true;
-    }
-
-    log(`Copying ${commandFiles.length} command files...`);
-
-    // Process each command file
-    for (const file of commandFiles) {
-      const sourcePath = path.join(sourceDir, file);
-      const targetPath = path.join(targetDir, file);
-
-      // Ensure target directory exists for nested files
-      const targetFileDir = path.dirname(targetPath);
-      if (!fs.existsSync(targetFileDir)) {
-        fs.mkdirSync(targetFileDir, { recursive: true });
-      }
-
-      // Read the command content
-      let content = fs.readFileSync(sourcePath, 'utf-8');
-
-      // Apply template substitution if config is available
-      if (config) {
-        const result = substituteTemplates(content, config);
-        content = result.content;
-
-        if (result.unsubstituted.length > 0) {
-          log(chalk.yellow(`  ⚠️  Unsubstituted in ${file}: ${result.unsubstituted.join(', ')}`));
-        }
-      }
-
-      // Write to target
-      fs.writeFileSync(targetPath, content, 'utf-8');
-      log(`  ✓ ${file}`);
-    }
-
-    return true;
-  } catch (error: any) {
-    log(chalk.red(`  ❌ Failed to copy commands: ${error.message}`));
+    log(chalk.red(`  ❌ Failed to copy skills: ${error.message}`));
     return false;
   }
 }
 
 // Main build command
 export async function buildCommand(options: BuildOptions): Promise<void> {
-  // Helper to conditionally log based on quiet mode
   const log = (...args: unknown[]) => {
     if (!options.quiet) {
       console.log(...args);
@@ -447,9 +233,8 @@ export async function buildCommand(options: BuildOptions): Promise<void> {
   log();
 
   try {
-    // Load configuration if not skipping
+    // Load configuration
     let config: CoderyConfig | null = null;
-    let allUnsubstituted: string[] = [];
 
     if (!options.skipConfig) {
       config = loadConfig();
@@ -460,39 +245,35 @@ export async function buildCommand(options: BuildOptions): Promise<void> {
       }
     }
 
-    // Read all markdown files
-    const markdownFiles = readMarkdownFiles(config);
-
-    if (markdownFiles.length === 0) {
-      log(chalk.yellow('No markdown files found in codery-docs/.codery'));
-      return;
+    // Read the CLAUDE.md template
+    const templatePath = path.join(packageRoot, 'codery-docs/.codery/claude-md-template.md');
+    if (!fs.existsSync(templatePath)) {
+      throw new Error(`Template not found: ${templatePath}`);
     }
 
-    log(`Found ${markdownFiles.length} markdown files:`);
-    markdownFiles.forEach(file => {
-      log(`  - ${file.name}`);
-    });
-    log();
+    let claudeContent = fs.readFileSync(templatePath, 'utf-8');
 
-    // Apply template substitution if config is available
+    // Inject applicationDocs @imports
+    if (config) {
+      const appDocsImports = generateAppDocsImports(config);
+      claudeContent = claudeContent.replace('{{applicationDocsImports}}', appDocsImports);
+    } else {
+      claudeContent = claudeContent.replace('{{applicationDocsImports}}', '');
+    }
+
+    // Apply template variable substitution
+    let allUnsubstituted: string[] = [];
     if (config && !options.skipConfig) {
       log('Applying template substitution...');
-      markdownFiles.forEach(file => {
-        const result = substituteTemplates(file.content, config);
-        file.content = result.content;
-        allUnsubstituted.push(...result.unsubstituted);
-      });
+      const result = substituteTemplates(claudeContent, config);
+      claudeContent = result.content;
+      allUnsubstituted = result.unsubstituted;
 
       if (allUnsubstituted.length > 0) {
-        log(
-          chalk.yellow(`⚠️  Unsubstituted variables: ${[...new Set(allUnsubstituted)].join(', ')}`)
-        );
+        log(chalk.yellow(`⚠️  Unsubstituted variables: ${[...new Set(allUnsubstituted)].join(', ')}`));
       }
       log();
     }
-
-    // Merge files
-    const mergedContent = mergeMarkdownFiles(markdownFiles);
 
     // Determine output path
     const outputPath = path.resolve(process.cwd(), options.output || 'CLAUDE.md');
@@ -502,20 +283,10 @@ export async function buildCommand(options: BuildOptions): Promise<void> {
       log(chalk.yellow('DRY RUN MODE - No files will be created'));
       log();
       log(`Would create: ${outputPath}`);
-      log(`File size: ~${Math.round(mergedContent.length / 1024)}KB`);
+      log(`File size: ~${Math.round(claudeContent.length / 1024)}KB`);
       log();
-      log('Preview of merged content:');
-      log('---');
-      log(mergedContent.substring(0, 500) + '...');
-      log('---');
-      log();
-      
-      // Show what subagents would be copied
-      await copySubagentFiles(config, true, options.quiet);
-
-      // Show what commands would be copied
-      await copyCommandFiles(config, true, options.quiet);
-      
+      copyReferenceFiles(config, true, options.quiet);
+      copySkillFiles(config, true, options.quiet);
       return;
     }
 
@@ -539,73 +310,27 @@ export async function buildCommand(options: BuildOptions): Promise<void> {
       }
     }
 
-    // Write the merged file
-    fs.writeFileSync(outputPath, mergedContent, 'utf-8');
+    // Write CLAUDE.md
+    fs.writeFileSync(outputPath, claudeContent, 'utf-8');
 
-    log();
     log(chalk.green('✨ Codery build complete!'));
     log();
     log(`Created: ${outputPath}`);
-    log(`Size: ~${Math.round(mergedContent.length / 1024)}KB`);
+    log(`Size: ~${Math.round(claudeContent.length / 1024)}KB`);
+
+    // Copy reference files to .codery/
     log();
-    log('Your CLAUDE.md file contains:');
-    markdownFiles.forEach(file => {
-      log(`  - ${file.name.replace('.md', '').replace(/_/g, ' ')}`);
-    });
+    log('Copying reference files...');
+    copyReferenceFiles(config, false, options.quiet);
 
-    // Build application documentation if configured
-    if (config?.applicationDocs && config.applicationDocs.length > 0) {
-      log();
-      log('Building application documentation...');
-      const appDocsSuccess = await buildApplicationDocs(config, options.quiet);
-      if (appDocsSuccess) {
-        log(chalk.green('✓ Created .codery/application-docs.md'));
-      }
-    }
-
-    // Copy subagent files
+    // Copy skills to .claude/skills/
     log();
-    const subagentsSuccess = await copySubagentFiles(config, false, options.quiet);
-    if (subagentsSuccess) {
-      log(chalk.green('✓ Copied subagents to .claude/agents/'));
-    }
-
-    // Copy command files
-    const commandsSuccess = await copyCommandFiles(config, false, options.quiet);
-    if (commandsSuccess) {
-      log(chalk.green('✓ Copied commands to .claude/commands/'));
-    }
-    
-    // Copy Retrospective.md if it doesn't exist
-    const coderyDir = path.join(process.cwd(), '.codery');
-    const retrospectivePath = path.join(coderyDir, 'Retrospective.md');
-
-    if (!fs.existsSync(retrospectivePath)) {
-      const sourceRetrospectivePath = path.join(packageRoot, 'codery-docs/.codery/Retrospective.md');
-
-      if (fs.existsSync(sourceRetrospectivePath)) {
-        try {
-          // Ensure .codery directory exists
-          if (!fs.existsSync(coderyDir)) {
-            fs.mkdirSync(coderyDir, { recursive: true });
-          }
-
-          // Copy the Retrospective.md template
-          const retrospectiveContent = fs.readFileSync(sourceRetrospectivePath, 'utf-8');
-          fs.writeFileSync(retrospectivePath, retrospectiveContent, 'utf-8');
-          log(chalk.green('✓ Created .codery/Retrospective.md'));
-        } catch (error: any) {
-          log(chalk.yellow(`  ⚠️  Failed to create Retrospective.md: ${error.message}`));
-        }
-      }
-    }
+    copySkillFiles(config, false, options.quiet);
 
     log();
     log('Next steps:');
     log('  1. Review the generated CLAUDE.md file');
-    log('  2. Customize it for your specific project needs');
-    log('  3. Commit it to your repository');
-    log('  4. Start using AI assistants with your Codery-enabled project!');
+    log('  2. Run', chalk.yellow('codery build'), 'after updating codery');
   } catch (error: any) {
     console.error(chalk.red('Build failed:'), error.message);
     throw error;
