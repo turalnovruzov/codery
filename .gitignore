@@ -12,5 +12,4 @@ dist/
 # Note: .codery/config.json is NOT ignored - it should be tracked like package.json
 CLAUDE.md
 .claude/
-.codery/application-docs.md
-.codery/Retrospective.md
+.codery/refs/

@@ -1,0 +1,16 @@
+---
+description: Trigger self-introspective analysis for session review and learning. Use when the user says "retrospective", "what did we learn", "session review", "reflect on this session", or at the end of a work session.
+---
+
+# Retrospective
+
+Switch to 🔬 Introspective Mode. Review this session for successes, failures, and learning opportunities.
+
+Categorize findings into:
+1. **Local Bash commands**: Wrong paths, missing files, incorrect syntax
+2. **JIRA connectivity**: Parameter formatting, API limitations
+3. **GitHub operations**: Branch confusion, commit formatting, merge conflicts
+4. **Branching/Navigation**: Wrong branch, incorrect file paths
+5. **User guidance**: Better ways to phrase requests
+
+Save genuinely new learnings to your auto memory. Focus on actionable improvements, not just listing errors.
