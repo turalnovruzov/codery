@@ -166,8 +166,7 @@ export async function initCommand(options: InitOptions): Promise<void> {
       const generatedFiles = [
         'CLAUDE.md',
         '.claude/',
-        '.codery/jira-reference.md',
-        '.codery/git-workflow.md',
+        '.codery/refs/',
       ];
 
       for (const entry of generatedFiles) {

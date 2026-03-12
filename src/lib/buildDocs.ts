@@ -112,7 +112,12 @@ function copyReferenceFiles(
 
     // Copy JIRA reference
     const jiraSource = path.join(sourceDir, getJiraReferenceSource(config));
-    const jiraTarget = path.join(coderyDir, 'jira-reference.md');
+    const refsDir = path.join(coderyDir, 'refs');
+    if (!fs.existsSync(refsDir)) {
+      fs.mkdirSync(refsDir, { recursive: true });
+    }
+
+    const jiraTarget = path.join(refsDir, 'jira-reference.md');
 
     if (fs.existsSync(jiraSource)) {
       if (dryRun) {
@@ -130,7 +135,7 @@ function copyReferenceFiles(
 
     // Copy git workflow
     const gitSource = path.join(sourceDir, getGitWorkflowSource(config));
-    const gitTarget = path.join(coderyDir, 'git-workflow.md');
+    const gitTarget = path.join(refsDir, 'git-workflow.md');
 
     if (fs.existsSync(gitSource)) {
       if (dryRun) {
