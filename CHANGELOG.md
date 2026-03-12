@@ -1,3 +1,35 @@
+# [7.0.0](https://github.com/turalnovruzov/codery/compare/v6.8.2...v7.0.0) (2026-03-12)
+
+
+* feat!: modernize Codery with [@imports](https://github.com/imports), skills, and condensed roles ([0809f67](https://github.com/turalnovruzov/codery/commit/0809f67ade658b6459df5a5939abb1618c876b6c))
+
+
+### Bug Fixes
+
+* update .gitignore to use .codery/refs/ instead of individual files ([3cd6a15](https://github.com/turalnovruzov/codery/commit/3cd6a150b602adfc8f273b7a7cc5c34abce2e03d))
+
+
+### Features
+
+* move generated reference files to .codery/refs/ subfolder ([1ddeabf](https://github.com/turalnovruzov/codery/commit/1ddeabf294a16836a45122ff9b6faac4b07cf867))
+* **skills:** add trigger phrases to skill descriptions for auto-invocation ([c8b39ef](https://github.com/turalnovruzov/codery/commit/c8b39ef9ac50782ce6520945e6348b35b489345f))
+
+
+### BREAKING CHANGES
+
+* Generated output structure changed completely.
+- CLAUDE.md is now ~85 lines with @imports (was ~800 merged)
+- Commands replaced by skills (.claude/skills/ instead of .claude/commands/)
+- Subagent templates removed (agents/ directory)
+- Retrospective.md replaced by Claude Code auto memory
+- Reference files now copied to .codery/ (jira-reference.md, git-workflow.md)
+- Old generated files (.claude/commands/, .claude/agents/, .codery/application-docs.md,
+  .codery/Retrospective.md) must be manually removed from existing projects
+
+COD-41
+
+Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+
 ## [6.8.2](https://github.com/turalnovruzov/codery/compare/v6.8.1...v6.8.2) (2026-02-27)
 
 
