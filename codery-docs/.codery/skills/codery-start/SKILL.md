@@ -1,5 +1,5 @@
 ---
-description: Initialize the Codery system and start in Mirror Mode
+description: Initialize the Codery system and start in Mirror Mode. Use at the beginning of a session, when the user says "start", "let's go", "initialize", or "begin".
 ---
 
 # Start

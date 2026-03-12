@@ -1,5 +1,5 @@
 ---
-description: Check if documentation needs updates based on PR changes
+description: Check if documentation needs updates based on PR changes. Use when the user says "check docs", "do docs need updating", "documentation check", or before merging a PR.
 argument-hint: [PR-number]
 ---
 

@@ -1,5 +1,5 @@
 ---
-description: Review a PR with linked JIRA context, discuss findings, and generate report
+description: Review a PR with linked JIRA context, discuss findings, and generate report. Use when the user asks to "review the PR", "audit the code", "code review", or wants feedback on changes before merging.
 argument-hint: <PR-number or ticket-id>
 ---
 

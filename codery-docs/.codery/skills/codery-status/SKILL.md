@@ -1,5 +1,5 @@
 ---
-description: Understand the full context of a PR or JIRA ticket
+description: Understand the full context of a PR or JIRA ticket. Use when the user asks about status, says "check the PR", "read the ticket", "where does this stand", "what's the status", or references a JIRA ticket ID or PR number.
 argument-hint: <PR-number or ticket-id>
 ---
 
