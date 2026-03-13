@@ -1,5 +1,5 @@
 ---
-description: Trigger self-introspective analysis for session review and learning. Use when the user says "retrospective", "what did we learn", "session review", "reflect on this session", or at the end of a work session.
+description: Self-introspective analysis for session review and learning. Use when a work session is wrapping up, when reflecting on what went well or poorly, or when capturing learnings from the current session for future improvement.
 ---
 
 # Retrospective
