@@ -1,6 +1,6 @@
 ---
 allowed-tools: Read, Edit, Write, Bash
-description: Create release branch with versioned changelog following Git Flow. Use when the user says "create a release", "cut a release", "release branch", or "prepare for release".
+description: Create release branch with versioned changelog following Git Flow. Use when a completed body of work is ready to be versioned and released — cutting a new release, preparing a release branch, or versioning the changelog for deployment.
 argument-hint: [version]
 ---
 

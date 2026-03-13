@@ -1,5 +1,5 @@
 ---
-description: Provide Summary, Next Steps, and Request next role. Use when the user asks "what's next", "summarize", "SNR", "where are we", or wants a status update on current work.
+description: Provide Summary, Next Steps, and Request next role. Use when the user needs orientation on current progress — checking where things stand, deciding what to do next, transitioning between tasks, or requesting a structured status update.
 ---
 
 # SNR
