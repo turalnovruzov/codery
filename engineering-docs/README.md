@@ -2,15 +2,15 @@
 
 ## Overview
 
-Codery is a command-line tool designed to bridge the gap between AI assistants (like Claude) and software development teams. It generates comprehensive, AI-readable documentation (CLAUDE.md) that enables AI agents to understand and follow your project's specific workflows, conventions, and configurations.
+Codery is a command-line tool that generates AI-readable documentation (CLAUDE.md) enabling AI agents to follow your project's workflows, conventions, and configurations.
 
 ### Core Purpose
 
-- **Enable AI-driven development**: Provides structured documentation that AI assistants can parse and follow
-- **Standardize workflows**: Enforces consistent development practices through role-based methodologies
-- **Integrate with existing tools**: Seamlessly works with JIRA (via MCP or CLI) and Git workflows
-- **Customize for each project**: Template-based system adapts to your specific needs
-- **Support Claude Code**: Native integration with Claude Code slash commands for streamlined workflows
+- **Enable AI-driven development**: Structured documentation that AI assistants parse and follow
+- **Standardize workflows**: Consistent practices through role-based methodologies
+- **Integrate with existing tools**: JIRA (via MCP or CLI) and Git workflows
+- **Customize for each project**: Template-based system adapts to your needs
+- **Support Claude Code**: Native integration with Claude Code skills
 
 ## Architecture
 
@@ -23,7 +23,7 @@ Codery is a command-line tool designed to bridge the gap between AI assistants (
 - **Runtime**: Node.js (>=20.8.1)
 - **Build System**: TypeScript Compiler (tsc)
 - **Versioning**: Semantic Release (automated NPM publishing)
-- **Package Version**: 6.0.0
+- **Package Version**: 7.0.0
 
 ### Project Structure
 
@@ -41,32 +41,21 @@ codery/
 │       └── config.ts           # TypeScript interfaces
 ├── codery-docs/
 │   └── .codery/                # Source documentation templates
-│       ├── Roles.md            # Role-based development system
-│       ├── JIRA_Workflow.md    # JIRA integration guide
-│       ├── LifeCycles.md       # Development lifecycles
-│       ├── SuccessCriteria.md  # Success criteria
-│       ├── Retrospective.md    # Session learnings (excluded from build)
-│       ├── agents/             # Subagent templates
-│       │   ├── scout.md        # Research and exploration specialist
-│       │   ├── builder.md      # Code implementation specialist
-│       │   ├── patch.md        # Bug fix specialist
-│       │   ├── audit.md        # Code review specialist
-│       │   ├── polish.md       # Code quality specialist
-│       │   └── debug.md        # Debugging specialist
-│       ├── commands/           # Claude Code slash commands
-│       │   └── codery/         # Namespaced commands
-│       │       ├── start.md    # Initialize Codery system
-│       │       ├── status.md   # Check JIRA ticket status
-│       │       ├── snr.md      # Perform SNR protocol
-│       │       └── retrospective.md # Session analysis
-│       ├── integrations/       # Integration options
-│       │   ├── JIRA_MCP.md    # MCP-based JIRA integration
-│       │   └── JIRA_CLI.md    # CLI-based JIRA integration
-│       └── GitWorkflows/       # Git workflow templates
-│           ├── GitFlow.md
-│           └── TrunkBased.md
-├── .claude/                    # Generated Claude Code commands
-│   └── commands/               # Auto-copied from codery-docs
+│       ├── claude-md-template.md   # CLAUDE.md template with @imports
+│       ├── jira-reference-mcp.md   # JIRA reference (MCP variant)
+│       ├── jira-reference-cli.md   # JIRA reference (CLI variant)
+│       ├── GitWorkflows/           # Git workflow templates
+│       │   ├── GitFlow.md
+│       │   └── TrunkBased.md
+│       └── skills/                 # Claude Code skills
+│           ├── codery-audit/       # PR review with JIRA context
+│           ├── codery-changelog/   # Git history → changelog
+│           ├── codery-docs-check/  # Documentation sync check
+│           ├── codery-release/     # Release branch creation
+│           ├── codery-retrospective/ # Session review
+│           ├── codery-snr/         # Summary/Next/Request protocol
+│           ├── codery-start/       # System initialization
+│           └── codery-status/      # PR/ticket status check
 ├── dist/                       # Compiled JavaScript
 ├── docs/                       # User documentation
 └── engineering-docs/           # This documentation
@@ -79,7 +68,7 @@ Codery follows the npm principle: **track inputs, ignore outputs**.
 | npm | Codery |
 |-----|--------|
 | `package.json` (tracked) | `.codery/config.json` (tracked) |
-| `node_modules/` (ignored) | `CLAUDE.md`, `.claude/`, etc. (ignored) |
+| `node_modules/` (ignored) | `CLAUDE.md`, `.claude/`, `.codery/refs/` (ignored) |
 | `npm install` | `codery build` |
 
 ### What's Tracked vs Ignored
@@ -88,9 +77,8 @@ Codery follows the npm principle: **track inputs, ignore outputs**.
 |------|------|------------|
 | `.codery/config.json` | Input (build spec) | **Tracked** |
 | `CLAUDE.md` | Output (generated) | **Ignored** |
-| `.claude/` | Output (generated) | **Ignored** |
-| `.codery/application-docs.md` | Output (generated) | **Ignored** |
-| `.codery/Retrospective.md` | Output (generated) | **Ignored** |
+| `.claude/` | Output (generated skills) | **Ignored** |
+| `.codery/refs/` | Output (generated reference files) | **Ignored** |
 
 ### Why This Matters
 
@@ -99,69 +87,44 @@ Codery follows the npm principle: **track inputs, ignore outputs**.
 - **Team consistency**: Everyone uses same config, generates same output
 - **Clean onboarding**: `git clone` → `npm install` → `codery build`
 
-See `docs/gitignore-migration.md` for migration guide for existing projects.
-
 ## Version History
+
+### Version 7.0.0 - Modernization (COD-41) — Breaking
+- **CLAUDE.md**: ~800 lines → ~85 lines using `@` imports for reference docs
+- **Commands → Skills**: 8 commands migrated from `.claude/commands/` to `.claude/skills/` format
+- **Subagents removed**: 5 agent templates deleted (Claude creates its own)
+- **Retrospective → auto memory**: Claude Code native feature replaces `.codery/Retrospective.md`
+- **Roles condensed**: 19 → 11, 1-3 lines each, common rules stated once at top
+- **Build process rewritten**: Template-based flow — read template, inject `@` imports, substitute variables, copy reference files + skills
+- **Breaking**: Existing projects need manual cleanup of old files (`.claude/commands/`, `.claude/agents/`, `.codery/application-docs.md`, `.codery/Retrospective.md`)
 
 ### Version 6.8.0 - Git Philosophy Update (COD-38)
 - Changed `codery init` to follow "track inputs, ignore outputs" principle
 - Config.json is now tracked (like package.json)
-- Generated files (CLAUDE.md, .claude/, etc.) are now ignored
+- Generated files are now ignored
 - Added migration guide for existing projects
 
 ### Version 6.7.0 - Project Registry System (COD-33)
 - Added project registry (`~/.codery/projects.json`) to track Codery-enabled projects
 - New `codery update` command to update npm package and rebuild all registered projects
-- New `codery register [path]` command to manually add projects to registry
-- New `codery unregister [path]` command to remove projects from registry
+- New `codery register [path]` and `codery unregister [path]` commands
 - New `codery list` command to display all registered projects
 - Auto-registration on `codery init`
 - Added `--force` flag to `codery build` for non-interactive builds
-- Added `--yes` flag to `codery update` for non-interactive mode
 
-### Version 6.0.0 - Automatic Subagent Delegation (Breaking Change)
-- **Breaking**: AI assistants now automatically delegate to subagents when thresholds are met
-- Added proactive delegation triggers in Roles.md
-- No longer requires user approval for subagent delegation
+### Version 6.0.0 - Automatic Subagent Delegation (Breaking)
+- AI assistants automatically delegate to subagents when thresholds are met
 
 ### Version 5.x - JIRA Integration Options
 - Added JIRA CLI integration as alternative to MCP (COD-22)
-- Made cloudId optional in config (Breaking in 5.0.0)
-- Added configuration preservation on re-init (COD-24)
+- Made cloudId optional in config
 - Added jiraIntegrationType config option ('mcp' | 'cli')
 
-### Version 4.0.0 - Slash Commands (Breaking Change)
-- **Breaking**: Replaced text commands with slash commands (COD-12)
-- Commands now namespaced under `/codery:*`
-- Added automatic `.claude/commands/` directory generation
-- Commands: `/codery:start`, `/codery:status`, `/codery:snr`, `/codery:retrospective`
+### Version 4.0.0 - Slash Commands (Breaking)
+- Replaced text commands with slash commands (COD-12)
 
-### Version 3.x - Subagent Optimization
-- Removed context-dependent subagents (architect, crk, introspection, package, poc)
-- Streamlined to specialist subagents only (scout, builder, patch, audit, polish, debug)
-- Improved subagent isolation and effectiveness
-
-### Version 2.x - Retrospective System
-- Added persistent learning via `.codery/Retrospective.md` (COD-14)
-- Implemented session analysis and continuous improvement tracking
-- Retrospective file excluded from CLAUDE.md builds
-
-### Version 1.x - Initial Release
-- Core role-based system implementation
-- Git workflow support (Git Flow and Trunk-Based)
-- Basic JIRA integration via MCP
-- Application documentation aggregation
-
-## Important Notes
-
-### Documentation Generation Process
-
-**CRITICAL**: CLAUDE.md is auto-generated from source files in `codery-docs/.codery/`. The `.codery/` directory in the project root is also auto-generated. When optimizing CLAUDE.md size, work with the source files in `codery-docs/.codery/`, NOT the generated files.
-
-**Source → Generated Flow**:
-- Source: `codery-docs/.codery/*.md` 
-- Generated: `CLAUDE.md` (via `codery build` command)
-- Generated: `.codery/` directory (auto-generated, do not edit)
+### Versions 1.x - 3.x
+- Core role-based system, git workflows, JIRA integration, retrospective system, subagent optimization
 
 ## Core Functionality
 
@@ -170,343 +133,143 @@ See `docs/gitignore-migration.md` for migration guide for existing projects.
 **Purpose**: Sets up project-specific configuration through an interactive wizard.
 
 **Process**:
-1. Checks for existing configuration and preserves it if found (COD-24)
-2. Prompts for JIRA integration type (MCP or CLI)
-3. Prompts for Git workflow type (Git Flow or Trunk-Based)
-4. Collects JIRA project key
-5. Conditionally collects Atlassian URL (only for MCP integration)
-6. Configures branch names based on workflow
-7. Creates `.codery/config.json`
-8. Updates `.gitignore` to exclude generated files (not config)
-
-**Key Features**:
-- Configuration preservation on re-init
-- JIRA integration type selection (MCP vs CLI)
-- Interactive prompts with validation
-- Workflow-specific configuration
-- Automatic `.gitignore` management
-- Force overwrite option
-- Empty applicationDocs array initialization
-- Auto-registration in project registry for `codery update`
+1. Checks for existing configuration and preserves it if found
+2. Prompts for Git workflow type (Git Flow or Trunk-Based)
+3. Prompts for JIRA integration type (MCP or CLI)
+4. Collects JIRA project key and Atlassian URL (MCP only)
+5. Configures branch names based on workflow
+6. Creates `.codery/config.json`
+7. Updates `.gitignore` to exclude generated files (`CLAUDE.md`, `.claude/`, `.codery/refs/`)
+8. Registers project in registry for `codery update`
 
 ### 2. Build Command (`codery build`)
 
-**Purpose**: Generates CLAUDE.md and Claude Code commands by merging and processing documentation templates.
+**Purpose**: Generates CLAUDE.md, reference files, and skills from source templates.
 
 **Process**:
 1. Loads configuration from `.codery/config.json`
-2. Reads markdown files from `codery-docs/.codery/`
-3. Performs template variable substitution
-4. Selects integration-specific documentation (JIRA_MCP.md or JIRA_CLI.md)
-5. Merges files in predefined order
-6. Copies slash commands to `.claude/commands/` directory
-7. Optionally builds application documentation
-8. Writes final CLAUDE.md
+2. Reads `claude-md-template.md` (the CLAUDE.md template with `@` imports)
+3. Injects `applicationDocs` as `@` import lines (replacing `{{applicationDocsImports}}`)
+4. Performs `{{variable}}` substitution from config values
+5. Writes `CLAUDE.md`
+6. Copies config-selected reference files to `.codery/refs/`:
+   - `jira-reference-mcp.md` or `jira-reference-cli.md` → `.codery/refs/jira-reference.md`
+   - `GitFlow.md` or `TrunkBased.md` → `.codery/refs/git-workflow.md`
+7. Copies all skills to `.claude/skills/` with variable substitution
 
 **Key Features**:
 - Template variable substitution using `{{variable}}` syntax
-- Integration-specific file selection (MCP vs CLI)
-- Workflow-specific file selection (Git Flow vs Trunk-Based)
-- Automatic slash command deployment
-- Application documentation aggregation
-- Dry-run mode for preview
-- Skip-config option for building without substitution
-- Subagent templates included in build
-- Force mode for non-interactive builds (skips overwrite prompt)
+- Config-driven selection of JIRA and git workflow variants
+- `@` imports for reference docs (Claude Code resolves these at runtime)
+- `applicationDocs` config array for project-specific doc imports
+- Dry-run mode, skip-config option, force mode
 
 ### 3. Update Command (`codery update`)
 
-**Purpose**: Updates the Codery npm package and rebuilds all registered projects in one command.
-
-**Process**:
-1. Runs `npm update -g codery` to update the global package
-2. Loads the project registry from `~/.codery/projects.json`
-3. For each registered project:
-   - Verifies the path exists
-   - Runs `codery build --force` if valid
-   - Prompts to remove if path not found
-4. Displays summary of results
-
-**Key Features**:
-- Single command updates all projects
-- Graceful failure - continues if one project fails
-- Detects and offers to remove missing projects
-- `--yes` flag for non-interactive mode (auto-removes missing projects)
-- Progress output with summary
+**Purpose**: Updates the Codery npm package and rebuilds all registered projects.
 
 ### 4. Registry Commands (`codery register`, `codery unregister`, `codery list`)
 
 **Purpose**: Manage the project registry for `codery update`.
 
-**Registry Location**: `~/.codery/projects.json`
-
-**Commands**:
-- `codery register [path]` - Add a project to the registry (defaults to current directory)
-- `codery unregister [path]` - Remove a project from the registry
-- `codery list` - Display all registered projects with status
-
-**Key Features**:
-- Idempotent registration (no duplicates)
-- Absolute path storage
-- Missing project detection in list output
-- Per-machine registry (not synced across machines)
-
 ## Implementation Details
 
 ### Template System
 
-The template system enables dynamic documentation generation based on project configuration.
-
 **Variable Syntax**: `{{variableName}}`
 
 **Supported Variables**:
-- `{{cloudId}}` - Atlassian Cloud ID/URL (optional, MCP only)
+- `{{cloudId}}` - Atlassian URL (optional, MCP only)
 - `{{projectKey}}` - JIRA project key
 - `{{mainBranch}}` - Main branch name
 - `{{developBranch}}` - Development branch name (Git Flow only)
 - `{{jiraIntegrationType}}` - Integration type ('mcp' or 'cli')
+- `{{applicationDocsImports}}` - Special: replaced with `@` import lines from config
 - `{{customValues.property}}` - Nested custom values
 
-**Substitution Process**:
-1. Regex pattern matches `{{variable}}` placeholders
-2. Resolves values from config object (supports nested properties)
-3. Replaces placeholders with actual values
-4. Tracks unsubstituted variables for warnings
+### Build Flow
 
-### File Processing
+```
+codery-docs/.codery/claude-md-template.md
+    │
+    ├── {{applicationDocsImports}} → @engineering-docs/README.md (from config)
+    ├── {{projectKey}}             → COD (from config)
+    └── ... other variables
+    │
+    ▼
+CLAUDE.md (with @imports that Claude Code resolves at runtime)
+    ├── @.codery/refs/jira-reference.md  ← copied from jira-reference-{mcp,cli}.md
+    ├── @.codery/refs/git-workflow.md    ← copied from GitWorkflows/{GitFlow,TrunkBased}.md
+    └── @engineering-docs/*.md           ← user's own docs (not copied, referenced in-place)
 
-**File Order**:
-1. Roles.md (includes integrated subagent delegation)
-2. Workflow file (GitFlow.md or TrunkBased.md based on config)
-3. JIRA_Workflow.md
-4. Integration file (JIRA_MCP.md or JIRA_CLI.md based on config)
-5. LifeCycles.md
-6. SuccessCriteria.md
-7. Subagent templates from agents/ directory
-8. Any remaining files (excluding Retrospective.md and commands/)
+.claude/skills/codery-*/SKILL.md         ← copied from codery-docs/.codery/skills/
+```
 
-**Merging Process**:
-1. Adds CLAUDE.md header
-2. Converts filenames to section titles
-3. Includes file content with proper formatting
-4. Adds separators between sections
-
-### Configuration Management
+### Configuration
 
 **Config Structure** (`CoderyConfig` interface):
 ```typescript
 {
   cloudId?: string;           // Atlassian URL (optional, MCP only)
-  projectKey: string;        // JIRA project key
-  developBranch?: string;    // For Git Flow
-  mainBranch?: string;       // Main branch name
-  applicationDocs?: string[]; // User documentation paths
+  projectKey: string;         // JIRA project key
+  developBranch?: string;     // For Git Flow
+  mainBranch?: string;        // Main branch name
+  applicationDocs?: string[]; // Paths to project-specific docs (become @imports)
   gitWorkflowType?: 'gitflow' | 'trunk-based';
-  jiraIntegrationType?: 'mcp' | 'cli'; // JIRA integration type
+  jiraIntegrationType?: 'mcp' | 'cli';
 }
 ```
 
-**Storage**: `.codery/config.json` (tracked in git - see Git Philosophy below)
+**Storage**: `.codery/config.json` (tracked in git)
 
 ## Development Guide
 
-### Setting Up Development Environment
+### Setup
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/turalnovruzov/codery.git
-   cd codery
-   ```
+```bash
+git clone https://github.com/turalnovruzov/codery.git
+cd codery
+npm install
+npm run build
+npm link
+```
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
+### Scripts
 
-3. **Build the project**
-   ```bash
-   npm run build
-   ```
-
-4. **Link for local testing**
-   ```bash
-   npm link
-   ```
-
-### Available Scripts
-
-- `npm run build` - Compile TypeScript to JavaScript
+- `npm run build` - Compile TypeScript
 - `npm run typecheck` - Type checking without emit
-- `npm run format` - Format code with Prettier
-- `npm run lint` - Run ESLint
-- `npm test` - Run Jest tests
+- `npm run format` - Prettier
+- `npm run lint` - ESLint
+- `npm test` - Jest
 
 ### Adding New Features
 
-1. **New Commands**: Add to `src/bin/codery.ts` and implement in `src/lib/`
-2. **New Slash Commands**: Add to `codery-docs/.codery/commands/codery/`
-3. **New Templates**: Add markdown files to `codery-docs/.codery/`
-4. **New Subagents**: Add to `codery-docs/.codery/agents/`
-5. **New Variables**: Update `CoderyConfig` interface and substitution logic
-6. **New Workflows**: Add to `GitWorkflows/` directory
-7. **New Integrations**: Add to `integrations/` directory
-8. **New Roles**: Update `Roles.md` with role definition and delegation patterns
-9. **File Order**: Update the `fileOrder` array in `src/lib/buildDocs.ts` if needed
+1. **New Skills**: Add `SKILL.md` to `codery-docs/.codery/skills/<skill-name>/`
+2. **New Reference Files**: Add to `codery-docs/.codery/`, update `copyReferenceFiles()` in `buildDocs.ts`
+3. **New Variables**: Update `CoderyConfig` interface and substitution logic
+4. **New Workflows**: Add to `GitWorkflows/` directory
+5. **New Roles**: Update `claude-md-template.md`
 
-### Code Style Guidelines
+### Code Style
 
-- Use TypeScript for type safety
-- Follow existing patterns for consistency
-- Add proper error handling with user-friendly messages
-- Use Chalk for colored console output
+- TypeScript for type safety
+- Follow existing patterns
+- Chalk for colored console output
 - Validate user input thoroughly
 
-## API Reference
+## CLI Reference
 
-### CLI Commands
-
-**codery init**
 ```bash
-codery init [options]
-
-Options:
-  --force    Overwrite existing configuration
-```
-
-**codery build**
-```bash
-codery build [options]
-
-Options:
-  --output <path>    Output path for CLAUDE.md
-  --dry-run         Preview without creating files
-  --skip-config     Build without template substitution
-  --force           Overwrite existing files without prompting
-```
-
-**codery update**
-```bash
-codery update [options]
-
-Options:
-  --yes    Auto-remove missing projects without prompting
-```
-Updates the global Codery package and rebuilds all registered projects.
-
-**codery register**
-```bash
+codery init [--force]
+codery build [--output <path>] [--dry-run] [--skip-config] [--force]
+codery update [--yes]
 codery register [path]
-```
-Register a project for updates. Defaults to current directory if no path specified.
-
-**codery unregister**
-```bash
 codery unregister [path]
-```
-Remove a project from the registry. Defaults to current directory if no path specified.
-
-**codery list**
-```bash
 codery list
 ```
-Display all registered Codery projects with their status.
-
-### Core Functions
-
-**initCommand(options: InitOptions)**
-- Handles initialization flow
-- Creates configuration file
-- Updates .gitignore
-
-**buildCommand(options: BuildOptions)**
-- Orchestrates build process
-- Manages file reading and merging
-- Handles template substitution
-
-**substituteTemplates(content: string, config: CoderyConfig)**
-- Performs variable replacement
-- Returns substituted content and unsubstituted variables
-
-**buildApplicationDocs(config: CoderyConfig)**
-- Aggregates user-specified documentation
-- Creates `.codery/application-docs.md`
-
-## Implemented Features
-
-### Semantic Release Integration (COD-7)
-- Automated versioning based on conventional commits
-- Automatic NPM publishing with provenance
-- Changelog generation
-- GitHub release creation
-
-### Slash Commands System (COD-12)
-- Native Claude Code integration
-- Namespaced commands under `/codery:*`
-- Automatic command deployment to `.claude/commands/`
-- Commands for start, status, SNR, and retrospective
-
-### JIRA Integration Options (COD-22)
-- Support for both MCP and CLI integration types
-- Conditional configuration based on integration type
-- Comprehensive JIRA CLI documentation
-- Integration-specific template selection
-
-### Subagent System (COD-8, COD-21)
-- Specialized AI assistants for specific tasks
-- Automatic delegation based on thresholds
-- Isolated execution contexts
-- Six core subagents: scout, builder, patch, audit, polish, debug
-
-### Retrospective System (COD-14)
-- Persistent session learning
-- Continuous improvement tracking
-- Introspection subagent for analysis
-- Knowledge accumulation across sessions
-
-### Project Registry System (COD-33)
-- Global project registry at `~/.codery/projects.json`
-- One-command update for all projects (`codery update`)
-- Project management commands (`register`, `unregister`, `list`)
-- Auto-registration on `codery init`
-- Non-interactive build mode with `--force` flag
-
-## Future Enhancements
-
-1. **Interactive Configuration Updates**: Edit config through CLI
-2. **Template Validation**: Verify all variables are defined
-3. **Custom Template Support**: Allow user-defined templates
-4. **Plugin System**: Extend functionality through plugins
-5. **Multi-Environment Support**: Different configs for dev/prod
-6. **API Integration**: Direct JIRA API validation
 
 ## Troubleshooting
 
-### Common Issues
-
-1. **"No configuration found"**
-   - Run `codery init` first
-   - Check `.codery/config.json` exists
-
-2. **"Unsubstituted variables" warning**
-   - Update config with missing values
-   - Check variable names in templates
-
-3. **"File not found" in application docs**
-   - Verify paths in `applicationDocs` array
-   - Use relative paths from project root
-
-### Debug Mode
-
-Set environment variable for verbose output:
-```bash
-DEBUG=codery* codery build
-```
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes with tests
-4. Submit a pull request
-
-Follow the existing code style and include appropriate documentation updates.
+1. **"No configuration found"** → Run `codery init`
+2. **"Unsubstituted variables"** → Check config values match template variables
+3. **"File not found" in application docs** → Verify paths in `applicationDocs` array use relative paths from project root
