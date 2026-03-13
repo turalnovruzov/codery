@@ -1,3 +1,10 @@
+# [7.1.0](https://github.com/turalnovruzov/codery/compare/v7.0.0...v7.1.0) (2026-03-13)
+
+
+### Features
+
+* **docs:** add PR description conventions ([8df3a53](https://github.com/turalnovruzov/codery/commit/8df3a5385aff372868511ef020e6103bf96ac85d))
+
 # [7.0.0](https://github.com/turalnovruzov/codery/compare/v6.8.2...v7.0.0) (2026-03-12)
 
 
