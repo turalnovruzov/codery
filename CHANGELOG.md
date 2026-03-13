@@ -1,3 +1,10 @@
+# [7.2.0](https://github.com/turalnovruzov/codery/compare/v7.1.0...v7.2.0) (2026-03-13)
+
+
+### Features
+
+* **skills:** improve trigger descriptions for context-aware invocation ([12e8039](https://github.com/turalnovruzov/codery/commit/12e80397e56fb0319f4940e9d30fc2f11c74bec6))
+
 # [7.1.0](https://github.com/turalnovruzov/codery/compare/v7.0.0...v7.1.0) (2026-03-13)
 
 
