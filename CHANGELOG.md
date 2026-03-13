@@ -1,3 +1,10 @@
+## [7.2.1](https://github.com/turalnovruzov/codery/compare/v7.2.0...v7.2.1) (2026-03-13)
+
+
+### Bug Fixes
+
+* **skills:** use hybrid descriptions with natural keywords for auto-invocation ([c97851c](https://github.com/turalnovruzov/codery/commit/c97851c1e3fed693086bad9ec9f0f5ca6ca0285a))
+
 # [7.2.0](https://github.com/turalnovruzov/codery/compare/v7.1.0...v7.2.0) (2026-03-13)
 
 
