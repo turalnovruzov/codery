@@ -1,6 +1,6 @@
 ---
 allowed-tools: Read, Edit, Write, Bash
-description: Analyze git history and update CHANGELOG.md with current branch changes. Use when the changelog needs to reflect completed work on a branch — after finishing implementation, when preparing for release, or when documenting what changed.
+description: Analyze git history and update CHANGELOG.md with current branch changes. Use when updating the changelog, writing release notes, checking what changed on a branch, or preparing for a release after implementation is complete.
 argument-hint: [ticket-id]
 ---
 

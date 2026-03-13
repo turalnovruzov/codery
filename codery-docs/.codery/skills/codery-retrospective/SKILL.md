@@ -1,5 +1,5 @@
 ---
-description: Self-introspective analysis for session review and learning. Use when a work session is wrapping up, when reflecting on what went well or poorly, or when capturing learnings from the current session for future improvement.
+description: Self-introspective analysis for session review and learning. Use when doing a retrospective, reviewing what we learned, reflecting on what went well or poorly in a session, or wrapping up a work session to capture learnings.
 ---
 
 # Retrospective
