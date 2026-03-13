@@ -1,5 +1,5 @@
 ---
-description: Review a PR with linked JIRA context, discuss findings, and generate report. Use when code changes need quality assessment — reviewing a PR, checking if changes are ready to merge, auditing code for issues, or getting feedback on implementation before merging.
+description: Review a PR with linked JIRA context, discuss findings, and generate report. Use when reviewing a PR, auditing code, doing a code review, checking if changes are ready to merge, or getting feedback on implementation before merging.
 argument-hint: <PR-number or ticket-id>
 ---
 

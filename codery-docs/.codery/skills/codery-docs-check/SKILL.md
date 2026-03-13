@@ -1,5 +1,5 @@
 ---
-description: Check if documentation needs updates based on code changes. Use when code changes may have made documentation outdated — before merging a PR, after significant implementation work, or when ensuring docs stay in sync with the codebase.
+description: Check if documentation needs updates based on code changes. Use when checking if docs need updating, verifying documentation is in sync before merging a PR, or after significant implementation work that may have made docs outdated.
 argument-hint: [PR-number]
 ---
 

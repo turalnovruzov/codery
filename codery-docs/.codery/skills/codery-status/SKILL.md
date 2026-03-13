@@ -1,5 +1,5 @@
 ---
-description: Understand the full context of a PR or JIRA ticket. Use when needing to gather context about a specific PR or JIRA ticket — checking progress, understanding where work stands, loading context before continuing on a ticket, or when a PR number or ticket ID is referenced and its status is relevant.
+description: Understand the full context of a PR or JIRA ticket. Use when checking the status of a PR, reading a ticket for context, checking where a PR or ticket stands, or when a PR number or ticket ID (like COD-XX) is referenced and needs investigation.
 argument-hint: <PR-number or ticket-id>
 ---
 
