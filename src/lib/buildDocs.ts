@@ -151,6 +151,24 @@ function copyReferenceFiles(
       }
     }
 
+    // Copy PR conventions
+    const prSource = path.join(sourceDir, 'pr-conventions.md');
+    const prTarget = path.join(refsDir, 'pr-conventions.md');
+
+    if (fs.existsSync(prSource)) {
+      if (dryRun) {
+        log(`Would copy pr-conventions.md → .codery/refs/pr-conventions.md`);
+      } else {
+        let content = fs.readFileSync(prSource, 'utf-8');
+        if (config) {
+          const result = substituteTemplates(content, config);
+          content = result.content;
+        }
+        fs.writeFileSync(prTarget, content, 'utf-8');
+        log(`  ✓ pr-conventions.md`);
+      }
+    }
+
     return true;
   } catch (error: any) {
     log(chalk.red(`  ❌ Failed to copy reference files: ${error.message}`));
