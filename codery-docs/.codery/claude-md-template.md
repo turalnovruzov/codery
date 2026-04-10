@@ -81,5 +81,4 @@ Mirror → Scout → Architect → CRK → Builder → Kanban → User Approval
 
 @.codery/refs/jira-reference.md
 @.codery/refs/git-workflow.md
-@.codery/refs/pr-conventions.md
 {{applicationDocsImports}}
