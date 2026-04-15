@@ -1,3 +1,10 @@
+# [7.3.0](https://github.com/turalnovruzov/codery/compare/v7.2.1...v7.3.0) (2026-04-15)
+
+
+### Features
+
+* **skills:** publish codery-pr skill ([6c865a2](https://github.com/turalnovruzov/codery/commit/6c865a29083e710bb5a8c89bc6e72da980f37736))
+
 ## [7.2.1](https://github.com/turalnovruzov/codery/compare/v7.2.0...v7.2.1) (2026-03-13)
 
 
