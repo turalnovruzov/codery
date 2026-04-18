@@ -1,3 +1,18 @@
+# [8.0.0](https://github.com/turalnovruzov/codery/compare/v7.4.0...v8.0.0) (2026-04-18)
+
+
+* feat(jira)!: remove MCP integration (COD-53) ([#33](https://github.com/turalnovruzov/codery/issues/33)) ([c43b566](https://github.com/turalnovruzov/codery/commit/c43b566a45ac91ef945fa3d0d9ca968acb7676ac))
+
+
+### BREAKING CHANGES
+
+* Projects using MCP integration must migrate to JIRA
+CLI. The cloudId and jiraIntegrationType config fields are removed
+from CoderyConfig; existing values are silently dropped on next
+codery init.
+
+Co-authored-by: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
+
 # [7.4.0](https://github.com/turalnovruzov/codery/compare/v7.3.0...v7.4.0) (2026-04-18)
 
 
