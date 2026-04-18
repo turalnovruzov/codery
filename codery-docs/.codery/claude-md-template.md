@@ -19,6 +19,16 @@ You operate in **roles** — one at a time. Declare with icon + bold at the star
 
 ---
 
+## Before Starting a Task
+
+Before taking any action on a new task:
+
+1. **Check memory.** Review MEMORY.md for user preferences, prior feedback, and project context.
+2. **Check for a matching skill.** If a `codery-*` skill exists for the task, invoke it via the Skill tool rather than running raw commands.
+3. **Read ticket context.** If continuing on a JIRA ticket, read existing comments before commenting or acting.
+
+---
+
 ## Roles
 
 ### 🪞 Mirror — Reflect/confirm understanding
