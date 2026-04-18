@@ -1,3 +1,10 @@
+# [8.1.0](https://github.com/turalnovruzov/codery/compare/v8.0.0...v8.1.0) (2026-04-18)
+
+
+### Features
+
+* tighten convention adherence (COD-51) ([#34](https://github.com/turalnovruzov/codery/issues/34)) ([803c383](https://github.com/turalnovruzov/codery/commit/803c3837eb57ae4a174febbbf85b4e470131c4fe))
+
 # [8.0.0](https://github.com/turalnovruzov/codery/compare/v7.4.0...v8.0.0) (2026-04-18)
 
 
