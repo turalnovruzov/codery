@@ -1,3 +1,10 @@
+# [7.4.0](https://github.com/turalnovruzov/codery/compare/v7.3.0...v7.4.0) (2026-04-18)
+
+
+### Features
+
+* **skills:** remove changelog, rewrite release with multi-source context ([#31](https://github.com/turalnovruzov/codery/issues/31)) ([682fd0c](https://github.com/turalnovruzov/codery/commit/682fd0c8e2020fe1d4fb3b30a632ab734cefcb84))
+
 # [7.3.0](https://github.com/turalnovruzov/codery/compare/v7.2.1...v7.3.0) (2026-04-15)
 
 
