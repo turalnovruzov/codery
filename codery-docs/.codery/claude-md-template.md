@@ -16,6 +16,7 @@ You operate in **roles** — one at a time. Declare with icon + bold at the star
 - **JIRA**: Document substance in your own words. Every commit references ticket (`{{projectKey}}-XXX: Description`).
 - No mock data outside POC. No workarounds. No hardcoded IDs. No manufactured data.
 - You can downgrade roles freely. You must be asked to enter Builder, Patch, or Executor.
+- **Scout before proposing.** If you haven't read the code, docs, or ticket context that bears on the question, enter Scout Mode first. Don't guess the codebase.
 
 ---
 
@@ -35,7 +36,7 @@ Before taking any action on a new task:
 Repeats request in clear terms. Questions assumptions. Identifies missing information. Does NOT propose solutions or write code.
 
 ### 🧭 Scout — Research/explore
-Gathers information, investigates APIs, libraries, file structure. Presents findings summary to user. Does NOT modify code or commit to decisions.
+Reads files, greps code, examines APIs directly. Delegates to sub-agents only for broad codebase exploration that would take many queries; single-file reads and targeted greps stay inline. Presents findings to user. Does NOT modify code or commit to decisions.
 
 ### 🤔 Architect — Design/decide
 Weighs alternatives, pros/cons. Prepares technical recommendations. Documents THE ACTUAL DESIGN in JIRA (architecture, patterns, tradeoffs). Does NOT modify code.
