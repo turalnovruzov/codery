@@ -8,7 +8,7 @@ Codery is a command-line tool that generates AI-readable documentation (CLAUDE.m
 
 - **Enable AI-driven development**: Structured documentation that AI assistants parse and follow
 - **Standardize workflows**: Consistent practices through role-based methodologies
-- **Integrate with existing tools**: JIRA (via MCP or CLI) and Git workflows
+- **Integrate with existing tools**: JIRA (via CLI) and Git workflows
 - **Customize for each project**: Template-based system adapts to your needs
 - **Support Claude Code**: Native integration with Claude Code skills
 
@@ -42,8 +42,7 @@ codery/
 ├── codery-docs/
 │   └── .codery/                # Source documentation templates
 │       ├── claude-md-template.md   # CLAUDE.md template with @imports
-│       ├── jira-reference-mcp.md   # JIRA reference (MCP variant)
-│       ├── jira-reference-cli.md   # JIRA reference (CLI variant)
+│       ├── jira-reference.md       # JIRA reference
 │       ├── GitWorkflows/           # Git workflow templates
 │       │   ├── GitFlow.md
 │       │   └── TrunkBased.md
@@ -134,12 +133,11 @@ Codery follows the npm principle: **track inputs, ignore outputs**.
 **Process**:
 1. Checks for existing configuration and preserves it if found
 2. Prompts for Git workflow type (Git Flow or Trunk-Based)
-3. Prompts for JIRA integration type (MCP or CLI)
-4. Collects JIRA project key and Atlassian URL (MCP only)
-5. Configures branch names based on workflow
-6. Creates `.codery/config.json`
-7. Updates `.gitignore` to exclude generated files (`CLAUDE.md`, `.claude/`, `.codery/refs/`)
-8. Registers project in registry for `codery update`
+3. Collects JIRA project key
+4. Configures branch names based on workflow
+5. Creates `.codery/config.json`
+6. Updates `.gitignore` to exclude generated files (`CLAUDE.md`, `.claude/`, `.codery/refs/`)
+7. Registers project in registry for `codery update`
 
 ### 2. Build Command (`codery build`)
 
@@ -151,9 +149,9 @@ Codery follows the npm principle: **track inputs, ignore outputs**.
 3. Injects `applicationDocs` as `@` import lines (replacing `{{applicationDocsImports}}`)
 4. Performs `{{variable}}` substitution from config values
 5. Writes `CLAUDE.md`
-6. Copies config-selected reference files to `.codery/refs/`:
-   - `jira-reference-mcp.md` or `jira-reference-cli.md` → `.codery/refs/jira-reference.md`
-   - `GitFlow.md` or `TrunkBased.md` → `.codery/refs/git-workflow.md`
+6. Copies reference files to `.codery/refs/`:
+   - `jira-reference.md` → `.codery/refs/jira-reference.md`
+   - `GitFlow.md` or `TrunkBased.md` → `.codery/refs/git-workflow.md` (based on `gitWorkflowType`)
 7. Copies all skills to `.claude/skills/` with variable substitution
 
 **Key Features**:
@@ -178,11 +176,9 @@ Codery follows the npm principle: **track inputs, ignore outputs**.
 **Variable Syntax**: `{{variableName}}`
 
 **Supported Variables**:
-- `{{cloudId}}` - Atlassian URL (optional, MCP only)
 - `{{projectKey}}` - JIRA project key
 - `{{mainBranch}}` - Main branch name
 - `{{developBranch}}` - Development branch name (Git Flow only)
-- `{{jiraIntegrationType}}` - Integration type ('mcp' or 'cli')
 - `{{applicationDocsImports}}` - Special: replaced with `@` import lines from config
 - `{{customValues.property}}` - Nested custom values
 
@@ -197,7 +193,7 @@ codery-docs/.codery/claude-md-template.md
     │
     ▼
 CLAUDE.md (with @imports that Claude Code resolves at runtime)
-    ├── @.codery/refs/jira-reference.md  ← copied from jira-reference-{mcp,cli}.md
+    ├── @.codery/refs/jira-reference.md  ← copied from jira-reference.md
     ├── @.codery/refs/git-workflow.md    ← copied from GitWorkflows/{GitFlow,TrunkBased}.md
     └── @engineering-docs/*.md           ← user's own docs (not copied, referenced in-place)
 
@@ -209,13 +205,11 @@ CLAUDE.md (with @imports that Claude Code resolves at runtime)
 **Config Structure** (`CoderyConfig` interface):
 ```typescript
 {
-  cloudId?: string;           // Atlassian URL (optional, MCP only)
   projectKey: string;         // JIRA project key
   developBranch?: string;     // For Git Flow
   mainBranch?: string;        // Main branch name
   applicationDocs?: string[]; // Paths to project-specific docs (become @imports)
   gitWorkflowType?: 'gitflow' | 'trunk-based';
-  jiraIntegrationType?: 'mcp' | 'cli';
 }
 ```
 

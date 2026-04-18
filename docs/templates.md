@@ -17,7 +17,6 @@ Codery uses a template variable system to customize documentation for your speci
 
 | Variable | Description | Config Field | Default |
 |----------|-------------|--------------|---------|
-| `{{cloudId}}` | Your Atlassian instance URL | `cloudId` | (required) |
 | `{{projectKey}}` | JIRA project identifier | `projectKey` | (required) |
 | `{{developBranch}}` | Development branch name | `developBranch` | `"develop"` |
 | `{{mainBranch}}` | Production branch name | `mainBranch` | `"main"` |
@@ -76,26 +75,6 @@ During `codery build`:
    \`\`\`
 
 3. After PR approval, merge to dev
-```
-
-### JIRA Integration Templates
-
-**Template**:
-```markdown
-Configure JIRA integration:
-- Cloud ID: {{cloudId}}
-- Project Key: {{projectKey}}
-
-All branches must include {{projectKey}} in their name.
-```
-
-**Result** (with `cloudId: "https://myteam.atlassian.net"`, `projectKey: "TEAM"`):
-```markdown
-Configure JIRA integration:
-- Cloud ID: https://myteam.atlassian.net
-- Project Key: TEAM
-
-All branches must include TEAM in their name.
 ```
 
 ## Using Templates Effectively
