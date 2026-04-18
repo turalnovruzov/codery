@@ -54,7 +54,6 @@ codery/
 │           ├── codery-release/     # Release branch creation
 │           ├── codery-retrospective/ # Session review
 │           ├── codery-snr/         # Summary/Next/Request protocol
-│           ├── codery-start/       # System initialization
 │           └── codery-status/      # PR/ticket status check
 ├── dist/                       # Compiled JavaScript
 ├── docs/                       # User documentation
