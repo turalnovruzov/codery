@@ -53,10 +53,9 @@ PR descriptions often capture *why* and *breaking notes* that commits don't. Cro
 
 #### c. JIRA tickets since last tag
 
-For each unique ticket ID found in commits and PRs, fetch the ticket. Use the configured integration:
+For each unique ticket ID found in commits and PRs, fetch the ticket:
 
-- **CLI** (`{{jiraIntegrationType}}` = `cli`): `jira issue view <KEY> -p {{projectKey}} --plain`
-- **MCP** (`{{jiraIntegrationType}}` = `mcp`): use the Atlassian MCP `getJiraIssue` tool
+`jira issue view <KEY> -p {{projectKey}} --plain`
 
 Capture: summary, issue type (Bug/Story/Task/Epic), priority, status, any breaking-change labels.
 

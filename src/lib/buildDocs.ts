@@ -75,16 +75,6 @@ function generateAppDocsImports(config: CoderyConfig): string {
     .join('\n');
 }
 
-// Get the appropriate JIRA reference source file based on config
-function getJiraReferenceSource(config: CoderyConfig | null): string {
-  const integrationType = config?.jiraIntegrationType || 'mcp';
-  const fileMap: Record<string, string> = {
-    'mcp': 'jira-reference-mcp.md',
-    'cli': 'jira-reference-cli.md'
-  };
-  return fileMap[integrationType];
-}
-
 // Get the appropriate git workflow source file based on config
 function getGitWorkflowSource(config: CoderyConfig | null): string {
   const workflowType = config?.gitWorkflowType || 'gitflow';
@@ -111,7 +101,7 @@ function copyReferenceFiles(
     }
 
     // Copy JIRA reference
-    const jiraSource = path.join(sourceDir, getJiraReferenceSource(config));
+    const jiraSource = path.join(sourceDir, 'jira-reference.md');
     const refsDir = path.join(coderyDir, 'refs');
     if (!fs.existsSync(refsDir)) {
       fs.mkdirSync(refsDir, { recursive: true });
@@ -121,7 +111,7 @@ function copyReferenceFiles(
 
     if (fs.existsSync(jiraSource)) {
       if (dryRun) {
-        log(`Would copy ${getJiraReferenceSource(config)} → .codery/jira-reference.md`);
+        log(`Would copy jira-reference.md → .codery/jira-reference.md`);
       } else {
         let content = fs.readFileSync(jiraSource, 'utf-8');
         if (config) {

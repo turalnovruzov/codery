@@ -8,13 +8,6 @@ Codery stores configuration in `.codery/config.json`.
 
 ## Configuration Fields
 
-### cloudId
-- **Type**: String
-- **Required**: Yes
-- **Description**: Your Atlassian instance URL
-- **Example**: `"https://mycompany.atlassian.net"`
-- **Used in**: JIRA integration, API calls
-
 ### projectKey
 - **Type**: String
 - **Required**: Yes
@@ -58,7 +51,6 @@ Codery stores configuration in `.codery/config.json`.
 ### Basic Configuration
 ```json
 {
-  "cloudId": "https://acme.atlassian.net",
   "projectKey": "ACME",
   "developBranch": "develop",
   "mainBranch": "main"
@@ -68,7 +60,6 @@ Codery stores configuration in `.codery/config.json`.
 ### Custom Branch Names
 ```json
 {
-  "cloudId": "https://startup.atlassian.net",
   "projectKey": "MVP",
   "developBranch": "dev",
   "mainBranch": "production"
@@ -78,7 +69,6 @@ Codery stores configuration in `.codery/config.json`.
 ### Legacy Project (using master)
 ```json
 {
-  "cloudId": "https://legacy.atlassian.net",
   "projectKey": "LEG",
   "developBranch": "develop",
   "mainBranch": "master"
@@ -88,7 +78,6 @@ Codery stores configuration in `.codery/config.json`.
 ### With Application Documentation
 ```json
 {
-  "cloudId": "https://startup.atlassian.net",
   "projectKey": "APP",
   "developBranch": "develop",
   "mainBranch": "main",
@@ -104,7 +93,6 @@ Codery stores configuration in `.codery/config.json`.
 ### Trunk-Based Development
 ```json
 {
-  "cloudId": "https://modern.atlassian.net",
   "projectKey": "WEB",
   "mainBranch": "main",
   "gitWorkflowType": "trunk-based"
@@ -114,7 +102,6 @@ Codery stores configuration in `.codery/config.json`.
 ### Full Configuration Example
 ```json
 {
-  "cloudId": "https://enterprise.atlassian.net",
   "projectKey": "ENT",
   "developBranch": "develop",
   "mainBranch": "main",
@@ -133,7 +120,6 @@ When you run `codery build`, these values replace template variables throughout 
 
 | Template Variable | Replaced With | Example Result |
 |-------------------|---------------|----------------|
-| `{{cloudId}}` | Your cloudId value | `https://acme.atlassian.net` |
 | `{{projectKey}}` | Your projectKey value | `ACME` |
 | `{{developBranch}}` | Your developBranch value | `develop` |
 | `{{mainBranch}}` | Your mainBranch value | `main` |
@@ -162,8 +148,7 @@ git checkout -b feature/ACME-123-new-feature
 
 1. **Use meaningful project keys** - They appear in branch names and commits
 2. **Match your actual branch names** - Ensure documentation reflects reality
-3. **Include the protocol** - Always include `https://` in cloudId
-4. **Version control config** - Consider if you want to commit `.codery/config.json`
+3. **Version control config** - Consider if you want to commit `.codery/config.json`
 
 ## Validation
 

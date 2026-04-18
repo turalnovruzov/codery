@@ -74,29 +74,6 @@ export async function initCommand(options: InitOptions): Promise<void> {
         default: currentValues.gitWorkflowType || 'gitflow'
       },
       {
-        type: 'list',
-        name: 'jiraIntegrationType',
-        message: 'Select your JIRA integration method:',
-        choices: [
-          { name: 'MCP - Model Context Protocol (default)', value: 'mcp' },
-          { name: 'CLI - JIRA Command Line Interface', value: 'cli' }
-        ],
-        default: currentValues.jiraIntegrationType || 'mcp'
-      },
-      {
-        type: 'input',
-        name: 'cloudId',
-        message: 'Enter your Atlassian instance URL:',
-        default: currentValues.cloudId,
-        validate: (input: string) => {
-          if (input.startsWith('https://') && input.includes('.atlassian.net')) {
-            return true;
-          }
-          return 'Please enter a valid Atlassian URL (e.g., https://mycompany.atlassian.net)';
-        },
-        when: (currentAnswers) => currentAnswers.jiraIntegrationType === 'mcp'
-      },
-      {
         type: 'input',
         name: 'projectKey',
         message: 'Enter your JIRA project key:',
@@ -123,24 +100,18 @@ export async function initCommand(options: InitOptions): Promise<void> {
       }
     ]);
 
-    // Build config object - preserve existing fields and merge with new answers
+    // Build config object — preserve existing fields and merge with new answers.
+    // Strip legacy MCP-related fields (removed in v8.0.0) so they don't persist on re-init.
+    const { cloudId: _cloudId, jiraIntegrationType: _jiraIntegrationType, ...preservedConfig } =
+      existingConfig as CoderyConfig & { cloudId?: string; jiraIntegrationType?: string };
     const config: CoderyConfig = {
-      ...existingConfig,  // Preserve all existing fields
+      ...preservedConfig,
       projectKey: answers.projectKey,
       mainBranch: answers.mainBranch,
       gitWorkflowType: answers.gitWorkflowType,
-      jiraIntegrationType: answers.jiraIntegrationType,
       // Preserve applicationDocs if it exists, otherwise initialize as empty
       applicationDocs: existingConfig.applicationDocs || []
     };
-
-    // Only add cloudId for MCP integration
-    if (answers.jiraIntegrationType === 'mcp') {
-      config.cloudId = answers.cloudId;
-    } else {
-      // Remove cloudId if switching from MCP to CLI
-      delete config.cloudId;
-    }
 
     // Only add developBranch for gitflow
     if (answers.gitWorkflowType === 'gitflow') {
@@ -197,10 +168,6 @@ export async function initCommand(options: InitOptions): Promise<void> {
     console.log();
     console.log('Configuration summary:');
     console.log(`  - Git Workflow: ${chalk.cyan(config.gitWorkflowType === 'gitflow' ? 'Git Flow' : 'Trunk-Based Development')}`);
-    console.log(`  - JIRA Integration: ${chalk.cyan(config.jiraIntegrationType === 'mcp' ? 'MCP (Model Context Protocol)' : 'CLI (Command Line Interface)')}`);
-    if (config.cloudId) {
-      console.log(`  - Atlassian URL: ${chalk.cyan(config.cloudId)}`);
-    }
     console.log(`  - Project Key: ${chalk.cyan(config.projectKey)}`);
     console.log(`  - Main Branch: ${chalk.cyan(config.mainBranch)}`);
     if (config.developBranch) {
@@ -214,11 +181,7 @@ export async function initCommand(options: InitOptions): Promise<void> {
     console.log('  1. Review .codery/config.json and adjust if needed');
     console.log('  2. Run', chalk.yellow('codery build'), 'to generate your customized CLAUDE.md');
     console.log();
-    if (config.jiraIntegrationType === 'mcp') {
-      console.log(chalk.dim('Note: The Atlassian MCP will automatically convert your URL to the correct Cloud ID.'));
-    } else {
-      console.log(chalk.dim('Note: Make sure JIRA CLI is installed and configured with your API token.'));
-    }
+    console.log(chalk.dim('Note: Make sure JIRA CLI is installed and configured with your API token.'));
   } catch (error: any) {
     console.error(chalk.red('Init failed:'), error.message);
     throw error;

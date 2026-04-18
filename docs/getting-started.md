@@ -30,7 +30,6 @@ codery init
 
 This will prompt you to:
 - Select your Git workflow (Git Flow or Trunk-Based)
-- Enter your Atlassian URL
 - Configure your project key and branch names
 
 The command creates `.codery/config.json` with your chosen configuration.
@@ -42,7 +41,6 @@ The init command creates `.codery/config.json` based on your selections:
 **For Git Flow:**
 ```json
 {
-  "cloudId": "https://your-domain.atlassian.net",
   "projectKey": "YOUR_PROJECT",
   "developBranch": "develop",
   "mainBranch": "main",
@@ -53,7 +51,6 @@ The init command creates `.codery/config.json` based on your selections:
 **For Trunk-Based Development:**
 ```json
 {
-  "cloudId": "https://your-domain.atlassian.net",
   "projectKey": "YOUR_PROJECT",
   "mainBranch": "main",
   "gitWorkflowType": "trunk-based"
@@ -119,7 +116,6 @@ You can include your existing project documentation for AI assistants:
 1. Add `applicationDocs` to your config:
    ```json
    {
-     "cloudId": "https://your-domain.atlassian.net",
      "projectKey": "YOUR_PROJECT",
      "developBranch": "develop",
      "mainBranch": "main",
