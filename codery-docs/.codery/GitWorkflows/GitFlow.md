@@ -51,13 +51,6 @@ git checkout -b hotfix/{{projectKey}}-456-critical-fix
 3. Tag releases on {{mainBranch}}
 4. Always pull before branching
 
-## Changelog
-
-Maintain CHANGELOG.md with Keep a Changelog format. Add user-facing entries before creating PR. During release, move Unreleased → `[X.Y.Z] - YYYY-MM-DD`.
-
-**Include**: New features, bug fixes affecting UX, API changes, new config requirements.
-**Exclude**: Internal refactors, renames, code cleanup, CSS class changes.
-
 ## JIRA Integration
 
 - Commit format: `{{projectKey}}-123: Description`

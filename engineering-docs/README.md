@@ -49,8 +49,8 @@ codery/
 │       │   └── TrunkBased.md
 │       └── skills/                 # Claude Code skills
 │           ├── codery-audit/       # PR review with JIRA context
-│           ├── codery-changelog/   # Git history → changelog
 │           ├── codery-docs-check/  # Documentation sync check
+│           ├── codery-pr/          # Create PR with structured description
 │           ├── codery-release/     # Release branch creation
 │           ├── codery-retrospective/ # Session review
 │           ├── codery-snr/         # Summary/Next/Request protocol
