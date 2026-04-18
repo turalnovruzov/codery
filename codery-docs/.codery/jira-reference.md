@@ -72,3 +72,13 @@ Use role-specific comment prefixes: `[Scout]`, `[Architect]`, `[Builder]`, `[CRK
 - Issue types: Epic (`jira epic create`), Story/Task/Bug (`-tType`), Subtask (`-tSubtask -P`)
 - Flags: `--plain` (scripts), `--no-input` (automation), `--comments N` (view N comments)
 - Current user: `$(jira me)`
+
+## Anti-Patterns — Never Do These
+
+- **Heredocs for simple JIRA commands.** Use inline `-s "summary" -b "body"`. Heredocs slow the flow and are hard to edit mid-draft.
+- **Skipping `-p {{projectKey}}`.** Every `jira` command needs the project key — omitting it silently writes to the wrong project or errors.
+- **`--no-input` when the user should be prompted.** Only use it for commands with all values specified; never for interactive drafts.
+- **Creating or editing without the Preview & Approval step.** Show details and get approval first.
+- **Commenting without reading existing comments first.** Run `jira issue view KEY --comments 15` before adding to a ticket.
+- **Hardcoded issue keys in scripts.** Look up by name/summary with `-q` queries.
+- **Bypassing `codery-*` skills.** If a skill fits the task (codery-pr, codery-release, codery-audit, codery-snr, codery-status), invoke it via the Skill tool instead of raw commands.
