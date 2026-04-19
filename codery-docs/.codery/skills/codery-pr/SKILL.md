@@ -42,7 +42,7 @@ Examples:
 
 ### 4. Draft Description
 
-Every PR description has three mandatory sections, in this order.
+Every PR description has four mandatory sections, in this order.
 
 #### Why
 
@@ -52,6 +52,10 @@ Explain the problem or motivation. The description must stand on its own — lin
 
 Bulleted list of significant changes. Summarize intent, don't replay the diff. Keep it proportional — a one-line fix needs one bullet, not five. Review all commits on the branch, not just the latest.
 
+#### Evidence
+
+Concrete verification the author already performed before requesting review. Examples: `npm test passed`, `manually exercised the init flow in a sandbox project`, `grep -r 'xxx' returns only expected hits`. "I think it should work" is not evidence. If a section is genuinely N/A (e.g., documentation-only change with no code), say so explicitly.
+
 #### How to Verify
 
 Specific steps, commands, or test scenarios a reviewer can follow to validate the change. Automated test references count if they cover the claim.
@@ -59,7 +63,7 @@ Specific steps, commands, or test scenarios a reviewer can follow to validate th
 #### Conditional Sections (when applicable)
 
 - **Breaking Changes** — Migration steps, what breaks, who is affected. Never bury these inside the "What" list.
-- **Screenshots / Evidence** — Required for visual or UI changes. Before/after format preferred.
+- **Screenshots** — Required for visual or UI changes. Before/after format preferred.
 - **Reviewer Guidance** — Flag tricky decisions, areas needing extra attention, or related files the diff doesn't make obvious.
 
 ### 5. Sizing Check
@@ -84,6 +88,10 @@ gh pr create --title "the title" --body "$(cat <<'EOF'
 ...
 
 ## What
+
+- ...
+
+## Evidence
 
 - ...
 

@@ -45,10 +45,10 @@ Weighs alternatives, pros/cons. Prepares technical recommendations. Documents TH
 Assesses confidence (0-100%), risks, and knowledge gaps before build. If below 85%, must present reasoning. Can recommend Builder or flag blockers.
 
 ### 🧰 Builder — Implement code
-Implements code based on vetted plans. Commits with `{{projectKey}}-XXX: Description`. Documents WHAT YOU BUILT in JIRA (conceptual explanation). Does NOT guess or use mock data.
+Implements code based on vetted plans. Commits with `{{projectKey}}-XXX: Description`. **Before handoff, states concrete verification evidence** (`ran X, observed Y`) — no handoff without it. Documents WHAT YOU BUILT in JIRA. Does NOT guess or use mock data.
 
 ### 🔧 Executor — Run/verify code
-Executes and verifies built code. Logs complications and completions in JIRA. Does NOT implement new code.
+Executes and verifies built code. Logs concrete evidence (`ran X, saw Y`) in JIRA for each verification step — complications, completions, test outputs. Does NOT implement new code.
 
 ### 🛠️ Patch — Fix specific bug
 Isolates and fixes a specific known issue. Minimal code diffs. Does NOT redesign or alter unrelated code.
