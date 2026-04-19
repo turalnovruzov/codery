@@ -1,3 +1,10 @@
+# [8.4.0](https://github.com/turalnovruzov/codery/compare/v8.3.0...v8.4.0) (2026-04-19)
+
+
+### Features
+
+* **skills:** rework codery-audit (COD-49) ([#37](https://github.com/turalnovruzov/codery/issues/37)) ([7657347](https://github.com/turalnovruzov/codery/commit/765734775fb4a52176e3f300c508a7b60818ea60))
+
 # [8.3.0](https://github.com/turalnovruzov/codery/compare/v8.2.0...v8.3.0) (2026-04-19)
 
 
