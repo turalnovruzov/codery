@@ -1,3 +1,10 @@
+# [8.2.0](https://github.com/turalnovruzov/codery/compare/v8.1.0...v8.2.0) (2026-04-19)
+
+
+### Features
+
+* enforce scout-first discipline (COD-48) ([#35](https://github.com/turalnovruzov/codery/issues/35)) ([703581e](https://github.com/turalnovruzov/codery/commit/703581e3a78048ddfd81a628cce6487eaefcf470))
+
 # [8.1.0](https://github.com/turalnovruzov/codery/compare/v8.0.0...v8.1.0) (2026-04-18)
 
 
