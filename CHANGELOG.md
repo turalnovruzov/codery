@@ -1,3 +1,10 @@
+# [8.3.0](https://github.com/turalnovruzov/codery/compare/v8.2.0...v8.3.0) (2026-04-19)
+
+
+### Features
+
+* require verification evidence (COD-50) ([#36](https://github.com/turalnovruzov/codery/issues/36)) ([29f9e62](https://github.com/turalnovruzov/codery/commit/29f9e62c03950fee41df9eeeb02f303d5d71291a))
+
 # [8.2.0](https://github.com/turalnovruzov/codery/compare/v8.1.0...v8.2.0) (2026-04-19)
 
 
