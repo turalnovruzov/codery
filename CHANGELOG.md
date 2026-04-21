@@ -1,3 +1,10 @@
+# [8.5.0](https://github.com/turalnovruzov/codery/compare/v8.4.0...v8.5.0) (2026-04-21)
+
+
+### Features
+
+* **skills:** improve codery-release context gathering and output (COD-55) ([#38](https://github.com/turalnovruzov/codery/issues/38)) ([20a9bd7](https://github.com/turalnovruzov/codery/commit/20a9bd71a06694862ad903a1372c1d277411f371))
+
 # [8.4.0](https://github.com/turalnovruzov/codery/compare/v8.3.0...v8.4.0) (2026-04-19)
 
 
