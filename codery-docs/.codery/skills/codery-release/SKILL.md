@@ -25,9 +25,10 @@ git checkout {{developBranch}} && git pull origin {{developBranch}}
 ```bash
 LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || git rev-list --max-parents=0 HEAD)
 TAG_DATE=$(git log -1 --format=%aI "$LAST_TAG")
+echo "Comparing $LAST_TAG..HEAD (HEAD = {{developBranch}})"
 ```
 
-If no tags exist, fall back to the initial commit.
+If no tags exist, fall back to the initial commit. Surface the comparison ref so the user can sanity-check scope before approving the version.
 
 ### 4. Gather Context (run in parallel)
 
@@ -45,19 +46,42 @@ For each commit, extract:
 
 #### b. Merged PRs since last tag
 
+Do **not** use a date filter — it silently drops PRs that were merged to `{{developBranch}}` *before* the last tag's date, which is common whenever `{{mainBranch}}` has lagged `{{developBranch}}` (e.g., the tag was cut from a hotfix subset on `{{mainBranch}}`). Derive PRs from the commit subjects on the release scope instead, covering both merge-commit and squash-merge repos:
+
 ```bash
-gh pr list --state merged --base {{developBranch}} --search "merged:>=$TAG_DATE" --json number,title,body,labels,mergedAt
+PR_NUMS=$(git log "$LAST_TAG"..HEAD --format="%s" \
+  | grep -oE '(Merge pull request #|\(#)[0-9]+' \
+  | grep -oE '[0-9]+' | sort -u)
+
+for n in $PR_NUMS; do
+  gh pr view "$n" --json number,title,body,labels,mergedAt
+done
 ```
 
-PR descriptions often capture *why* and *breaking notes* that commits don't. Cross-check the PR list against commits to catch anything missed.
+The regex matches `Merge pull request #123 from …` (merge-commit strategy) and `feat: thing (#123)` (squash-merge). `gh pr view` errors silently for stray matches — safe to run without pre-filtering.
+
+PR bodies often capture *why* and *breaking notes* that commits don't. Cross-check the PR list against commits to catch anything missed.
 
 #### c. JIRA tickets since last tag
 
-For each unique ticket ID found in commits and PRs, fetch the ticket:
+**Goal.** Understand what's shipping at the *user-visible* level — not just the implementation fragments. On projects that use `[FE] / [BE]` subtask conventions, each individual subtask title says little; the parent Story or Task holds the real narrative. The version recommendation and release notes both depend on reading shipping scope at the Story level.
 
-`jira issue view <KEY> -p {{projectKey}} --plain`
+**Signals that warrant walking the parent chain.**
 
-Capture: summary, issue type (Bug/Story/Task/Epic), priority, status, any breaking-change labels.
+- Ticket type = `Sub-task`, or title prefixed with `[FE]` / `[BE]` / `[API]` / similar
+- Generic subtask titles ("Implement endpoint", "Wire up state")
+- Multiple subtasks rolling up to the same parent — often a coordinated feature
+- Any Epic Link or `parent` field present in the ticket
+
+**Tools.**
+
+- `jira issue view <KEY> -p {{projectKey}} --plain` — human-readable summary. Use for capturing summary, issue type, priority, status, and breaking-change labels.
+- `jira issue view <KEY> -p {{projectKey}} --raw | jq '.fields.parent'` — extracts the parent ticket key. `--plain` output omits parent and epic-link fields; `--raw` is required when you need the relationship graph.
+- `jq '.fields | to_entries[] | select(.value.key? != null)'` on the raw output — locates Epic Link (often a custom field with a project-specific ID).
+
+**Default behavior.**
+
+For each unique ticket ID found in commits and PRs, fetch the ticket. If it's a Subtask (or otherwise looks like a fragment per the signals above), walk up to its parent; if the parent is a Story under an Epic, walk up once more. Stop when further traversal stops adding user-visible clarity. Use judgment — these rules don't anticipate every project shape, and over-fetching is cheap.
 
 ### 5. Recommend Version
 
@@ -65,9 +89,13 @@ Apply semantic versioning rules with sourced reasoning:
 
 | Bump | Triggers |
 |------|----------|
-| **MAJOR** | `!` or `BREAKING CHANGE` in any commit, PR labeled `breaking`, JIRA ticket flagged as breaking |
+| **MAJOR** | `!` or `BREAKING CHANGE` in any commit, PR title with `!:`, `BREAKING CHANGE` / `## Breaking Changes` in any PR body, PR labeled `breaking`, JIRA ticket flagged as breaking |
 | **MINOR** | Any `feat:` commit, PR with feature label, Story-type ticket |
 | **PATCH** | Only `fix:`/`chore:`/`refactor:` and Bug/Task tickets |
+
+**Largest applicable bump wins.** Any breaking change → MAJOR (even mixed with features or fixes). Any new feature → MINOR (features + fixes together is still MINOR). Fixes only → PATCH.
+
+**Scan PR bodies, not just labels.** PR descriptions often carry the breaking-change callout under a `## Breaking Changes` heading. Don't rely on labels alone — many projects never apply them. If every fetched PR returns `labels: []`, surface a warning like *"no PR labels in use across this release — relying on commit markers and PR-body scan for breaking-change signal."*
 
 Present a table mapping signals to conclusion, like:
 
@@ -98,8 +126,25 @@ git checkout -b release/X.Y.Z
    - Create PRs to both `{{mainBranch}}` and `{{developBranch}}`
    - Tag on `{{mainBranch}}` after merge: `git tag vX.Y.Z && git push origin vX.Y.Z`
 3. Suggest using the gathered commit/PR/JIRA context to write the release PR description (Why/What/How to Verify) — consistent with `codery-pr` skill output.
+4. Emit a **draft release-notes block** for the eventual GitHub release, using the default structure below. The skill should fill in the entries from the gathered commits, PRs, and parent tickets — citing the **parent Story or Task** (not subtasks) so the notes read as user-visible outcomes rather than implementation fragments. Omit sections that have no entries.
+
+   ```markdown
+   ## Breaking changes
+   - <description> ({{projectKey}}-XXX) — #<pr>
+
+   ## New features
+   - <description> ({{projectKey}}-XXX) — #<pr>
+
+   ## Fixes
+   - <description> ({{projectKey}}-XXX) — #<pr>
+
+   ## Other
+   - <description> ({{projectKey}}-XXX) — #<pr>
+   ```
+
+   Sections map to semver bumps: Breaking → MAJOR, New features → MINOR, Fixes → PATCH, Other → no version impact. The user can discard or reshape this block freely — it's a default starting point, not a mandated format.
 
 ## Notes
 
-- This skill never reads or writes a CHANGELOG.md. If your project uses one, version it with whatever tool you already use (e.g., semantic-release runs in CI).
-- Release notes and changelog strategy are intentionally per-project — document yours in your project's own docs.
+- This skill never reads or writes a CHANGELOG.md file. If your project maintains one, version it with whatever tool you already use (e.g., semantic-release in CI).
+- The release-notes draft in Step 8 is a default template for the GitHub release body, not a required format. Override per project as needed.
