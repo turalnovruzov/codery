@@ -1,3 +1,10 @@
+# [8.6.0](https://github.com/turalnovruzov/codery/compare/v8.5.0...v8.6.0) (2026-04-21)
+
+
+### Features
+
+* **skills:** add codery-autopilot (COD-54) ([#39](https://github.com/turalnovruzov/codery/issues/39)) ([2c8e6ad](https://github.com/turalnovruzov/codery/commit/2c8e6ad0184c479acfaecaf4fb7d267bab532e71))
+
 # [8.5.0](https://github.com/turalnovruzov/codery/compare/v8.4.0...v8.5.0) (2026-04-21)
 
 
