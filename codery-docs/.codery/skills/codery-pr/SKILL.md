@@ -1,7 +1,7 @@
 ---
 allowed-tools: Bash, Read, Grep
 description: Create a pull request with a well-structured description following industry best practices. Use when creating a PR, opening a pull request, pushing changes for review, or when the user says "create a PR", "open a PR", "make a pull request", or "ready for review".
-argument-hint: [ticket-id]
+argument-hint: [ticket-id] [--draft]
 ---
 
 # Create Pull Request
@@ -79,7 +79,7 @@ Show the user the drafted title and description. Wait for approval before creati
 After approval:
 
 1. Push the branch if not already pushed: `git push -u origin <branch>`
-2. Create the PR using `gh pr create` with a HEREDOC for the body:
+2. Create the PR using `gh pr create` with a HEREDOC for the body. If the invoker requested a draft PR (via `--draft` in arguments, or contextually — e.g., invoked by `codery-autopilot`), pass `--draft` to `gh pr create`:
 
 ```bash
 gh pr create --title "the title" --body "$(cat <<'EOF'
