@@ -34,9 +34,12 @@ git push origin feature/{{projectKey}}-123-description
 git checkout {{developBranch}} && git pull origin {{developBranch}}
 git checkout -b release/X.Y.Z
 git push -u origin release/X.Y.Z
-# Open PR to {{mainBranch}}, test on preview (or locally), fix on branch as needed
-# After approval, merge PR, then tag on {{mainBranch}}: git tag vX.Y.Z && git push origin vX.Y.Z
-# Back-merge: gh pr create --base {{developBranch}} (sync-only, no QA)
+# Open BOTH PRs up front: release → {{mainBranch}} (QA) + release → {{developBranch}} (sync)
+# Opening both keeps the release branch alive across the first merge when auto-delete is on
+# gh pr create --base {{developBranch}}   # the back-merge PR
+# Test on the main PR's preview (or locally), push fixes to the release branch as needed
+# On approval: merge main PR → tag {{mainBranch}} → merge back-merge PR
+# Tag: git tag vX.Y.Z && git push origin vX.Y.Z
 
 # Hotfix
 git checkout {{mainBranch}} && git pull origin {{mainBranch}}
