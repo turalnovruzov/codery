@@ -118,15 +118,35 @@ Wait for user approval on the version before creating the branch.
 git checkout -b release/X.Y.Z
 ```
 
-### 8. Push and Guide
+### 8. Open PRs, Ship, and Sync
+
+Open *both* PRs (release → `{{mainBranch}}` and release → `{{developBranch}}`) before merging either. Reasons:
+
+- **PR-first QA.** The release PR to `{{mainBranch}}` triggers CI and — if the project has preview deploys — gives QA a preview URL. Don't gate PR creation on local testing.
+- **Branch preservation.** Many repos enable "Automatically delete head branches." GitHub skips auto-delete while any open PR still references the branch, so opening both PRs up front keeps `release/X.Y.Z` alive across the first merge. Open the `{{mainBranch}}` PR only, merge it, and the branch is gone before you can open the back-merge.
 
 1. Push: `git push -u origin release/X.Y.Z`
-2. Remind the user to:
-   - Test the release branch
-   - Create PRs to both `{{mainBranch}}` and `{{developBranch}}`
-   - Tag on `{{mainBranch}}` after merge: `git tag vX.Y.Z && git push origin vX.Y.Z`
-3. Suggest using the gathered commit/PR/JIRA context to write the release PR description (Why/What/How to Verify) — consistent with `codery-pr` skill output.
-4. Emit a **draft release-notes block** for the eventual GitHub release, using the default structure below. The skill should fill in the entries from the gathered commits, PRs, and parent tickets — citing the **parent Story or Task** (not subtasks) so the notes read as user-visible outcomes rather than implementation fragments. Omit sections that have no entries.
+
+2. **Open the release PR** to `{{mainBranch}}` via `codery-pr` (or `gh pr create` directly). This is the QA-bearing PR — merging it ships the release.
+   - Use the commit/PR/JIRA context gathered in Step 4 for the description (Why / What / How to Verify), consistent with `codery-pr` output.
+   - Open as a normal PR, **not draft**. A release branch means "we think this is shippable, please review"; draft would delay required reviewers and preview-deploy notifications.
+
+3. **Open the back-merge PR** immediately with `gh pr create --base {{developBranch}}` (codery-pr assumes `{{mainBranch}}` as the base and isn't suitable here). Title it so reviewers know it's a sync — e.g. `chore: back-merge release X.Y.Z to {{developBranch}}`. Body can point to the release PR for context.
+
+4. **Test the release** on the preview deploy attached to the `{{mainBranch}}` PR. If the project has no preview deploy, fall back to a local checkout of `release/X.Y.Z`. Push fixes to the release branch as issues surface — *both* PRs update automatically.
+
+5. **On approval, merge the release PR, then tag:**
+
+   ```bash
+   git checkout {{mainBranch}} && git pull
+   git tag vX.Y.Z && git push origin vX.Y.Z
+   ```
+
+   The release branch stays alive here because the back-merge PR still references it.
+
+6. **Merge the back-merge PR.** The release branch auto-deletes on this merge (if that's enabled in the repo). If the back-merge PR went red after step 5 (rare in a release flow, but possible if `{{mainBranch}}` had diverged), resolve conflicts on the release branch and push — GitHub re-runs mergeability.
+
+7. Emit a **draft release-notes block** for the eventual GitHub release, using the default structure below. The skill should fill in the entries from the gathered commits, PRs, and parent tickets — citing the **parent Story or Task** (not subtasks) so the notes read as user-visible outcomes rather than implementation fragments. Omit sections that have no entries.
 
    ```markdown
    ## Breaking changes
