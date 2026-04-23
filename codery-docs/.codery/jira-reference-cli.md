@@ -1,14 +1,10 @@
-# JIRA Reference
+# JIRA Reference (CLI)
 
 **Project Key**: `{{projectKey}}`
 
-## Workflow States
-
-1. **To Do** → **In Progress** → **In Review** → **Done**
-
 ## Preview & Approval
 
-Before any JIRA ticket create or edit: display details to user, ask for approval, then proceed.
+Before creating a ticket, editing a ticket, or adding a comment: display details to user, ask for approval, then proceed. Transitions and worklog additions proceed without approval — they're core workflow, not content creation.
 
 ## Git Branch Naming
 
@@ -78,7 +74,7 @@ Use role-specific comment prefixes: `[Scout]`, `[Architect]`, `[Builder]`, `[CRK
 - **Heredocs for simple JIRA commands.** Use inline `-s "summary" -b "body"`. Heredocs slow the flow and are hard to edit mid-draft.
 - **Skipping `-p {{projectKey}}`.** Every `jira` command needs the project key — omitting it silently writes to the wrong project or errors.
 - **`--no-input` when the user should be prompted.** Only use it for commands with all values specified; never for interactive drafts.
-- **Creating or editing without the Preview & Approval step.** Show details and get approval first.
+- **Creating, editing, or commenting without the Preview & Approval step.** Show details and get approval first. (Transitions and worklogs are exempt.)
 - **Commenting without reading existing comments first.** Run `jira issue view KEY --comments 15` before adding to a ticket.
 - **Hardcoded issue keys in scripts.** Look up by name/summary with `-q` queries.
 - **Bypassing `codery-*` skills.** If a skill fits the task (codery-pr, codery-release, codery-audit, codery-snr, codery-status), invoke it via the Skill tool instead of raw commands.

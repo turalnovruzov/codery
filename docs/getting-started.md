@@ -31,6 +31,7 @@ codery init
 This will prompt you to:
 - Select your Git workflow (Git Flow or Trunk-Based)
 - Configure your project key and branch names
+- Choose how Claude interacts with JIRA: the `jira` CLI (with API token) or the Atlassian MCP server
 
 The command creates `.codery/config.json` with your chosen configuration.
 

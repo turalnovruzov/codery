@@ -20,6 +20,7 @@ Codery uses a template variable system to customize documentation for your speci
 | `{{projectKey}}` | JIRA project identifier | `projectKey` | (required) |
 | `{{developBranch}}` | Development branch name | `developBranch` | `"develop"` |
 | `{{mainBranch}}` | Production branch name | `mainBranch` | `"main"` |
+| `{{jiraCloudId}}` | Atlassian site hostname (MCP only) | `jiraCloudId` | (required when `jiraIntegrationType` is `"mcp"`) |
 
 ## Template Substitution Process
 

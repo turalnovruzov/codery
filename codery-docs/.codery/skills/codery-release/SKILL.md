@@ -73,11 +73,9 @@ PR bodies often capture *why* and *breaking notes* that commits don't. Cross-che
 - Multiple subtasks rolling up to the same parent — often a coordinated feature
 - Any Epic Link or `parent` field present in the ticket
 
-**Tools.**
+**What to fetch.** For each ticket, capture summary, issue type, priority, status, any breaking-change labels, and the parent ticket key (subtasks usually expose it under `fields.parent`; epic links often live in a project-specific custom field).
 
-- `jira issue view <KEY> -p {{projectKey}} --plain` — human-readable summary. Use for capturing summary, issue type, priority, status, and breaking-change labels.
-- `jira issue view <KEY> -p {{projectKey}} --raw | jq '.fields.parent'` — extracts the parent ticket key. `--plain` output omits parent and epic-link fields; `--raw` is required when you need the relationship graph.
-- `jq '.fields | to_entries[] | select(.value.key? != null)'` on the raw output — locates Epic Link (often a custom field with a project-specific ID).
+Use whichever JIRA integration this project is configured for — see `.codery/refs/jira-reference.md`. Parent and epic-link fields are often omitted from default ticket views; request them explicitly when walking relationships (e.g. pass `--raw` to the JIRA CLI, or specify `fields: ["parent", ...]` on an MCP issue fetch).
 
 **Default behavior.**
 

@@ -4,10 +4,13 @@ export interface CoderyConfig {
   mainBranch?: string;
   applicationDocs?: string[];
   gitWorkflowType?: 'gitflow' | 'trunk-based';
+  jiraIntegrationType?: 'mcp' | 'cli';
+  jiraCloudId?: string;
 }
 
 export const defaultConfig: CoderyConfig = {
   projectKey: 'YOUR_PROJECT_KEY',
   developBranch: 'develop',
   mainBranch: 'main',
+  jiraIntegrationType: 'cli',
 };
