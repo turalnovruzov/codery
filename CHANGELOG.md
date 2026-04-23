@@ -1,3 +1,10 @@
+# [8.7.0](https://github.com/turalnovruzov/codery/compare/v8.6.0...v8.7.0) (2026-04-23)
+
+
+### Features
+
+* **skills:** reorder codery-release Step 8 to PR-first workflow (COD-56) ([#40](https://github.com/turalnovruzov/codery/issues/40)) ([ef8ddda](https://github.com/turalnovruzov/codery/commit/ef8ddda49132aeb8222882b95d118c9a91db5549))
+
 # [8.6.0](https://github.com/turalnovruzov/codery/compare/v8.5.0...v8.6.0) (2026-04-21)
 
 
