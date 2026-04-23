@@ -33,9 +33,10 @@ git push origin feature/{{projectKey}}-123-description
 # Release
 git checkout {{developBranch}} && git pull origin {{developBranch}}
 git checkout -b release/X.Y.Z
-# Test, fix, commit: "chore: prepare release X.Y.Z"
-# Create PRs to both {{mainBranch}} and {{developBranch}}
-# Tag on {{mainBranch}}: git tag vX.Y.Z && git push origin vX.Y.Z
+git push -u origin release/X.Y.Z
+# Open PR to {{mainBranch}}, test on preview (or locally), fix on branch as needed
+# After approval, merge PR, then tag on {{mainBranch}}: git tag vX.Y.Z && git push origin vX.Y.Z
+# Back-merge: gh pr create --base {{developBranch}} (sync-only, no QA)
 
 # Hotfix
 git checkout {{mainBranch}} && git pull origin {{mainBranch}}
