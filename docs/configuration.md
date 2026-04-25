@@ -46,6 +46,20 @@ Codery stores configuration in `.codery/config.json`.
 - **Used in**: Determines which workflow file is included in CLAUDE.md
 - **Note**: When using trunk-based, `developBranch` is not needed
 
+### jiraIntegrationType
+- **Type**: String
+- **Optional**: Yes (default: `"cli"`)
+- **Description**: Selects how Claude interacts with JIRA
+- **Options**: `"cli"` (requires `jira` CLI + API token) or `"mcp"` (requires the Atlassian MCP server installed in Claude Code)
+- **Used in**: Determines which JIRA reference file is emitted to `.codery/refs/jira-reference.md`
+
+### jiraCloudId
+- **Type**: String
+- **Optional**: Yes (required when `jiraIntegrationType` is `"mcp"`)
+- **Description**: Your Atlassian site — the MCP passes this as `cloudId` on every tool call
+- **Example**: `"company.atlassian.net"`
+- **Note**: Either the site hostname (recommended, human-readable) or the UUID works
+
 ## Example Configurations
 
 ### Basic Configuration
@@ -99,6 +113,17 @@ Codery stores configuration in `.codery/config.json`.
 }
 ```
 
+### Atlassian MCP Integration
+```json
+{
+  "projectKey": "ACME",
+  "mainBranch": "main",
+  "gitWorkflowType": "trunk-based",
+  "jiraIntegrationType": "mcp",
+  "jiraCloudId": "company.atlassian.net"
+}
+```
+
 ### Full Configuration Example
 ```json
 {
@@ -123,6 +148,7 @@ When you run `codery build`, these values replace template variables throughout 
 | `{{projectKey}}` | Your projectKey value | `ACME` |
 | `{{developBranch}}` | Your developBranch value | `develop` |
 | `{{mainBranch}}` | Your mainBranch value | `main` |
+| `{{jiraCloudId}}` | Your jiraCloudId value (MCP only) | `company.atlassian.net` |
 
 ### Example Transformation
 

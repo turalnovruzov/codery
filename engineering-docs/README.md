@@ -87,6 +87,14 @@ Codery follows the npm principle: **track inputs, ignore outputs**.
 
 ## Version History
 
+### Version 8.x - Atlassian MCP Reintroduction (COD-57)
+- Reintroduced the Atlassian MCP as an opt-in JIRA integration alongside the CLI (removed in v8.0.0)
+- Config regains `jiraIntegrationType: 'mcp' | 'cli'` (default `cli` for backward compat) and `jiraCloudId`
+- Template split: `jira-reference-cli.md` (existing command-oriented ref) and new slim `jira-reference-mcp.md` (tool-schema-driven)
+- Hardcoded workflow states removed from both reference files — projects define their own
+- Preview & approval convention relaxed: applies only to ticket create/edit/comment; transitions and worklogs are exempt
+- `codery-release` skill rewritten to be integration-agnostic (no hardcoded `jira` CLI syntax)
+
 ### Version 7.0.0 - Modernization (COD-41) — Breaking
 - **CLAUDE.md**: ~800 lines → ~85 lines using `@` imports for reference docs
 - **Commands → Skills**: 8 commands migrated from `.claude/commands/` to `.claude/skills/` format
@@ -193,7 +201,7 @@ codery-docs/.codery/claude-md-template.md
     │
     ▼
 CLAUDE.md (with @imports that Claude Code resolves at runtime)
-    ├── @.codery/refs/jira-reference.md  ← copied from jira-reference.md
+    ├── @.codery/refs/jira-reference.md  ← copied from jira-reference-{cli,mcp}.md
     ├── @.codery/refs/git-workflow.md    ← copied from GitWorkflows/{GitFlow,TrunkBased}.md
     └── @engineering-docs/*.md           ← user's own docs (not copied, referenced in-place)
 
@@ -205,13 +213,19 @@ CLAUDE.md (with @imports that Claude Code resolves at runtime)
 **Config Structure** (`CoderyConfig` interface):
 ```typescript
 {
-  projectKey: string;         // JIRA project key
-  developBranch?: string;     // For Git Flow
-  mainBranch?: string;        // Main branch name
-  applicationDocs?: string[]; // Paths to project-specific docs (become @imports)
+  projectKey: string;                          // JIRA project key
+  developBranch?: string;                      // For Git Flow
+  mainBranch?: string;                         // Main branch name
+  applicationDocs?: string[];                  // Paths to project-specific docs (become @imports)
   gitWorkflowType?: 'gitflow' | 'trunk-based';
+  jiraIntegrationType?: 'mcp' | 'cli';         // Default 'cli'
+  jiraCloudId?: string;                        // Required when jiraIntegrationType === 'mcp'
 }
 ```
+
+**JIRA integration** is selected at `codery init` time:
+- `cli` (default): emits `jira-reference-cli.md` → `.codery/refs/jira-reference.md`. Requires the `jira` CLI installed locally with an API token.
+- `mcp`: emits the slim `jira-reference-mcp.md`. Requires the Atlassian MCP server installed in Claude Code. The `jiraCloudId` (e.g. `company.atlassian.net`) is passed through to the reference file as `{{jiraCloudId}}` and then used as the `cloudId` argument to MCP tool calls.
 
 **Storage**: `.codery/config.json` (tracked in git)
 
