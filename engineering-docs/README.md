@@ -48,12 +48,14 @@ codery/
 │       │   └── TrunkBased.md
 │       └── skills/                 # Claude Code skills
 │           ├── codery-audit/       # PR review with JIRA context
+│           ├── codery-autopilot/   # Autonomous ticket → draft PR run
 │           ├── codery-docs-check/  # Documentation sync check
 │           ├── codery-pr/          # Create PR with structured description
 │           ├── codery-release/     # Release branch creation
 │           ├── codery-retrospective/ # Session review
 │           ├── codery-snr/         # Summary/Next/Request protocol
-│           └── codery-status/      # PR/ticket status check
+│           ├── codery-status/      # PR/ticket status check
+│           └── codery-ticket/      # Author well-structured Jira tickets
 ├── dist/                       # Compiled JavaScript
 ├── docs/                       # User documentation
 └── engineering-docs/           # This documentation
