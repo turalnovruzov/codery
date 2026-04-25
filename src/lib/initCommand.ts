@@ -126,7 +126,8 @@ export async function initCommand(options: InitOptions): Promise<void> {
     ]);
 
     // Build config object — preserve existing fields and merge with new answers.
-    // Strip the legacy pre-v5 `cloudId` field name; we use `jiraCloudId` now.
+    // Strip the legacy v5–v7 `cloudId` field name (removed in v8.0.0). The
+    // current field is `jiraCloudId` and stores a hostname, not a full URL.
     const { cloudId: _legacyCloudId, ...preservedConfig } =
       existingConfig as CoderyConfig & { cloudId?: string };
     const config: CoderyConfig = {
