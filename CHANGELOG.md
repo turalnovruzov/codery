@@ -1,3 +1,10 @@
+# [8.9.0](https://github.com/turalnovruzov/codery/compare/v8.8.0...v8.9.0) (2026-04-25)
+
+
+### Features
+
+* **skills:** add codery-ticket skill for writing well-structured Jira artifacts (COD-58) ([#42](https://github.com/turalnovruzov/codery/issues/42)) ([d59d2df](https://github.com/turalnovruzov/codery/commit/d59d2df19e2c042bbcbfa61d16aecc371edbeabf))
+
 # [8.8.0](https://github.com/turalnovruzov/codery/compare/v8.7.0...v8.8.0) (2026-04-25)
 
 
