@@ -1,3 +1,10 @@
+# [8.8.0](https://github.com/turalnovruzov/codery/compare/v8.7.0...v8.8.0) (2026-04-25)
+
+
+### Features
+
+* **jira:** reintroduce Atlassian MCP integration (COD-57) ([#41](https://github.com/turalnovruzov/codery/issues/41)) ([0b3cbf9](https://github.com/turalnovruzov/codery/commit/0b3cbf9106e67f52215c838ef420e126b1ed41d4))
+
 # [8.7.0](https://github.com/turalnovruzov/codery/compare/v8.6.0...v8.7.0) (2026-04-23)
 
 
