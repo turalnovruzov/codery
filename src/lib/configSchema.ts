@@ -19,7 +19,6 @@ export interface EnumField extends BaseField {
 
 export interface ArrayField extends BaseField {
   kind: 'array';
-  itemFilter?: (input: string) => string;
   itemValidate?: (input: string) => true | string;
 }
 
@@ -62,10 +61,12 @@ export const configSchema: Record<ConfigKey, FieldSchema> = {
   mainBranch: {
     kind: 'scalar',
     description: 'Main/production branch name',
+    validate: validateNonEmpty,
   },
   developBranch: {
     kind: 'scalar',
     description: 'Development branch name (used with gitflow)',
+    validate: validateNonEmpty,
   },
   jiraIntegrationType: {
     kind: 'enum',

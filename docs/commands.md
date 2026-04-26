@@ -123,6 +123,67 @@ If you have `applicationDocs` configured, the build process will also:
 - Create `.codery/application-docs.md`
 - Show warnings for any missing files but continue
 
+---
+
+### codery config
+
+View or edit `.codery/config.json` without re-running the full `codery init` wizard. Mirrors `git config` semantics with both an interactive menu and scriptable subcommands.
+
+**Usage:**
+```bash
+codery config                       # interactive menu (default)
+codery config list                  # print full config as JSON
+codery config get <key>             # print one field's value
+codery config set <key> <value>     # set a scalar field
+codery config unset <key>           # remove a field
+codery config add <key> <value>     # append to an array field (e.g. applicationDocs)
+codery config remove <key> <value>  # remove a value from an array field
+```
+
+**Interactive menu:**
+
+Bare `codery config` opens an arrow-key navigable list of every field with its current value. Select a field to edit it (list prompt for enums, validated input for scalars, sub-menu for arrays). Choose **Save & Exit** to persist or **Discard & Exit** to abandon changes (confirms if dirty).
+
+**Scriptable subcommands:**
+
+Designed for shell loops and CI. All commands operate on `.codery/config.json` in the current directory and exit non-zero on error.
+
+- `list` — pretty-prints the full config
+- `get <key>` — prints the field's value (newline-delimited for arrays); exit 1 if unset or unknown
+- `set <key> <value>` — validates and writes a scalar/enum field; rejects array fields
+- `unset <key>` — removes a field (no-op if already absent)
+- `add <key> <value>` — appends to an array field; rejects scalar fields
+- `remove <key> <value>` — removes a value from an array; exit 1 if not found
+
+**Validation:** uses the same per-field validators as `codery init` (extracted into `src/lib/configSchema.ts`). Filters apply consistently — e.g. `set jiraCloudId https://acme.atlassian.net/` stores `acme.atlassian.net`.
+
+**Stale-field warnings:** `set jiraIntegrationType cli` while `jiraCloudId` is set prints a warning to stderr but does **not** auto-unset. The interactive menu surfaces the same warnings inline next to the field. Run `unset` deliberately to clean up.
+
+**Examples:**
+
+Migrate a project from JIRA CLI to Atlassian MCP:
+```bash
+codery config set jiraIntegrationType mcp
+codery config set jiraCloudId company.atlassian.net
+codery build
+```
+
+Loop across multiple projects:
+```bash
+for dir in ~/projects/*/; do
+  (cd "$dir" && codery config set jiraIntegrationType cli)
+done
+```
+
+Inspect a single field:
+```bash
+codery config get projectKey
+```
+
+**Important:** `codery config` does **not** trigger a rebuild. Run `codery build` separately when ready.
+
+---
+
 ## Error Handling
 
 ### Common Errors
@@ -150,4 +211,5 @@ Display help for any command:
 codery --help
 codery init --help
 codery build --help
+codery config --help
 ```
