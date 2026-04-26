@@ -1,3 +1,10 @@
+# [8.10.0](https://github.com/turalnovruzov/codery/compare/v8.9.0...v8.10.0) (2026-04-26)
+
+
+### Features
+
+* **cli:** add codery config command (COD-59) ([#43](https://github.com/turalnovruzov/codery/issues/43)) ([893e8fd](https://github.com/turalnovruzov/codery/commit/893e8fdd2395e570f1590fd75d0f515045faf528))
+
 # [8.9.0](https://github.com/turalnovruzov/codery/compare/v8.8.0...v8.9.0) (2026-04-25)
 
 
