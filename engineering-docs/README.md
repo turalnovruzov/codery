@@ -89,6 +89,17 @@ Codery follows the npm principle: **track inputs, ignore outputs**.
 
 ## Version History
 
+### Version 8.x - Hub-and-Spoke Documentation Loading (COD-61)
+- Added `documentationRoots: string[]` config field for hub-and-spoke doc loading
+- Each entry is a path to an eagerly-loaded "hub" doc; Codery generates `.codery/refs/docs-index.md` listing every `.md` file under the hub's parent folder for on-demand discovery
+- Generated index is `@`-imported by `CLAUDE.md` alongside a principle-driven instruction telling Claude to consult the index proactively when work intersects a documented topic
+- `applicationDocs` is unchanged — it stays the slot for small must-load files
+- Solves the problem of single large doc files (>40k chars) bloating every Claude conversation; teams can split docs and let Claude load on demand
+- Validation: `documentationRoots` entries must point to existing `.md` files (strict at `codery config set` / interactive menu); build is lenient — warns and skips missing entries
+- Tree walk skips `node_modules`, dotfiles, dotdirs, and symlinks; index uses POSIX paths
+- Stale `docs-index.md` from previous builds is removed when `documentationRoots` becomes empty
+- Matches the existing `applicationDocs` pattern in `codery init` (no prompt — initialized to empty array, managed via `codery config`)
+
 ### Version 8.x - `codery config` Command (COD-59)
 - Added `codery config` for viewing and editing `.codery/config.json` without re-running `codery init`
 - Bare `codery config` opens an interactive arrow-key navigable menu listing all fields with current values; select to edit, with appropriate prompt per field type (list / input / array submenu)

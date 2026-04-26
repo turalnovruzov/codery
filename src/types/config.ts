@@ -3,6 +3,7 @@ export interface CoderyConfig {
   developBranch?: string;
   mainBranch?: string;
   applicationDocs?: string[];
+  documentationRoots?: string[];
   gitWorkflowType?: 'gitflow' | 'trunk-based';
   jiraIntegrationType?: 'mcp' | 'cli';
   jiraCloudId?: string;

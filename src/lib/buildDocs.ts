@@ -41,8 +41,12 @@ function substituteTemplates(
   const templateRegex = /\{\{(\w+(?:\.\w+)*)\}\}/g;
 
   const substitutedContent = content.replace(templateRegex, (match, variable) => {
-    // Skip the applicationDocsImports placeholder — handled separately
-    if (variable === 'applicationDocsImports') {
+    // Skip block-level placeholders — handled separately
+    if (
+      variable === 'applicationDocsImports' ||
+      variable === 'documentationRootImports' ||
+      variable === 'docsHubBlock'
+    ) {
       return match;
     }
 
@@ -73,6 +77,188 @@ function generateAppDocsImports(config: CoderyConfig): string {
   return config.applicationDocs
     .map(docPath => `@${docPath}`)
     .join('\n');
+}
+
+// Replace a block-level placeholder in template content. When value is empty
+// and the placeholder sits on its own line, remove the line entirely so we do
+// not leave behind orphan whitespace.
+function substituteBlockPlaceholder(content: string, placeholder: string, value: string): string {
+  if (value !== '') {
+    return content.replace(placeholder, value);
+  }
+  const escaped = placeholder.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const linePattern = new RegExp(`^${escaped}[\\t ]*\\r?\\n?`, 'm');
+  if (linePattern.test(content)) {
+    return content.replace(linePattern, '');
+  }
+  return content.replace(placeholder, '');
+}
+
+// Generate @import lines for documentationRoots entry files. Missing files are
+// warned and skipped so a stale path does not abort the build.
+function generateDocRootImports(config: CoderyConfig, log: (...args: unknown[]) => void): string {
+  if (!config.documentationRoots || config.documentationRoots.length === 0) {
+    return '';
+  }
+  const lines: string[] = [];
+  for (const entryPath of config.documentationRoots) {
+    const resolved = path.resolve(process.cwd(), entryPath);
+    if (!fs.existsSync(resolved)) {
+      log(chalk.yellow(`  ⚠️  documentationRoots entry not found, skipping: ${entryPath}`));
+      continue;
+    }
+    lines.push(`@${entryPath}`);
+  }
+  return lines.join('\n');
+}
+
+// Generate the hub-and-spoke instruction block plus the @import for the
+// generated docs index. Empty when no documentationRoots are configured.
+function generateDocsHubBlock(config: CoderyConfig): string {
+  if (!config.documentationRoots || config.documentationRoots.length === 0) {
+    return '';
+  }
+  return [
+    '',
+    '---',
+    '',
+    '## Project Documentation',
+    '',
+    'Documentation hub-and-spoke. The eagerly-loaded entry docs above are curated reading. The full file tree under each documentation root is at `.codery/refs/docs-index.md` and is loaded into context below.',
+    '',
+    'Treat that index as a first-class lookup. Whenever your current work intersects a topic the tree covers — files you are editing, code you are investigating, design decisions, unfamiliar areas — Read the relevant doc *before* proceeding. The user may not name the topic; you are responsible for noticing.',
+    '',
+    '@.codery/refs/docs-index.md',
+  ].join('\n');
+}
+
+// POSIX-normalize a path string (use forward slashes regardless of platform).
+function toPosix(p: string): string {
+  return p.split(path.sep).join('/');
+}
+
+// Walk a directory recursively and return all .md file paths (relative to
+// projectRoot, POSIX-normalized). Skips dotfiles/dotdirs, node_modules, and
+// symlinks to avoid runaway traversal.
+function walkMarkdownFiles(rootDir: string, projectRoot: string): string[] {
+  const results: string[] = [];
+  if (!fs.existsSync(rootDir)) return results;
+  const queue: string[] = [rootDir];
+  while (queue.length > 0) {
+    const dir = queue.shift() as string;
+    let entries: fs.Dirent[];
+    try {
+      entries = fs.readdirSync(dir, { withFileTypes: true });
+    } catch {
+      continue;
+    }
+    for (const entry of entries) {
+      if (entry.isSymbolicLink()) continue;
+      if (entry.name.startsWith('.')) continue;
+      if (entry.name === 'node_modules') continue;
+      const fullPath = path.join(dir, entry.name);
+      if (entry.isDirectory()) {
+        queue.push(fullPath);
+        continue;
+      }
+      if (entry.isFile() && entry.name.toLowerCase().endsWith('.md')) {
+        results.push(toPosix(path.relative(projectRoot, fullPath)));
+      }
+    }
+  }
+  return results.sort();
+}
+
+// Build the markdown body for .codery/refs/docs-index.md. Returns null when no
+// documentationRoots are configured (signals the index file should be removed).
+function generateDocsIndexContent(config: CoderyConfig): string | null {
+  if (!config.documentationRoots || config.documentationRoots.length === 0) {
+    return null;
+  }
+  const projectRoot = process.cwd();
+
+  // Files already in CLAUDE.md context — exclude them from the on-demand list.
+  const excluded = new Set<string>();
+  for (const p of config.applicationDocs ?? []) excluded.add(toPosix(p));
+  for (const p of config.documentationRoots) excluded.add(toPosix(p));
+
+  // Group entry files by their parent folder so multiple roots in the same
+  // folder collapse into one section.
+  const groups = new Map<string, string[]>();
+  for (const entryPath of config.documentationRoots) {
+    const resolved = path.resolve(projectRoot, entryPath);
+    if (!fs.existsSync(resolved)) continue;
+    const parentRel = toPosix(path.relative(projectRoot, path.dirname(resolved))) || '.';
+    const list = groups.get(parentRel) ?? [];
+    list.push(toPosix(entryPath));
+    groups.set(parentRel, list);
+  }
+
+  if (groups.size === 0) {
+    return null;
+  }
+
+  const sections: string[] = [
+    '# Project Documentation Index',
+    '',
+    'Generated by `codery build`. Lists every `.md` file under each documentation root. Read these on demand using the Read tool when your work intersects their topics — entry docs are already eagerly loaded into CLAUDE.md.',
+    '',
+  ];
+
+  const sortedGroups = Array.from(groups.entries()).sort(([a], [b]) => a.localeCompare(b));
+  for (const [parentRel, entryPaths] of sortedGroups) {
+    sections.push(`## ${parentRel}/`);
+    sections.push('');
+    sections.push(`Entry doc${entryPaths.length > 1 ? 's' : ''} (eagerly loaded):`);
+    for (const e of entryPaths.sort()) sections.push(`- ${e}`);
+    sections.push('');
+
+    const parentAbs = path.resolve(projectRoot, parentRel);
+    const allMd = walkMarkdownFiles(parentAbs, projectRoot).filter(p => !excluded.has(p));
+    if (allMd.length === 0) {
+      sections.push('_No additional docs in this root._');
+    } else {
+      sections.push('Spoke docs:');
+      for (const p of allMd) sections.push(`- ${p}`);
+    }
+    sections.push('');
+  }
+
+  return sections.join('\n');
+}
+
+// Write or remove .codery/refs/docs-index.md based on documentationRoots.
+function writeOrRemoveDocsIndex(
+  config: CoderyConfig | null,
+  dryRun: boolean,
+  log: (...args: unknown[]) => void
+): void {
+  const indexPath = path.join(process.cwd(), '.codery/refs/docs-index.md');
+  const content = config ? generateDocsIndexContent(config) : null;
+
+  if (content === null) {
+    if (fs.existsSync(indexPath)) {
+      if (dryRun) {
+        log(`Would remove stale .codery/refs/docs-index.md`);
+      } else {
+        fs.unlinkSync(indexPath);
+        log(`  ✓ removed stale docs-index.md`);
+      }
+    }
+    return;
+  }
+
+  if (dryRun) {
+    log(`Would write .codery/refs/docs-index.md`);
+    return;
+  }
+
+  const refsDir = path.dirname(indexPath);
+  if (!fs.existsSync(refsDir)) {
+    fs.mkdirSync(refsDir, { recursive: true });
+  }
+  fs.writeFileSync(indexPath, content, 'utf-8');
+  log(`  ✓ docs-index.md`);
 }
 
 // Get the appropriate git workflow source file based on config
@@ -259,13 +445,21 @@ export async function buildCommand(options: BuildOptions): Promise<void> {
 
     let claudeContent = fs.readFileSync(templatePath, 'utf-8');
 
-    // Inject applicationDocs @imports
-    if (config) {
-      const appDocsImports = generateAppDocsImports(config);
-      claudeContent = claudeContent.replace('{{applicationDocsImports}}', appDocsImports);
-    } else {
-      claudeContent = claudeContent.replace('{{applicationDocsImports}}', '');
-    }
+    // Inject block-level placeholders before the general substitution pass.
+    const appDocsImports = config ? generateAppDocsImports(config) : '';
+    const docRootImports = config ? generateDocRootImports(config, log) : '';
+    const docsHubBlock = config ? generateDocsHubBlock(config) : '';
+    claudeContent = substituteBlockPlaceholder(
+      claudeContent,
+      '{{applicationDocsImports}}',
+      appDocsImports
+    );
+    claudeContent = substituteBlockPlaceholder(
+      claudeContent,
+      '{{documentationRootImports}}',
+      docRootImports
+    );
+    claudeContent = substituteBlockPlaceholder(claudeContent, '{{docsHubBlock}}', docsHubBlock);
 
     // Apply template variable substitution
     let allUnsubstituted: string[] = [];
@@ -292,6 +486,7 @@ export async function buildCommand(options: BuildOptions): Promise<void> {
       log(`File size: ~${Math.round(claudeContent.length / 1024)}KB`);
       log();
       copyReferenceFiles(config, true, options.quiet);
+      writeOrRemoveDocsIndex(config, true, log);
       copySkillFiles(config, true, options.quiet);
       return;
     }
@@ -328,6 +523,7 @@ export async function buildCommand(options: BuildOptions): Promise<void> {
     log();
     log('Copying reference files...');
     copyReferenceFiles(config, false, options.quiet);
+    writeOrRemoveDocsIndex(config, false, log);
 
     // Copy skills to .claude/skills/
     log();
