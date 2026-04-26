@@ -4,6 +4,7 @@ import chalk from 'chalk';
 import inquirer from 'inquirer';
 import { defaultConfig, CoderyConfig } from '../types/config';
 import { addProject } from './registry';
+import { validateProjectKey, filterCloudId, validateCloudId } from './configSchema';
 
 interface InitOptions {
   force?: boolean;
@@ -59,7 +60,7 @@ export async function initCommand(options: InitOptions): Promise<void> {
     }
 
     // Prompt for configuration values
-    console.log('Let\'s configure your project:');
+    console.log("Let's configure your project:");
     console.log();
 
     const legacyCloudId = (existingConfig as CoderyConfig & { cloudId?: string }).cloudId;
@@ -71,21 +72,16 @@ export async function initCommand(options: InitOptions): Promise<void> {
         message: 'Select your Git workflow type:',
         choices: [
           { name: 'Git Flow (feature branches, develop/main)', value: 'gitflow' },
-          { name: 'Trunk-Based (direct commits to main)', value: 'trunk-based' }
+          { name: 'Trunk-Based (direct commits to main)', value: 'trunk-based' },
         ],
-        default: currentValues.gitWorkflowType || 'gitflow'
+        default: currentValues.gitWorkflowType || 'gitflow',
       },
       {
         type: 'input',
         name: 'projectKey',
         message: 'Enter your JIRA project key:',
         default: currentValues.projectKey,
-        validate: (input: string) => {
-          if (input.match(/^[A-Z][A-Z0-9]*$/)) {
-            return true;
-          }
-          return 'Project key must be uppercase letters and numbers (e.g., PROJ, MVP, ACME)';
-        }
+        validate: validateProjectKey,
       },
       {
         type: 'list',
@@ -93,43 +89,40 @@ export async function initCommand(options: InitOptions): Promise<void> {
         message: 'How will Claude interact with JIRA?',
         choices: [
           { name: 'JIRA CLI (requires `jira` CLI installed with an API token)', value: 'cli' },
-          { name: 'Atlassian MCP (configure an MCP server in Claude Code)', value: 'mcp' }
+          { name: 'Atlassian MCP (configure an MCP server in Claude Code)', value: 'mcp' },
         ],
-        default: currentValues.jiraIntegrationType || 'cli'
+        default: currentValues.jiraIntegrationType || 'cli',
       },
       {
         type: 'input',
         name: 'jiraCloudId',
         message: 'Atlassian site (e.g. company.atlassian.net):',
         default: currentValues.jiraCloudId || legacyCloudId || '',
-        when: (currentAnswers) => currentAnswers.jiraIntegrationType === 'mcp',
-        filter: (input: string) => input.trim().replace(/^https?:\/\//, '').replace(/\/+$/, ''),
-        validate: (input: string) => {
-          if (!input) return 'Site is required for MCP integration.';
-          if (!input.includes('.')) return 'Enter a hostname like company.atlassian.net.';
-          return true;
-        }
+        when: currentAnswers => currentAnswers.jiraIntegrationType === 'mcp',
+        filter: filterCloudId,
+        validate: validateCloudId,
       },
       {
         type: 'input',
         name: 'mainBranch',
         message: 'Enter your main/production branch name:',
-        default: currentValues.mainBranch || 'main'
+        default: currentValues.mainBranch || 'main',
       },
       {
         type: 'input',
         name: 'developBranch',
         message: 'Enter your development branch name:',
         default: currentValues.developBranch || 'develop',
-        when: (currentAnswers) => currentAnswers.gitWorkflowType === 'gitflow'
-      }
+        when: currentAnswers => currentAnswers.gitWorkflowType === 'gitflow',
+      },
     ]);
 
     // Build config object — preserve existing fields and merge with new answers.
     // Strip the legacy v5–v7 `cloudId` field name (removed in v8.0.0). The
     // current field is `jiraCloudId` and stores a hostname, not a full URL.
-    const { cloudId: _legacyCloudId, ...preservedConfig } =
-      existingConfig as CoderyConfig & { cloudId?: string };
+    const { cloudId: _legacyCloudId, ...preservedConfig } = existingConfig as CoderyConfig & {
+      cloudId?: string;
+    };
     const config: CoderyConfig = {
       ...preservedConfig,
       projectKey: answers.projectKey,
@@ -137,7 +130,7 @@ export async function initCommand(options: InitOptions): Promise<void> {
       gitWorkflowType: answers.gitWorkflowType,
       jiraIntegrationType: answers.jiraIntegrationType,
       // Preserve applicationDocs if it exists, otherwise initialize as empty
-      applicationDocs: existingConfig.applicationDocs || []
+      applicationDocs: existingConfig.applicationDocs || [],
     };
 
     // Only add developBranch for gitflow
@@ -168,11 +161,7 @@ export async function initCommand(options: InitOptions): Promise<void> {
       const entriesToAdd: string[] = [];
 
       // Generated files that should be ignored (like node_modules)
-      const generatedFiles = [
-        'CLAUDE.md',
-        '.claude/',
-        '.codery/refs/',
-      ];
+      const generatedFiles = ['CLAUDE.md', '.claude/', '.codery/refs/'];
 
       for (const entry of generatedFiles) {
         if (!gitignoreContent.includes(entry)) {
@@ -187,7 +176,10 @@ export async function initCommand(options: InitOptions): Promise<void> {
           entriesToAdd.join('\n') +
           '\n';
         fs.writeFileSync(gitignorePath, updatedContent, 'utf-8');
-        console.log(chalk.green('✓'), `Added ${entriesToAdd.length} Codery generated file(s) to .gitignore`);
+        console.log(
+          chalk.green('✓'),
+          `Added ${entriesToAdd.length} Codery generated file(s) to .gitignore`
+        );
       }
     }
 
@@ -201,9 +193,13 @@ export async function initCommand(options: InitOptions): Promise<void> {
     console.log(chalk.green('✨ Codery configuration updated!'));
     console.log();
     console.log('Configuration summary:');
-    console.log(`  - Git Workflow: ${chalk.cyan(config.gitWorkflowType === 'gitflow' ? 'Git Flow' : 'Trunk-Based Development')}`);
+    console.log(
+      `  - Git Workflow: ${chalk.cyan(config.gitWorkflowType === 'gitflow' ? 'Git Flow' : 'Trunk-Based Development')}`
+    );
     console.log(`  - Project Key: ${chalk.cyan(config.projectKey)}`);
-    console.log(`  - JIRA Integration: ${chalk.cyan(config.jiraIntegrationType === 'mcp' ? 'Atlassian MCP' : 'JIRA CLI')}`);
+    console.log(
+      `  - JIRA Integration: ${chalk.cyan(config.jiraIntegrationType === 'mcp' ? 'Atlassian MCP' : 'JIRA CLI')}`
+    );
     if (config.jiraCloudId) {
       console.log(`  - Atlassian Site: ${chalk.cyan(config.jiraCloudId)}`);
     }
@@ -212,7 +208,9 @@ export async function initCommand(options: InitOptions): Promise<void> {
       console.log(`  - Develop Branch: ${chalk.cyan(config.developBranch)}`);
     }
     if (config.applicationDocs && config.applicationDocs.length > 0) {
-      console.log(`  - Application Docs: ${chalk.cyan(`${config.applicationDocs.length} path(s) preserved`)}`);
+      console.log(
+        `  - Application Docs: ${chalk.cyan(`${config.applicationDocs.length} path(s) preserved`)}`
+      );
     }
     console.log();
     console.log('Next steps:');
@@ -220,9 +218,15 @@ export async function initCommand(options: InitOptions): Promise<void> {
     console.log('  2. Run', chalk.yellow('codery build'), 'to generate your customized CLAUDE.md');
     console.log();
     if (config.jiraIntegrationType === 'mcp') {
-      console.log(chalk.dim('Note: Make sure the Atlassian MCP server is installed in Claude Code and authenticated to your Atlassian account.'));
+      console.log(
+        chalk.dim(
+          'Note: Make sure the Atlassian MCP server is installed in Claude Code and authenticated to your Atlassian account.'
+        )
+      );
     } else {
-      console.log(chalk.dim('Note: Make sure JIRA CLI is installed and configured with your API token.'));
+      console.log(
+        chalk.dim('Note: Make sure JIRA CLI is installed and configured with your API token.')
+      );
     }
   } catch (error: any) {
     console.error(chalk.red('Init failed:'), error.message);
