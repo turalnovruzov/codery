@@ -1,3 +1,10 @@
+# [8.11.0](https://github.com/turalnovruzov/codery/compare/v8.10.0...v8.11.0) (2026-04-26)
+
+
+### Features
+
+* **skills:** load full JIRA hierarchy in codery-status (COD-60) ([#44](https://github.com/turalnovruzov/codery/issues/44)) ([ee1f4c8](https://github.com/turalnovruzov/codery/commit/ee1f4c8cf007dbcc7c80cd43af59e9b0ebed9877))
+
 # [8.10.0](https://github.com/turalnovruzov/codery/compare/v8.9.0...v8.10.0) (2026-04-26)
 
 
