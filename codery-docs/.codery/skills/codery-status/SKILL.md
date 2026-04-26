@@ -7,30 +7,39 @@ argument-hint: <PR-number or ticket-id>
 
 **Goal**: Give the user a complete understanding of where this PR/ticket stands so they can make informed decisions.
 
-## Context Loading
+## Find the Entry Point
 
-Based on the argument, load related context:
+**PR number** → Fetch PR, find linked JIRA ticket.
+**Ticket ID** → Use directly.
+**No argument** → Check current branch for ticket pattern or open PR.
 
-**If PR number given**: Fetch PR details, find linked JIRA ticket, load both.
-**If ticket ID given**: Fetch ticket, check for linked PR, load both.
-**If no argument**: Check current branch for ticket pattern or open PR.
+## Load the Hierarchy
+
+A JIRA ticket only makes sense in its hierarchy. From the entry point, **load every ancestor up to the root, plus the entry's immediate context** — its children if it has any, otherwise its siblings. Never just the single ticket. Read comments on every loaded node; comments carry the decisions and blockers that the fields don't show.
+
+| Entry point | Also load |
+|---|---|
+| Subtask | parent Story, Story's Epic, sibling subtasks |
+| Story | Epic, child subtasks |
+| Epic | child Stories (skip the subtask layer unless something points there) |
+
+Don't widen further by default — sibling stories under a shared epic, or unrelated epics, only if a comment or link in the entry tree points at them.
 
 ## Think Broader
 
-**For PRs, consider:**
-- Are there commits **after** the last review? Alert user if so.
-- What's the review status? Are CI checks passing?
+**For PRs:**
+- Commits **after** the last review? Alert the user.
+- Review status, CI checks, merge-readiness.
 
-**For JIRA tickets, consider:**
-- Is this a **subtask**? Read the parent Story/Epic for bigger picture.
-- Are there **sibling tasks** that provide context?
-- What do the comments reveal about decisions made?
+**For tickets:**
+- What do comments across the hierarchy reveal about decisions and blockers?
+- Is this blocked by a sibling or parent that hasn't moved?
 
 ## What to Surface
 
-Don't just list fields. Provide **insights**:
-- "This subtask is part of [Story] which aims to [goal]"
-- "PR is approved and CI passing - ready to merge"
+Don't list fields. Provide **insights**:
+- "This subtask is part of [Story] which aims to [goal] under Epic [X]"
+- "PR is approved and CI passing — ready to merge"
 - "Blocked: waiting on review from @reviewer"
 
-Start with the most actionable insight. Suggest logical next action.
+Start with the most actionable insight. Suggest the logical next action.
