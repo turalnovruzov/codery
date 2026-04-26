@@ -8,11 +8,15 @@ import { buildCommand } from '../lib/buildDocs';
 import { initCommand } from '../lib/initCommand';
 import { updateCommand } from '../lib/updateCommand';
 import {
-  addProject,
-  removeProject,
-  listProjects,
-  projectExists,
-} from '../lib/registry';
+  configList,
+  configGet,
+  configSet,
+  configUnset,
+  configAdd,
+  configRemove,
+  configMenu,
+} from '../lib/configCommand';
+import { addProject, removeProject, listProjects, projectExists } from '../lib/registry';
 
 // Read version from package.json
 const packageJsonPath = path.resolve(__dirname, '../../package.json');
@@ -114,7 +118,9 @@ program
 
       if (projects.length === 0) {
         console.log(chalk.yellow('No projects registered.'));
-        console.log(chalk.dim('Run `codery init` in a project or `codery register` to add projects.'));
+        console.log(
+          chalk.dim('Run `codery init` in a project or `codery register` to add projects.')
+        );
         return;
       }
 
@@ -129,6 +135,92 @@ program
 
       console.log();
       console.log(`${projects.length} project(s) registered`);
+    } catch (error: any) {
+      console.error(chalk.red('Error:'), error.message);
+      process.exit(1);
+    }
+  });
+
+const configCmd = program.command('config').description('View or edit Codery configuration');
+
+configCmd
+  .command('menu', { isDefault: true })
+  .description('Open interactive config menu (default)')
+  .action(async () => {
+    try {
+      await configMenu();
+    } catch (error: any) {
+      console.error(chalk.red('Error:'), error.message);
+      process.exit(1);
+    }
+  });
+
+configCmd
+  .command('list')
+  .description('Print the full configuration as JSON')
+  .action(() => {
+    try {
+      configList();
+    } catch (error: any) {
+      console.error(chalk.red('Error:'), error.message);
+      process.exit(1);
+    }
+  });
+
+configCmd
+  .command('get <key>')
+  .description('Print the value of a single config field')
+  .action((key: string) => {
+    try {
+      configGet(key);
+    } catch (error: any) {
+      console.error(chalk.red('Error:'), error.message);
+      process.exit(1);
+    }
+  });
+
+configCmd
+  .command('set <key> <value>')
+  .description('Set a scalar config field')
+  .action((key: string, value: string) => {
+    try {
+      configSet(key, value);
+    } catch (error: any) {
+      console.error(chalk.red('Error:'), error.message);
+      process.exit(1);
+    }
+  });
+
+configCmd
+  .command('unset <key>')
+  .description('Remove a config field')
+  .action((key: string) => {
+    try {
+      configUnset(key);
+    } catch (error: any) {
+      console.error(chalk.red('Error:'), error.message);
+      process.exit(1);
+    }
+  });
+
+configCmd
+  .command('add <key> <value>')
+  .description('Append a value to an array config field (e.g., applicationDocs)')
+  .action((key: string, value: string) => {
+    try {
+      configAdd(key, value);
+    } catch (error: any) {
+      console.error(chalk.red('Error:'), error.message);
+      process.exit(1);
+    }
+  });
+
+configCmd
+  .command('remove <key> <value>')
+  .description('Remove a value from an array config field')
+  .action((key: string, value: string) => {
+    try {
+      configRemove(key, value);
     } catch (error: any) {
       console.error(chalk.red('Error:'), error.message);
       process.exit(1);

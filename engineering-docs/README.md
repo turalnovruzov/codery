@@ -89,6 +89,14 @@ Codery follows the npm principle: **track inputs, ignore outputs**.
 
 ## Version History
 
+### Version 8.x - `codery config` Command (COD-59)
+- Added `codery config` for viewing and editing `.codery/config.json` without re-running `codery init`
+- Bare `codery config` opens an interactive arrow-key navigable menu listing all fields with current values; select to edit, with appropriate prompt per field type (list / input / array submenu)
+- Scriptable subcommands for shell loops: `codery config list | get <key> | set <key> <value> | unset <key> | add <key> <value> | remove <key> <value>`
+- Field validators extracted into `src/lib/configSchema.ts` and reused by both `codery init` and `codery config` to prevent drift
+- Stale-field warnings surface inline (e.g., `jiraCloudId` set while `jiraIntegrationType=cli`); strict semantics — `set` does not auto-cleanup paired fields
+- No automatic rebuild — run `codery build` separately when ready
+
 ### Version 8.x - Atlassian MCP Reintroduction (COD-57)
 - Reintroduced the Atlassian MCP as an opt-in JIRA integration alongside the CLI (removed in v8.0.0)
 - Config regains `jiraIntegrationType: 'mcp' | 'cli'` (default `cli` for backward compat) and `jiraCloudId`
@@ -178,6 +186,20 @@ Codery follows the npm principle: **track inputs, ignore outputs**.
 ### 4. Registry Commands (`codery register`, `codery unregister`, `codery list`)
 
 **Purpose**: Manage the project registry for `codery update`.
+
+### 5. Config Command (`codery config`)
+
+**Purpose**: View and edit `.codery/config.json` without re-running the full `codery init` wizard.
+
+**Two surfaces**:
+- **Interactive**: `codery config` (bare) opens a menu listing all fields with current values. Use arrow keys + Enter to pick a field, edit it (with the same validators init uses), and return to the menu. Choose Save & Exit / Discard & Exit.
+- **Scriptable**: `codery config list | get <key> | set <key> <value> | unset <key> | add <key> <value> | remove <key> <value>` — for shell loops and CI.
+
+**Validation**: per-field validators live in `src/lib/configSchema.ts` and are shared with `codery init`. Filters (e.g., stripping `https://` from `jiraCloudId`) apply consistently in both interactive and scriptable paths.
+
+**Stale-field warnings**: `set jiraIntegrationType cli` while `jiraCloudId` is set will print a warning but not auto-unset; the menu shows the warning inline next to the field. Strict semantics — `set` does one thing.
+
+**Does not trigger a rebuild**: run `codery build` separately when ready.
 
 ## Implementation Details
 
@@ -275,6 +297,13 @@ codery update [--yes]
 codery register [path]
 codery unregister [path]
 codery list
+codery config                      # interactive menu
+codery config list                 # print full config
+codery config get <key>            # print one field
+codery config set <key> <value>    # set scalar field
+codery config unset <key>          # remove a field
+codery config add <key> <value>    # append to array field (applicationDocs)
+codery config remove <key> <value> # remove from array field
 ```
 
 ## Troubleshooting
