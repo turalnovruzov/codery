@@ -1,58 +1,101 @@
 ---
-description: Review a PR with linked JIRA context, discuss findings, and generate report. Use when reviewing a PR, auditing code, doing a code review, checking if changes are ready to merge, or getting feedback on implementation before merging.
+description: Multi-phase audit of a PR — acceptance criteria, functional verification, design fidelity, code review. Use when reviewing a PR, auditing code, doing a code review, checking if changes are ready to merge, or getting feedback on implementation before merging.
 argument-hint: <PR-number or ticket-id>
 ---
 
 # Audit
 
-Perform a comprehensive PR review in the main conversation context for iterative discussion.
+Run a comprehensive 4-phase audit on a PR — not just code review. The audit answers four questions in order:
+
+1. **Does this PR satisfy the ticket's acceptance criteria?** (Phase 1)
+2. **Does the feature actually work when run?** (Phase 2)
+3. **Where there's a design source of truth, does the implementation match?** (Phase 3)
+4. **Is the code itself healthy?** (Phase 4)
+
+All phases run regardless of upstream results. Each phase produces findings + a status. The overall verdict is computed from phase statuses combined.
 
 ## Context Loading
 
-**If PR number given**: Fetch PR details + diff, find linked JIRA ticket.
-**If ticket ID given**: Fetch ticket, find linked PR + diff.
-**If no argument**: Check current branch for ticket ID or open PR.
+- **PR number given** → fetch PR diff, find linked JIRA ticket
+- **Ticket ID given** → fetch ticket, find linked PR + diff
+- **No argument** → check current branch for ticket pattern or open PR
 
-## Review Process
+For ticket reading, delegate to `codery-status` when fuller hierarchy context (parent epic, sibling tickets) is needed.
 
-### 1. Requirements Compliance
-Extract requirements from JIRA ticket. Map each to implementation. Flag missing or partial implementations.
+## The Pipeline
 
-### 2. Pattern Comparison
-Find 1-3 prior merged PRs in the same area of the codebase (same feature surface, same framework area, same file type). Use `gh pr list` with relevant filters or `git log` on the target files. Diff the current PR's approach against what was done before:
+Each phase has a focused playbook. Run them in order; do not skip on prior-phase failure.
 
-- Does it follow established naming, structure, and conventions?
-- Does it contradict recent decisions without explanation?
-- Does it introduce a new pattern that should be explicitly justified?
+1. **Phase 1 — Acceptance Criteria.** Follow `phase-1-acceptance.md`.
+2. **Phase 2 — Functional Verification.** Follow `phase-2-verify.md`.
+3. **Phase 3 — Design Fidelity.** Follow `phase-3-design.md`. (`not-applicable` when no design source exists; phase is omitted from the report.)
+4. **Phase 4 — Code Review.** Follow `phase-4-code-review.md`.
 
-If the PR diverges from prior patterns without explicit justification, flag it as a finding.
+Each phase reports a status: `passed` / `partial` / `failed` / `blocked` / `not-applicable`.
 
-### 3. Code Quality Review
-- **Security**: Authentication, authorization, data exposure, injection risks
-- **Performance**: Query efficiency, caching, resource management
-- **Quality**: Readability, naming, error handling, DRY principle
-- **Standards**: Project conventions from CLAUDE.md and application-docs
-- **Tests**: Coverage for new/modified code
+## Verdict Computation
 
-### 4. Present Findings (Private Draft)
-Organize by severity: **Critical** (must fix) → **Recommendations** (should consider) → **Positive Notes** (good patterns). This is a private draft in the conversation — not a GitHub post. Tone: direct, specific, sharp — for the user's review, not public consumption. Do NOT post to GitHub yet.
+One overall verdict, computed from the four phase statuses:
+
+- **`changes-required`** — any phase = `failed`
+- **`cannot-verify`** — any phase = `blocked` and no phase = `failed`
+- **`ready-to-merge`** — every phase that ran is `passed` or `partial` (and at least Phase 4 ran)
+
+`not-applicable` does not contribute to the verdict.
+
+## Consolidated Report (private draft)
+
+After all phases run, present a single private draft to the user. Do not post to GitHub yet. Format:
+
+```text
+# Audit — PR #<n> / <ticket-id>
+
+## Verdict: <READY-TO-MERGE | CHANGES-REQUIRED | CANNOT-VERIFY>
+
+| Phase | Status |
+|---|---|
+| 1. Acceptance Criteria | <status> |
+| 2. Functional Verification | <status> |
+| 3. Design Fidelity | <status or n/a> |
+| 4. Code Review | <status> |
+
+---
+
+[Phase 1 output block]
+
+[Phase 2 output block]
+
+[Phase 3 output block — omitted if not-applicable]
+
+[Phase 4 output block]
+```
+
+Tone for the private draft: direct, specific, sharp — for the user's review, not public consumption.
 
 ## Interactive Discussion
 
-After presenting the private draft, engage in discussion. Answer questions, clarify concerns, discuss alternatives, reach consensus.
+After presenting the draft, discuss with the user. Answer questions, clarify findings, accept pushback where the user has merit, hold firm where code health is at stake. Reach consensus before posting.
 
 ## Posting to GitHub
 
-Only after the user explicitly approves posting (e.g., "post it", "submit", "ready"):
+Only after explicit approval ("post it", "submit", "ready"):
 
-1. **Inline comments by default.** Use `gh api` with the PR review-comment endpoints to attach per-line comments on the specific code locations. Reserve the top-level review body for a brief summary.
-2. **Softer public tone.** Phrase findings as questions or suggestions where appropriate ("Consider extracting..." vs "This should be extracted"). Keep critique specific; strip the private-draft sharpness.
-3. **Approval type.** APPROVE / REQUEST_CHANGES / COMMENT, chosen from finding severity.
+1. **Inline comments by default.** Use `gh api` with PR review-comment endpoints to attach per-line comments at specific code locations. Reserve the top-level review body for a brief summary plus the verdict.
+2. **Severity labels in comments.** Prefix each comment: `Critical:` / `Important:` / `Nit:` / `Optional:` / `Consider:` / `FYI:` / `Praise:`. Phase 1 / 2 / 3 findings can ride in the top-level body when they don't have a single anchor line; Phase 4 findings are inline by default.
+3. **Soften the public tone.** Phrase as questions or suggestions where appropriate ("Consider extracting…" not "This should be extracted"). Strip the private-draft sharpness; preserve specificity.
+4. **Approval type.** APPROVE / REQUEST_CHANGES / COMMENT — choose from the verdict and severity counts.
 
 Never post without explicit approval. Never post the private draft verbatim.
 
-## Final Report
+## After Posting
 
-When user requests ("generate report"), create `reviews/PR-<number>-review.md` with: summary, requirements compliance table, findings by severity, conclusion.
+Mention to the user: "Run `/codery-docs-check` to verify docs are up to date — audits frequently uncover doc drift."
 
-After reviewing, mention: "Run `/codery-docs-check` to verify docs are up to date."
+## Anti-Patterns
+
+- Skipping a phase because a prior one failed
+- Posting the private draft to GitHub without explicit approval
+- Inventing acceptance criteria when the ticket has none (Phase 1 is `not-applicable`, not "lowered bar")
+- Manufacturing test data to make Phase 2 "pass"
+- Critiquing the design itself in Phase 3 — fidelity to source only
+- Flagging things CI catches in Phase 4
