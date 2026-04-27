@@ -1,3 +1,10 @@
+# [8.12.0](https://github.com/turalnovruzov/codery/compare/v8.11.0...v8.12.0) (2026-04-27)
+
+
+### Features
+
+* **build:** hub-and-spoke documentation loading (COD-61) ([#45](https://github.com/turalnovruzov/codery/issues/45)) ([7dd5a5e](https://github.com/turalnovruzov/codery/commit/7dd5a5e646376e7013a505bc869a04d1e31552b3))
+
 # [8.11.0](https://github.com/turalnovruzov/codery/compare/v8.10.0...v8.11.0) (2026-04-26)
 
 
