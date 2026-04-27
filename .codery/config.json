@@ -5,5 +5,6 @@
   "applicationDocs": [
     "engineering-docs/README.md",
     "engineering-docs/commit-conventions.md"
-  ]
+  ],
+  "jiraIntegrationType": "cli"
 }

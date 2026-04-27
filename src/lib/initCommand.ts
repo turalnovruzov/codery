@@ -131,6 +131,8 @@ export async function initCommand(options: InitOptions): Promise<void> {
       jiraIntegrationType: answers.jiraIntegrationType,
       // Preserve applicationDocs if it exists, otherwise initialize as empty
       applicationDocs: existingConfig.applicationDocs || [],
+      // Preserve documentationRoots if it exists, otherwise initialize as empty
+      documentationRoots: existingConfig.documentationRoots || [],
     };
 
     // Only add developBranch for gitflow
@@ -210,6 +212,11 @@ export async function initCommand(options: InitOptions): Promise<void> {
     if (config.applicationDocs && config.applicationDocs.length > 0) {
       console.log(
         `  - Application Docs: ${chalk.cyan(`${config.applicationDocs.length} path(s) preserved`)}`
+      );
+    }
+    if (config.documentationRoots && config.documentationRoots.length > 0) {
+      console.log(
+        `  - Documentation Roots: ${chalk.cyan(`${config.documentationRoots.length} path(s) preserved`)}`
       );
     }
     console.log();

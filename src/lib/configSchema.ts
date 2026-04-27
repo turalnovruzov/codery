@@ -1,3 +1,5 @@
+import * as fs from 'fs';
+import * as path from 'path';
 import { CoderyConfig } from '../types/config';
 
 export type ConfigKey = keyof CoderyConfig;
@@ -47,6 +49,22 @@ export function validateNonEmpty(input: string): true | string {
   return true;
 }
 
+export function validateDocumentationRootPath(input: string): true | string {
+  const trimmed = input.trim();
+  if (!trimmed) return 'Path cannot be empty.';
+  if (!trimmed.toLowerCase().endsWith('.md')) {
+    return 'Documentation root must point to a .md file.';
+  }
+  const resolved = path.resolve(process.cwd(), trimmed);
+  if (!fs.existsSync(resolved)) {
+    return `File does not exist: ${trimmed}`;
+  }
+  if (!fs.statSync(resolved).isFile()) {
+    return `Path is not a regular file: ${trimmed}`;
+  }
+  return true;
+}
+
 export const configSchema: Record<ConfigKey, FieldSchema> = {
   projectKey: {
     kind: 'scalar',
@@ -83,6 +101,11 @@ export const configSchema: Record<ConfigKey, FieldSchema> = {
     kind: 'array',
     description: 'Paths to project-specific docs imported into CLAUDE.md',
     itemValidate: validateNonEmpty,
+  },
+  documentationRoots: {
+    kind: 'array',
+    description: 'Paths to hub docs that drive on-demand discovery of spoke files',
+    itemValidate: validateDocumentationRootPath,
   },
 };
 
