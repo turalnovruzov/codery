@@ -68,14 +68,15 @@ function substituteTemplates(
   return { content: substitutedContent, unsubstituted };
 }
 
-// Generate @import lines for applicationDocs
+// Generate @import lines for applicationDocs. POSIX-normalized so configs
+// authored on Windows render usable @-imports cross-platform.
 function generateAppDocsImports(config: CoderyConfig): string {
   if (!config.applicationDocs || config.applicationDocs.length === 0) {
     return '';
   }
 
   return config.applicationDocs
-    .map(docPath => `@${docPath}`)
+    .map(docPath => `@${toPosix(docPath)}`)
     .join('\n');
 }
 
@@ -94,28 +95,51 @@ function substituteBlockPlaceholder(content: string, placeholder: string, value:
   return content.replace(placeholder, '');
 }
 
-// Generate @import lines for documentationRoots entry files. Missing files are
-// warned and skipped so a stale path does not abort the build.
-function generateDocRootImports(config: CoderyConfig, log: (...args: unknown[]) => void): string {
+// POSIX-normalize a path string. Replaces backslashes explicitly so configs
+// authored on Windows render usable @-imports regardless of which platform
+// runs `codery build`.
+function toPosix(p: string): string {
+  return p.replace(/\\/g, '/');
+}
+
+interface ResolvedDocRoot {
+  entryPath: string; // original path string from config
+  resolvedAbs: string; // absolute filesystem path after resolution
+}
+
+// Resolve every documentationRoots entry against the working directory.
+// Missing files are warned and dropped so a stale path does not abort the
+// build. Every downstream generator gates on the returned list — when nothing
+// resolves we emit no imports, no hub block, and no index file (avoids
+// leaving CLAUDE.md with a dangling @.codery/refs/docs-index.md import).
+function resolveDocRoots(
+  config: CoderyConfig,
+  log: (...args: unknown[]) => void
+): ResolvedDocRoot[] {
   if (!config.documentationRoots || config.documentationRoots.length === 0) {
-    return '';
+    return [];
   }
-  const lines: string[] = [];
+  const resolved: ResolvedDocRoot[] = [];
   for (const entryPath of config.documentationRoots) {
-    const resolved = path.resolve(process.cwd(), entryPath);
-    if (!fs.existsSync(resolved)) {
+    const resolvedAbs = path.resolve(process.cwd(), entryPath);
+    if (!fs.existsSync(resolvedAbs)) {
       log(chalk.yellow(`  ⚠️  documentationRoots entry not found, skipping: ${entryPath}`));
       continue;
     }
-    lines.push(`@${entryPath}`);
+    resolved.push({ entryPath, resolvedAbs });
   }
-  return lines.join('\n');
+  return resolved;
+}
+
+// Generate @import lines for resolved documentationRoots entry files.
+function generateDocRootImports(resolved: ResolvedDocRoot[]): string {
+  return resolved.map(r => `@${toPosix(r.entryPath)}`).join('\n');
 }
 
 // Generate the hub-and-spoke instruction block plus the @import for the
-// generated docs index. Empty when no documentationRoots are configured.
-function generateDocsHubBlock(config: CoderyConfig): string {
-  if (!config.documentationRoots || config.documentationRoots.length === 0) {
+// generated docs index. Empty when no roots resolved on disk.
+function generateDocsHubBlock(resolved: ResolvedDocRoot[]): string {
+  if (resolved.length === 0) {
     return '';
   }
   return [
@@ -132,14 +156,21 @@ function generateDocsHubBlock(config: CoderyConfig): string {
   ].join('\n');
 }
 
-// POSIX-normalize a path string (use forward slashes regardless of platform).
-function toPosix(p: string): string {
-  return p.split(path.sep).join('/');
-}
+// Names skipped during the spoke walk so common build/dependency outputs do
+// not pollute the generated index when a documentationRoots entry sits near
+// the project root. Dotfiles/dotdirs are skipped separately.
+const WALK_SKIP_DIRS = new Set([
+  'node_modules',
+  'dist',
+  'build',
+  'out',
+  'target',
+  'coverage',
+]);
 
 // Walk a directory recursively and return all .md file paths (relative to
-// projectRoot, POSIX-normalized). Skips dotfiles/dotdirs, node_modules, and
-// symlinks to avoid runaway traversal.
+// projectRoot, POSIX-normalized). Skips dotfiles/dotdirs, common output
+// directories, and symlinks to avoid runaway traversal.
 function walkMarkdownFiles(rootDir: string, projectRoot: string): string[] {
   const results: string[] = [];
   if (!fs.existsSync(rootDir)) return results;
@@ -155,7 +186,7 @@ function walkMarkdownFiles(rootDir: string, projectRoot: string): string[] {
     for (const entry of entries) {
       if (entry.isSymbolicLink()) continue;
       if (entry.name.startsWith('.')) continue;
-      if (entry.name === 'node_modules') continue;
+      if (WALK_SKIP_DIRS.has(entry.name)) continue;
       const fullPath = path.join(dir, entry.name);
       if (entry.isDirectory()) {
         queue.push(fullPath);
@@ -169,10 +200,13 @@ function walkMarkdownFiles(rootDir: string, projectRoot: string): string[] {
   return results.sort();
 }
 
-// Build the markdown body for .codery/refs/docs-index.md. Returns null when no
-// documentationRoots are configured (signals the index file should be removed).
-function generateDocsIndexContent(config: CoderyConfig): string | null {
-  if (!config.documentationRoots || config.documentationRoots.length === 0) {
+// Build the markdown body for .codery/refs/docs-index.md. Returns null when
+// no roots resolved on disk (signals the index file should be removed).
+function generateDocsIndexContent(
+  config: CoderyConfig,
+  resolved: ResolvedDocRoot[]
+): string | null {
+  if (resolved.length === 0) {
     return null;
   }
   const projectRoot = process.cwd();
@@ -180,22 +214,16 @@ function generateDocsIndexContent(config: CoderyConfig): string | null {
   // Files already in CLAUDE.md context — exclude them from the on-demand list.
   const excluded = new Set<string>();
   for (const p of config.applicationDocs ?? []) excluded.add(toPosix(p));
-  for (const p of config.documentationRoots) excluded.add(toPosix(p));
+  for (const r of resolved) excluded.add(toPosix(r.entryPath));
 
   // Group entry files by their parent folder so multiple roots in the same
   // folder collapse into one section.
   const groups = new Map<string, string[]>();
-  for (const entryPath of config.documentationRoots) {
-    const resolved = path.resolve(projectRoot, entryPath);
-    if (!fs.existsSync(resolved)) continue;
-    const parentRel = toPosix(path.relative(projectRoot, path.dirname(resolved))) || '.';
+  for (const r of resolved) {
+    const parentRel = toPosix(path.relative(projectRoot, path.dirname(r.resolvedAbs))) || '.';
     const list = groups.get(parentRel) ?? [];
-    list.push(toPosix(entryPath));
+    list.push(toPosix(r.entryPath));
     groups.set(parentRel, list);
-  }
-
-  if (groups.size === 0) {
-    return null;
   }
 
   const sections: string[] = [
@@ -227,14 +255,15 @@ function generateDocsIndexContent(config: CoderyConfig): string | null {
   return sections.join('\n');
 }
 
-// Write or remove .codery/refs/docs-index.md based on documentationRoots.
+// Write or remove .codery/refs/docs-index.md based on resolved roots.
 function writeOrRemoveDocsIndex(
   config: CoderyConfig | null,
+  resolved: ResolvedDocRoot[],
   dryRun: boolean,
   log: (...args: unknown[]) => void
 ): void {
   const indexPath = path.join(process.cwd(), '.codery/refs/docs-index.md');
-  const content = config ? generateDocsIndexContent(config) : null;
+  const content = config ? generateDocsIndexContent(config, resolved) : null;
 
   if (content === null) {
     if (fs.existsSync(indexPath)) {
@@ -446,9 +475,12 @@ export async function buildCommand(options: BuildOptions): Promise<void> {
     let claudeContent = fs.readFileSync(templatePath, 'utf-8');
 
     // Inject block-level placeholders before the general substitution pass.
+    // Resolve documentationRoots once so imports, hub block, and index all
+    // gate on the same resolved set.
     const appDocsImports = config ? generateAppDocsImports(config) : '';
-    const docRootImports = config ? generateDocRootImports(config, log) : '';
-    const docsHubBlock = config ? generateDocsHubBlock(config) : '';
+    const resolvedRoots = config ? resolveDocRoots(config, log) : [];
+    const docRootImports = generateDocRootImports(resolvedRoots);
+    const docsHubBlock = generateDocsHubBlock(resolvedRoots);
     claudeContent = substituteBlockPlaceholder(
       claudeContent,
       '{{applicationDocsImports}}',
@@ -486,7 +518,7 @@ export async function buildCommand(options: BuildOptions): Promise<void> {
       log(`File size: ~${Math.round(claudeContent.length / 1024)}KB`);
       log();
       copyReferenceFiles(config, true, options.quiet);
-      writeOrRemoveDocsIndex(config, true, log);
+      writeOrRemoveDocsIndex(config, resolvedRoots, true, log);
       copySkillFiles(config, true, options.quiet);
       return;
     }
@@ -523,7 +555,7 @@ export async function buildCommand(options: BuildOptions): Promise<void> {
     log();
     log('Copying reference files...');
     copyReferenceFiles(config, false, options.quiet);
-    writeOrRemoveDocsIndex(config, false, log);
+    writeOrRemoveDocsIndex(config, resolvedRoots, false, log);
 
     // Copy skills to .claude/skills/
     log();
