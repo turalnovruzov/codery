@@ -374,7 +374,90 @@ function copyReferenceFiles(
   }
 }
 
-// Copy skill files to .claude/skills/ directory with substitution
+// Recursively list every file under a skill source dir, returning
+// POSIX-normalized paths relative to that root. Skips dotfiles, dotdirs, and
+// symlinks. Used by both the dry-run preview and the recursive copy.
+function listSkillFiles(sourceRoot: string): string[] {
+  const results: string[] = [];
+  const queue: string[] = [sourceRoot];
+  while (queue.length > 0) {
+    const dir = queue.shift() as string;
+    let entries: fs.Dirent[];
+    try {
+      entries = fs.readdirSync(dir, { withFileTypes: true });
+    } catch {
+      continue;
+    }
+    for (const entry of entries) {
+      if (entry.isSymbolicLink()) continue;
+      if (entry.name.startsWith('.')) continue;
+      const fullPath = path.join(dir, entry.name);
+      if (entry.isDirectory()) {
+        queue.push(fullPath);
+        continue;
+      }
+      if (entry.isFile()) {
+        results.push(toPosix(path.relative(sourceRoot, fullPath)));
+      }
+    }
+  }
+  return results.sort();
+}
+
+// Copy a single skill directory tree to its target. Applies {{var}}
+// substitution to .md files; copies other extensions verbatim. Warns and
+// continues on per-file errors so one bad file does not break the build.
+function copySkillDirectory(
+  source: string,
+  target: string,
+  config: CoderyConfig | null,
+  log: (...args: unknown[]) => void,
+  skillName: string
+): void {
+  const files = listSkillFiles(source);
+  if (files.length === 0) {
+    log(chalk.yellow(`  ⚠️  ${skillName}/ has no files`));
+    return;
+  }
+
+  for (const relPath of files) {
+    const sourceFile = path.join(source, relPath);
+    const targetFile = path.join(target, relPath);
+
+    try {
+      const targetSubdir = path.dirname(targetFile);
+      if (!fs.existsSync(targetSubdir)) {
+        fs.mkdirSync(targetSubdir, { recursive: true });
+      }
+
+      if (relPath.toLowerCase().endsWith('.md')) {
+        let content = fs.readFileSync(sourceFile, 'utf-8');
+        if (config) {
+          const result = substituteTemplates(content, config);
+          content = result.content;
+          if (result.unsubstituted.length > 0) {
+            log(
+              chalk.yellow(
+                `  ⚠️  Unsubstituted in ${skillName}/${relPath}: ${result.unsubstituted.join(', ')}`
+              )
+            );
+          }
+        }
+        fs.writeFileSync(targetFile, content, 'utf-8');
+      } else {
+        fs.copyFileSync(sourceFile, targetFile);
+      }
+      log(`  ✓ ${skillName}/${relPath}`);
+    } catch (err: any) {
+      log(chalk.yellow(`  ⚠️  Failed to copy ${skillName}/${relPath}: ${err.message}`));
+    }
+  }
+}
+
+// Copy skill directories to .claude/skills/ with substitution. Each skill is
+// a directory containing SKILL.md and any companion files (phase playbooks,
+// templates, etc.). Companion files are required for skills that reference
+// them by name from SKILL.md.
 function copySkillFiles(
   config: CoderyConfig | null,
   dryRun: boolean = false,
@@ -390,7 +473,6 @@ function copySkillFiles(
   }
 
   try {
-    // Get all skill directories
     const skillDirs = fs.readdirSync(sourceDir)
       .filter(item => fs.statSync(path.join(sourceDir, item)).isDirectory());
 
@@ -400,39 +482,19 @@ function copySkillFiles(
 
     if (dryRun) {
       log(`Would copy ${skillDirs.length} skills to ${targetDir}`);
-      skillDirs.forEach(dir => log(`  - ${dir}/SKILL.md`));
+      for (const skillDir of skillDirs) {
+        const files = listSkillFiles(path.join(sourceDir, skillDir));
+        for (const f of files) log(`  - ${skillDir}/${f}`);
+      }
       return true;
     }
 
     log(`Copying ${skillDirs.length} skills...`);
 
     for (const skillDir of skillDirs) {
-      const sourcePath = path.join(sourceDir, skillDir, 'SKILL.md');
-      const targetSkillDir = path.join(targetDir, skillDir);
-      const targetPath = path.join(targetSkillDir, 'SKILL.md');
-
-      if (!fs.existsSync(sourcePath)) {
-        continue;
-      }
-
-      // Create skill directory
-      if (!fs.existsSync(targetSkillDir)) {
-        fs.mkdirSync(targetSkillDir, { recursive: true });
-      }
-
-      // Read, substitute, write
-      let content = fs.readFileSync(sourcePath, 'utf-8');
-      if (config) {
-        const result = substituteTemplates(content, config);
-        content = result.content;
-
-        if (result.unsubstituted.length > 0) {
-          log(chalk.yellow(`  ⚠️  Unsubstituted in ${skillDir}: ${result.unsubstituted.join(', ')}`));
-        }
-      }
-
-      fs.writeFileSync(targetPath, content, 'utf-8');
-      log(`  ✓ ${skillDir}/SKILL.md`);
+      const skillSource = path.join(sourceDir, skillDir);
+      const skillTarget = path.join(targetDir, skillDir);
+      copySkillDirectory(skillSource, skillTarget, config, log, skillDir);
     }
 
     return true;
