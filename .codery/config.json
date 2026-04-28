@@ -6,5 +6,6 @@
     "engineering-docs/README.md",
     "engineering-docs/commit-conventions.md"
   ],
-  "jiraIntegrationType": "cli"
+  "jiraIntegrationType": "cli",
+  "lastSetupPluginVersion": "724dfd9e0542"
 }

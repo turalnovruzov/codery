@@ -1,0 +1,13 @@
+{
+  "extraKnownMarketplaces": {
+    "codery-plugin": {
+      "source": {
+        "source": "directory",
+        "path": "/Users/turalnovruzov/Workspace/codery-plugin"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "codery@codery-plugin": true
+  }
+}

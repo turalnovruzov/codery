@@ -10,6 +10,10 @@ dist/
 
 # Codery generated files (regenerate with: codery build)
 # Note: .codery/config.json is NOT ignored - it should be tracked like package.json
-CLAUDE.md
-.claude/
-.codery/refs/
+
+# Codery generated rules (regenerable via /codery:setup)
+.claude/rules/codery-core.md
+.claude/rules/codery-jira.md
+.claude/rules/codery-git.md
+.claude/settings.local.json
+.claude/agents/
