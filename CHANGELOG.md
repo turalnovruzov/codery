@@ -1,3 +1,18 @@
+# [9.0.0](https://github.com/turalnovruzov/codery/compare/v8.15.0...v9.0.0) (2026-04-28)
+
+
+* feat!: deprecate npm package, redirect to codery-plugin (COD-68) ([#49](https://github.com/turalnovruzov/codery/issues/49)) ([2668cf0](https://github.com/turalnovruzov/codery/commit/2668cf0655740a22809b84a1372363d02481063b))
+
+
+### BREAKING CHANGES
+
+* All Codery CLI commands now print a deprecation message
+and exit 0. The functional behavior of `codery init`, `codery build`, etc.
+is removed. Install the Claude Code plugin
+(`/plugin install codery@codery-plugin`) to continue using Codery.
+
+Parent epic: COD-63
+
 # [8.15.0](https://github.com/turalnovruzov/codery/compare/v8.14.0...v8.15.0) (2026-04-28)
 
 
