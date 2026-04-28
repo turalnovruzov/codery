@@ -1,3 +1,10 @@
+# [8.14.0](https://github.com/turalnovruzov/codery/compare/v8.13.0...v8.14.0) (2026-04-28)
+
+
+### Features
+
+* **build:** eager-load folders in applicationDocs and documentationRoots ([#47](https://github.com/turalnovruzov/codery/issues/47)) ([2bd48bf](https://github.com/turalnovruzov/codery/commit/2bd48bff115505401dd6b4454a472f89c64e213e))
+
 # [8.13.0](https://github.com/turalnovruzov/codery/compare/v8.12.0...v8.13.0) (2026-04-28)
 
 
