@@ -1,3 +1,10 @@
+# [8.15.0](https://github.com/turalnovruzov/codery/compare/v8.14.0...v8.15.0) (2026-04-28)
+
+
+### Features
+
+* self-host codery plugin on ai-guild (COD-67) ([#48](https://github.com/turalnovruzov/codery/issues/48)) ([06f7af3](https://github.com/turalnovruzov/codery/commit/06f7af3d64a55b6838a7ab413198479234089dff))
+
 # [8.14.0](https://github.com/turalnovruzov/codery/compare/v8.13.0...v8.14.0) (2026-04-28)
 
 
