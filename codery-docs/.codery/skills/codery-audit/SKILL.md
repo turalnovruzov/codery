@@ -26,10 +26,10 @@ For ticket reading, delegate to `codery-status` when fuller hierarchy context (p
 
 Each phase has a focused playbook. Run them in order; do not skip on prior-phase failure.
 
-1. **Phase 1 — Acceptance Criteria.** Follow `phase-1-acceptance.md`.
-2. **Phase 2 — Functional Verification.** Follow `phase-2-verify.md`.
-3. **Phase 3 — Design Fidelity.** Follow `phase-3-design.md`. (`not-applicable` when no design source exists; phase is omitted from the report.)
-4. **Phase 4 — Code Review.** Follow `phase-4-code-review.md`.
+1. **Phase 1 — Acceptance Criteria.** Follow [phase-1-acceptance.md](phase-1-acceptance.md).
+2. **Phase 2 — Functional Verification.** Follow [phase-2-verify.md](phase-2-verify.md).
+3. **Phase 3 — Design Fidelity.** Follow [phase-3-design.md](phase-3-design.md). (`not-applicable` when no design source exists; phase is omitted from the report.)
+4. **Phase 4 — Code Review.** Follow [phase-4-code-review.md](phase-4-code-review.md).
 
 Each phase reports a status: `passed` / `partial` / `failed` / `blocked` / `not-applicable`.
 
