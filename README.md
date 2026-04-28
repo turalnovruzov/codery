@@ -3,9 +3,25 @@
 [![npm version](https://img.shields.io/npm/v/codery.svg)](https://www.npmjs.com/package/codery)
 [![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC)
 
+> **⚠️ DEPRECATED — moved to a Claude Code plugin (v9.0.0+).** The Codery methodology and skills are now distributed natively via Claude Code's plugin system. The npm package is in deprecation. See **[turalnovruzov/codery-plugin](https://github.com/turalnovruzov/codery-plugin)** for the new home.
+
+## Migrate to the plugin
+
+```text
+/plugin marketplace add turalnovruzov/codery-plugin
+/plugin install codery@codery-plugin
+/codery:setup
+```
+
+That's it — `/codery:setup` writes your project config and rules files and replaces everything `codery init` + `codery build` + `codery update` did before.
+
+---
+
+## Below this line: legacy v8.x documentation (npm package)
+
 Codery is a comprehensive development methodology and workflow system designed to enable AI agents (like Claude) to work effectively with human developers on software projects.
 
-## Installation
+## Installation (legacy v8.x)
 
 ```bash
 npm install -g codery

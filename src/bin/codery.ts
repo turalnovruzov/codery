@@ -1,235 +1,32 @@
 #!/usr/bin/env node
 
-import * as fs from 'fs';
-import * as path from 'path';
-import { Command } from 'commander';
+// v9.0.0 — Deprecation shim. Codery has moved to a Claude Code plugin. Every
+// command in this binary prints the migration message and exits 0. The package
+// stays on npm during the deprecation window so the team has time to migrate;
+// see COD-63 for the full migration epic.
+
 import chalk from 'chalk';
-import { buildCommand } from '../lib/buildDocs';
-import { initCommand } from '../lib/initCommand';
-import { updateCommand } from '../lib/updateCommand';
-import {
-  configList,
-  configGet,
-  configSet,
-  configUnset,
-  configAdd,
-  configRemove,
-  configMenu,
-} from '../lib/configCommand';
-import { addProject, removeProject, listProjects, projectExists } from '../lib/registry';
 
-// Read version from package.json
-const packageJsonPath = path.resolve(__dirname, '../../package.json');
-const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'));
+const message = [
+  '',
+  chalk.yellow.bold('Codery has moved to a Claude Code plugin.'),
+  '',
+  'This npm package (v9.x) is deprecated. The Codery methodology and skills',
+  'are now distributed as a native Claude Code plugin.',
+  '',
+  chalk.bold('To migrate:'),
+  '  1. Open Claude Code in your project.',
+  '  2. /plugin marketplace add turalnovruzov/codery-plugin',
+  '  3. /plugin install codery@codery-plugin',
+  '  4. /codery:setup',
+  '',
+  chalk.bold('Documentation:'),
+  '  https://github.com/turalnovruzov/codery-plugin',
+  '',
+  chalk.dim('The npm package will remain on the registry through the deprecation window.'),
+  chalk.dim('Once the team has migrated, the package will be archived and unpublished.'),
+  '',
+].join('\n');
 
-const program = new Command();
-
-program
-  .name('codery')
-  .description('Codery CLI - Build AI development workflows for your project')
-  .version(packageJson.version);
-
-program
-  .command('init')
-  .description('Initialize Codery configuration in your project')
-  .option('--force', 'Overwrite existing configuration without prompting')
-  .action(async options => {
-    try {
-      await initCommand(options);
-    } catch (error: any) {
-      console.error(chalk.red('Error:'), error.message);
-      process.exit(1);
-    }
-  });
-
-program
-  .command('build')
-  .description('Build a CLAUDE.md file from Codery documentation')
-  .option('--output <path>', 'Output path for CLAUDE.md file (default: ./CLAUDE.md)')
-  .option('--dry-run', 'Show what would be built without creating the file')
-  .option('--skip-config', 'Build without template substitution')
-  .option('--force', 'Overwrite existing files without prompting')
-  .action(async options => {
-    try {
-      await buildCommand(options);
-    } catch (error: any) {
-      console.error(chalk.red('Error:'), error.message);
-      process.exit(1);
-    }
-  });
-
-program
-  .command('update')
-  .description('Update Codery and rebuild all registered projects')
-  .option('--yes', 'Auto-remove missing projects without prompting')
-  .action(async options => {
-    try {
-      await updateCommand(options);
-    } catch (error: any) {
-      console.error(chalk.red('Error:'), error.message);
-      process.exit(1);
-    }
-  });
-
-program
-  .command('register [path]')
-  .description('Register a project for updates (defaults to current directory)')
-  .action((projectPath?: string) => {
-    try {
-      const targetPath = projectPath || process.cwd();
-      const added = addProject(targetPath);
-
-      if (added) {
-        console.log(chalk.green('✓'), `Registered: ${targetPath}`);
-      } else {
-        console.log(chalk.dim('Already registered:'), targetPath);
-      }
-    } catch (error: any) {
-      console.error(chalk.red('Error:'), error.message);
-      process.exit(1);
-    }
-  });
-
-program
-  .command('unregister [path]')
-  .description('Remove a project from the registry (defaults to current directory)')
-  .action((projectPath?: string) => {
-    try {
-      const targetPath = projectPath || process.cwd();
-      const removed = removeProject(targetPath);
-
-      if (removed) {
-        console.log(chalk.green('✓'), `Unregistered: ${targetPath}`);
-      } else {
-        console.log(chalk.yellow('Not found in registry:'), targetPath);
-      }
-    } catch (error: any) {
-      console.error(chalk.red('Error:'), error.message);
-      process.exit(1);
-    }
-  });
-
-program
-  .command('list')
-  .description('List all registered Codery projects')
-  .action(() => {
-    try {
-      const projects = listProjects();
-
-      if (projects.length === 0) {
-        console.log(chalk.yellow('No projects registered.'));
-        console.log(
-          chalk.dim('Run `codery init` in a project or `codery register` to add projects.')
-        );
-        return;
-      }
-
-      console.log('Registered Codery projects:');
-      console.log();
-
-      projects.forEach((project, index) => {
-        const exists = projectExists(project.path);
-        const status = exists ? '' : chalk.red(' (not found)');
-        console.log(`  ${index + 1}. ${project.path}${status}`);
-      });
-
-      console.log();
-      console.log(`${projects.length} project(s) registered`);
-    } catch (error: any) {
-      console.error(chalk.red('Error:'), error.message);
-      process.exit(1);
-    }
-  });
-
-const configCmd = program.command('config').description('View or edit Codery configuration');
-
-configCmd
-  .command('menu', { isDefault: true })
-  .description('Open interactive config menu (default)')
-  .action(async () => {
-    try {
-      await configMenu();
-    } catch (error: any) {
-      console.error(chalk.red('Error:'), error.message);
-      process.exit(1);
-    }
-  });
-
-configCmd
-  .command('list')
-  .description('Print the full configuration as JSON')
-  .action(() => {
-    try {
-      configList();
-    } catch (error: any) {
-      console.error(chalk.red('Error:'), error.message);
-      process.exit(1);
-    }
-  });
-
-configCmd
-  .command('get <key>')
-  .description('Print the value of a single config field')
-  .action((key: string) => {
-    try {
-      configGet(key);
-    } catch (error: any) {
-      console.error(chalk.red('Error:'), error.message);
-      process.exit(1);
-    }
-  });
-
-configCmd
-  .command('set <key> <value>')
-  .description('Set a scalar config field')
-  .action((key: string, value: string) => {
-    try {
-      configSet(key, value);
-    } catch (error: any) {
-      console.error(chalk.red('Error:'), error.message);
-      process.exit(1);
-    }
-  });
-
-configCmd
-  .command('unset <key>')
-  .description('Remove a config field')
-  .action((key: string) => {
-    try {
-      configUnset(key);
-    } catch (error: any) {
-      console.error(chalk.red('Error:'), error.message);
-      process.exit(1);
-    }
-  });
-
-configCmd
-  .command('add <key> <value>')
-  .description('Append a value to an array config field (e.g., applicationDocs)')
-  .action((key: string, value: string) => {
-    try {
-      configAdd(key, value);
-    } catch (error: any) {
-      console.error(chalk.red('Error:'), error.message);
-      process.exit(1);
-    }
-  });
-
-configCmd
-  .command('remove <key> <value>')
-  .description('Remove a value from an array config field')
-  .action((key: string, value: string) => {
-    try {
-      configRemove(key, value);
-    } catch (error: any) {
-      console.error(chalk.red('Error:'), error.message);
-      process.exit(1);
-    }
-  });
-
-program.parse(process.argv);
-
-// Show help if no command is provided
-if (program.args.length === 0) {
-  program.help();
-}
+console.log(message);
+process.exit(0);
