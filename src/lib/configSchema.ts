@@ -49,21 +49,29 @@ export function validateNonEmpty(input: string): true | string {
   return true;
 }
 
-export function validateDocumentationRootPath(input: string): true | string {
+export function validateDocPath(input: string): true | string {
   const trimmed = input.trim();
   if (!trimmed) return 'Path cannot be empty.';
-  if (!trimmed.toLowerCase().endsWith('.md')) {
-    return 'Documentation root must point to a .md file.';
-  }
   const resolved = path.resolve(process.cwd(), trimmed);
   if (!fs.existsSync(resolved)) {
-    return `File does not exist: ${trimmed}`;
+    return `Path does not exist: ${trimmed}`;
   }
-  if (!fs.statSync(resolved).isFile()) {
-    return `Path is not a regular file: ${trimmed}`;
+  const stat = fs.statSync(resolved);
+  if (stat.isFile()) {
+    if (!trimmed.toLowerCase().endsWith('.md')) {
+      return `File must be a .md (got: ${trimmed})`;
+    }
+    return true;
   }
-  return true;
+  if (stat.isDirectory()) {
+    return true;
+  }
+  return `Path is neither a file nor a directory: ${trimmed}`;
 }
+
+// Backward-compat alias - kept so external callers referencing the old name
+// still resolve. Removed in a future version.
+export const validateDocumentationRootPath = validateDocPath;
 
 export const configSchema: Record<ConfigKey, FieldSchema> = {
   projectKey: {
@@ -99,13 +107,13 @@ export const configSchema: Record<ConfigKey, FieldSchema> = {
   },
   applicationDocs: {
     kind: 'array',
-    description: 'Paths to project-specific docs imported into CLAUDE.md',
-    itemValidate: validateNonEmpty,
+    description: 'Paths (files or folders) imported into CLAUDE.md. Folders are walked recursively for .md files.',
+    itemValidate: validateDocPath,
   },
   documentationRoots: {
     kind: 'array',
-    description: 'Paths to hub docs that drive on-demand discovery of spoke files',
-    itemValidate: validateDocumentationRootPath,
+    description: 'Alias of applicationDocs - paths (files or folders) eagerly imported into CLAUDE.md.',
+    itemValidate: validateDocPath,
   },
 };
 

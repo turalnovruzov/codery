@@ -89,16 +89,15 @@ Codery follows the npm principle: **track inputs, ignore outputs**.
 
 ## Version History
 
-### Version 8.x - Hub-and-Spoke Documentation Loading (COD-61)
-- Added `documentationRoots: string[]` config field for hub-and-spoke doc loading
-- Each entry is a path to an eagerly-loaded "hub" doc; Codery generates `.codery/refs/docs-index.md` listing every `.md` file under the hub's parent folder for on-demand discovery
-- Generated index is `@`-imported by `CLAUDE.md` alongside a principle-driven instruction telling Claude to consult the index proactively when work intersects a documented topic
-- `applicationDocs` is unchanged — it stays the slot for small must-load files
-- Solves the problem of single large doc files (>40k chars) bloating every Claude conversation; teams can split docs and let Claude load on demand
-- Validation: `documentationRoots` entries must point to existing `.md` files (strict at `codery config set` / interactive menu); build is lenient — warns and skips missing entries
-- Tree walk skips `node_modules`, dotfiles, dotdirs, and symlinks; index uses POSIX paths
-- Stale `docs-index.md` from previous builds is removed when `documentationRoots` becomes empty
-- Matches the existing `applicationDocs` pattern in `codery init` (no prompt — initialized to empty array, managed via `codery config`)
+### Version 8.x - Eager-Load Folders in applicationDocs / documentationRoots (replaces COD-61 hub-and-spoke)
+- Both `applicationDocs` and `documentationRoots` now treat each entry as a **file or folder**, eagerly imported into CLAUDE.md
+- Folders are walked recursively for `.md` files; output is sorted, POSIX-normalized, and deduplicated across both fields
+- Walk skips dotfiles, dotdirs, symlinks, and `node_modules / dist / build / out / target / coverage`
+- Replaces the v8.x hub-and-spoke design (`docs-index.md` + on-demand instruction): reliability over scale — the user opted out of trust-Claude-to-read-it because reads weren't reliable enough
+- `documentationRoots` becomes an alias of `applicationDocs` (same semantics; kept for backward compat with existing configs)
+- Template now has a single `{{docImports}}` placeholder (was three: `{{applicationDocsImports}}`, `{{documentationRootImports}}`, `{{docsHubBlock}}`)
+- Validation: each entry must exist (file or folder); files must end `.md`. Strict at `codery config set` / interactive menu; build is lenient — warns and skips missing entries
+- Stale `.codery/refs/docs-index.md` from prior v8.x builds is removed unconditionally on next build
 
 ### Version 8.x - `codery config` Command (COD-59)
 - Added `codery config` for viewing and editing `.codery/config.json` without re-running `codery init`
