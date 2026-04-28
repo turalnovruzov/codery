@@ -1,3 +1,10 @@
+# [8.13.0](https://github.com/turalnovruzov/codery/compare/v8.12.0...v8.13.0) (2026-04-28)
+
+
+### Features
+
+* **skills:** redesign codery-audit as multi-phase audit (COD-62) ([#46](https://github.com/turalnovruzov/codery/issues/46)) ([874370b](https://github.com/turalnovruzov/codery/commit/874370b64c782a65c8c6171b22692e4f3ac496f1))
+
 # [8.12.0](https://github.com/turalnovruzov/codery/compare/v8.11.0...v8.12.0) (2026-04-27)
 
 
